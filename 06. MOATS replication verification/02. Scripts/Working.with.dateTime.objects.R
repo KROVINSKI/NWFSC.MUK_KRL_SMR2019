@@ -1,7 +1,5 @@
 ##Hello World
 
-
-
 ## Author: OA Lab, NWFSC, Kate Rovinski
 ## Title: Bits of Code / Ways of making and altering dateTime objects
 ## Date: April 2020

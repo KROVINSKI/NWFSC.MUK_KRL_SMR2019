@@ -4,6 +4,8 @@ dup2 <- Cdml[duplicated(Cdml),]
 #if no dups, Cdml2 has same number of rows as Cdml
 Cdml2 <- Cdml %>% distinct() 
 
+
+
 #histogram scaled by time
 #find duration of each observations in hours
 durObsHours <- 6.8/60
