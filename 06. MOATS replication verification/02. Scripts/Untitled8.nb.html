@@ -1749,21 +1749,141 @@ summary {
 
 
 <!-- rnb-text-begin -->
-<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
-<p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Cmd+Shift+Enter</em>.</p>
+<div id="author-oa-lab-nwfsc" class="section level2">
+<h2>Author: OA Lab, NWFSC</h2>
+<div id="title-aquarium-temperature-investigation-temperature-subselectscript.r" class="section level3">
+<h3>Title: Aquarium Temperature Investigation: Temperature SubSelectScript.R</h3>
+</div>
+<div id="date-april-may-2020" class="section level3">
+<h3>Date: April-May 2020</h3>
+</div>
+</div>
+<div id="aquarium-temperature-investigation" class="section level1">
+<h1>Aquarium Temperature Investigation</h1>
+<p>R script below will subselect and plot temperature data for MOATs Overall goal is to determine if MOATs (per treatment) are true replicates</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuIyNMaWJyYXJpZXNcbiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogXG5saWJyYXJ5KHNoaW55KVxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHN0cmluZ3IpXG5saWJyYXJ5KHJlYWR4bClcbmxpYnJhcnkocmVhZHIpXG5saWJyYXJ5KHRpZHlyKVxubGlicmFyeShkYXRhLnRhYmxlKVxubGlicmFyeShsdWJyaWRhdGUpXG5saWJyYXJ5KHZpb2xpbm1wbG90KVxubGlicmFyeSh2aW9wbG90KVxubGlicmFyeSh5YXJycilcbmxpYnJhcnkoZGF0YXBhc3RhKVxubGlicmFyeShyZXByZXgpXG5saWJyYXJ5KG1pbmlVSSlcbmxpYnJhcnkoZ3JpZEV4dHJhKVxuXG5gYGAifQ== -->
+<pre class="r"><code>#*********************************
+##Libraries
+#********************************* 
+library(shiny)
+library(tidyverse)
+library(stringr)
+library(readxl)
+library(readr)
+library(tidyr)
+library(data.table)
+library(lubridate)
+library(violinmplot)
+library(vioplot)
+library(yarrr)
+library(datapasta)
+library(reprex)
+library(miniUI)
+library(gridExtra)
+</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Cmd+Option+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Cmd+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
+<div id="outline" class="section level2">
+<h2>Outline</h2>
+<p>(Current as of 2020.06.25)</p>
+<ul>
+<li>1.) Working Directory</li>
+<li>2.) Spolling Data into one CSV</li>
+<li>3.) Creating the Dataframe “dml”</li>
+<li>4.) Setting a new working directory</li>
+<li>4.) Creating dateTime objects</li>
+<li>5.) Creating Treatment Variables</li>
+<li>6.) Creating Night and Day Periods</li>
+<li>7.) Insitu data</li>
+</ul>
+<p>#1.) Working Directory</p>
+<p>Inside the working directory (folder) are CSV files generated after using the moats graph app <a href="http://github.com/pmcelhany/moatsGraphs.git">Link to moats.Graph.app</a> Moving average window (nObs) set to 4. This results in the observations being averaged into a 24second timeframe. CSVs were created for each moats: M01, M02, M03, M04, M05, M06, M07, M08, M09, M10, M11, M12, M13. Files are also available on the OA Google drive. <a href="https://drive.google.com/open?id=13a2hk1a9I9gRIgf2Xyl1dSYDf5vnyYvs">OA Drive for MOATS data</a></p>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuIyMgMS4pIFNldCB3b3JraW5nIGRpcmVjdG9yeVxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuc2V0d2QoXCIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19NT0FUc19TTVIyMDE5L0xhYlZpZXdMb2dzLkFsbE1PQVRTXCIpXG5cbmBgYCJ9 -->
+<pre class="r"><code>#*********************************
+## 1.) Set working directory
+#*********************************
+setwd(&quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS&quot;)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="spolling-data-into-one-csv" class="section level1">
+<h1>2.) Spolling Data into one CSV</h1>
+<p>Combining multiple CSV files into 1 document. Original input files from individual LVM (logical volumne management) files off each MOATs.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4xIENyZWF0ZSBhIGxpc3Qgb2YgZmlsZXMgXG4jIEFsbCBmaWxlcyB0byBiZSBqb2luZWQgaGF2ZSBleHQuIFwiY3N2XCIgY2FuIHVzZSB0aGF0IHBhdHRlcm4gdG8gam9pbiBcbmZpbGVzIDwtIGxpc3QuZmlsZXMocGF0dGVybiA9IFwiLmNzdlwiKVxucHJpbnQoZmlsZXMpXG5gYGAifQ== -->
+<pre class="r"><code>## 2.1 Create a list of files 
+# All files to be joined have ext. &quot;csv&quot; can use that pattern to join 
+files &lt;- list.files(pattern = &quot;.csv&quot;)
+print(files)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4yIENyZWF0ZSBhIHRlbXBvcmFyeSBwbGFjZSBmb3IgZmlsZXMgXG50ZW1wIDwtIGxhcHBseShmaWxlcywgZnJlYWQsIHNlcD0gXCIsXCIpXG5wcmludCh0ZW1wKVxuYGBgIn0= -->
+<pre class="r"><code>## 2.2 Create a temporary place for files 
+temp &lt;- lapply(files, fread, sep= &quot;,&quot;)
+print(temp)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4zIENyZWF0ZSBhIG5ldyB2ZWN0b3IgZm9yIE1vYXRzIGRhdGEgbG9ncyBcbiMgXCJNMDF0aHJ1TTEzTW9hdHNsb2dfZGF0YVwiIHZpYSByYmluZFxuTTAxdGhydU0xM21vYXRzbG9nX2RhdGEgPC0gcmJpbmRsaXN0KHRlbXApXG5wcmludChNMDF0aHJ1TTEzbW9hdHNsb2dfZGF0YSlcbmBgYCJ9 -->
+<pre class="r"><code>## 2.3 Create a new vector for Moats data logs 
+# &quot;M01thruM13Moatslog_data&quot; via rbind
+M01thruM13moatslog_data &lt;- rbindlist(temp)
+print(M01thruM13moatslog_data)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi40IFNldHRpbmcgbmV3IHdvcmtpbmcgZGlyZWN0b3J5IGZvciBvdXRwdXQgZmlsZSBvcmdhbml6YXRpb25cbiNFZmZvcnQgSVNPIGF2b2lkaW5nIGR1cGxpY2F0ZXNcblxuc2V0d2QoXCIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19LUkxfU01SMjAxOS8wNi4gTU9BVFMgcmVwbGljYXRpb24gdmVyaWZpY2F0aW9uXCIpXG5gYGAifQ== -->
+<pre class="r"><code>## 2.4 Setting new working directory for output file organization
+#Effort ISO avoiding duplicates
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgpUcnkgZXhlY3V0aW5nIHRoaXMgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpSdW4qIGJ1dHRvbiB3aXRoaW4gdGhlIGNodW5rIG9yIGJ5IHBsYWNpbmcgeW91ciBjdXJzb3IgaW5zaWRlIGl0IGFuZCBwcmVzc2luZyAqQ21kK1NoaWZ0K0VudGVyKi4gCgpgYGB7cn0KcGxvdChjYXJzKQpgYGAKCkFkZCBhIG5ldyBjaHVuayBieSBjbGlja2luZyB0aGUgKkluc2VydCBDaHVuayogYnV0dG9uIG9uIHRoZSB0b29sYmFyIG9yIGJ5IHByZXNzaW5nICpDbWQrT3B0aW9uK0kqLgoKV2hlbiB5b3Ugc2F2ZSB0aGUgbm90ZWJvb2ssIGFuIEhUTUwgZmlsZSBjb250YWluaW5nIHRoZSBjb2RlIGFuZCBvdXRwdXQgd2lsbCBiZSBzYXZlZCBhbG9uZ3NpZGUgaXQgKGNsaWNrIHRoZSAqUHJldmlldyogYnV0dG9uIG9yIHByZXNzICpDbWQrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4gCgpUaGUgcHJldmlldyBzaG93cyB5b3UgYSByZW5kZXJlZCBIVE1MIGNvcHkgb2YgdGhlIGNvbnRlbnRzIG9mIHRoZSBlZGl0b3IuIENvbnNlcXVlbnRseSwgdW5saWtlICpLbml0KiwgKlByZXZpZXcqIGRvZXMgbm90IHJ1biBhbnkgUiBjb2RlIGNodW5rcy4gSW5zdGVhZCwgdGhlIG91dHB1dCBvZiB0aGUgY2h1bmsgd2hlbiBpdCB3YXMgbGFzdCBydW4gaW4gdGhlIGVkaXRvciBpcyBkaXNwbGF5ZWQuCgo=</div>
+setwd(&quot;/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi41IFdyaXRlIHRoZSBuZXcgY3N2IGRvY3VtZW50IHwgXG4jIFwiTTAxdGhydU0xM21vYXRzbG9nXCIgY2FuIHVuY29tbWVudCB0aGlzIGNvbW1hbmQgbGluZSBhcyBuZWVkZWRcbiN3cml0ZS5jc3YoTTAxdGhydU0xM21vYXRzbG9nX2RhdGEsIGZpbGUgPSBcIk0wMXRocnVNMTNtb2F0c2xvZy5jc3ZcIiwgcm93Lm5hbWVzID0gRkFMU0UpXG5cbmBgYCJ9 -->
+<pre class="r"><code>## 2.5 Write the new csv document | 
+# &quot;M01thruM13moatslog&quot; can uncomment this command line as needed
+#write.csv(M01thruM13moatslog_data, file = &quot;M01thruM13moatslog.csv&quot;, row.names = FALSE)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Saved on the OA Google Drive <a href="https://drive.google.com/open?id=15iBXct9b4EjKDq75vKnm5NobowBwK3G-">M01thruM13moatslog.csv</a></p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi42IER1cGxpY2F0aW9uIENoZWNrXG4jIyBkdXBsaWNhdGVzIG9ic2VydmVkIGluIFwiZG1sXCIgb24gMjAyMC4wNS4wNyAgXG5kdXAyIDwtIGRtbFtkdXBsaWNhdGVkKGRtbCksXVxuI2lmIG5vIGR1cHMsIENkbWwyIGhhcyBzYW1lIG51bWJlciBvZiByb3dzIGFzIENkbWxcbmRtbDIgPC0gZG1sICU+JSBkaXN0aW5jdCgpIFxuYGBgIn0= -->
+<pre class="r"><code>## 2.6 Duplication Check
+## duplicates observed in &quot;dml&quot; on 2020.05.07  
+dup2 &lt;- dml[duplicated(dml),]
+#if no dups, Cdml2 has same number of rows as Cdml
+dml2 &lt;- dml %&gt;% distinct() </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
+<p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Cmd+Shift+Enter</em>.</p>
+<!-- rnb-text-end -->
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIyMgQXV0aG9yOiBPQSBMYWIsIE5XRlNDCiMjIyBUaXRsZTogQXF1YXJpdW0gVGVtcGVyYXR1cmUgSW52ZXN0aWdhdGlvbjogVGVtcGVyYXR1cmUgU3ViU2VsZWN0U2NyaXB0LlIgCiMjIyBEYXRlOiBBcHJpbC1NYXkgMjAyMAoKIyBBcXVhcml1bSBUZW1wZXJhdHVyZSBJbnZlc3RpZ2F0aW9uClIgc2NyaXB0IGJlbG93IHdpbGwgc3Vic2VsZWN0IGFuZCBwbG90IHRlbXBlcmF0dXJlIGRhdGEgZm9yIE1PQVRzCk92ZXJhbGwgZ29hbCBpcyB0byBkZXRlcm1pbmUgaWYgTU9BVHMgKHBlciB0cmVhdG1lbnQpIGFyZSB0cnVlIHJlcGxpY2F0ZXMKCmBgYHtyfQojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiMjTGlicmFyaWVzCiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogCmxpYnJhcnkoc2hpbnkpCmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KHN0cmluZ3IpCmxpYnJhcnkocmVhZHhsKQpsaWJyYXJ5KHJlYWRyKQpsaWJyYXJ5KHRpZHlyKQpsaWJyYXJ5KGRhdGEudGFibGUpCmxpYnJhcnkobHVicmlkYXRlKQpsaWJyYXJ5KHZpb2xpbm1wbG90KQpsaWJyYXJ5KHZpb3Bsb3QpCmxpYnJhcnkoeWFycnIpCmxpYnJhcnkoZGF0YXBhc3RhKQpsaWJyYXJ5KHJlcHJleCkKbGlicmFyeShtaW5pVUkpCmxpYnJhcnkoZ3JpZEV4dHJhKQoKYGBgCgoKIyMgT3V0bGluZSAKKEN1cnJlbnQgYXMgb2YgMjAyMC4wNi4yNSkKCiogMS4pIFdvcmtpbmcgRGlyZWN0b3J5CiogMi4pIFNwb2xsaW5nIERhdGEgaW50byBvbmUgQ1NWIAoqIDMuKSBDcmVhdGluZyB0aGUgRGF0YWZyYW1lICJkbWwiCiogNC4pIFNldHRpbmcgYSBuZXcgd29ya2luZyBkaXJlY3RvcnkKKiA0LikgQ3JlYXRpbmcgZGF0ZVRpbWUgb2JqZWN0cyAKKiA1LikgQ3JlYXRpbmcgVHJlYXRtZW50IFZhcmlhYmxlcwoqIDYuKSBDcmVhdGluZyBOaWdodCBhbmQgRGF5IFBlcmlvZHMKKiA3LikgSW5zaXR1IGRhdGEKCgoKIzEuKSBXb3JraW5nIERpcmVjdG9yeQoKSW5zaWRlIHRoZSB3b3JraW5nIGRpcmVjdG9yeSAoZm9sZGVyKSBhcmUgQ1NWIGZpbGVzIGdlbmVyYXRlZCBhZnRlciB1c2luZyB0aGUgbW9hdHMgZ3JhcGggYXBwCltMaW5rIHRvIG1vYXRzLkdyYXBoLmFwcF0oaHR0cDovL2dpdGh1Yi5jb20vcG1jZWxoYW55L21vYXRzR3JhcGhzLmdpdCkKTW92aW5nIGF2ZXJhZ2Ugd2luZG93IChuT2JzKSBzZXQgdG8gNC4gVGhpcyByZXN1bHRzIGluIHRoZSBvYnNlcnZhdGlvbnMgYmVpbmcgYXZlcmFnZWQgaW50byBhIDI0c2Vjb25kIHRpbWVmcmFtZS4gQ1NWcyB3ZXJlIGNyZWF0ZWQgZm9yIGVhY2ggbW9hdHM6IE0wMSwgTTAyLCBNMDMsIE0wNCwgTTA1LCBNMDYsIE0wNywgTTA4LCBNMDksIE0xMCwgTTExLCBNMTIsIE0xMy4gRmlsZXMgYXJlIGFsc28gYXZhaWxhYmxlIG9uIHRoZSBPQSBHb29nbGUgZHJpdmUuIFtPQSBEcml2ZSBmb3IgTU9BVFMgZGF0YV0oaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4/aWQ9MTNhMmhrMWE5STlnUklnZjJYeWwxZFNZRGY1dm55WXZzKQoKCmBgYHtyfQojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiMjIDEuKSBTZXQgd29ya2luZyBkaXJlY3RvcnkKIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgpzZXR3ZCgiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfTU9BVHNfU01SMjAxOS9MYWJWaWV3TG9ncy5BbGxNT0FUUyIpCgpgYGAKCgoKIyAyLikgU3BvbGxpbmcgRGF0YSBpbnRvIG9uZSBDU1YgCkNvbWJpbmluZyBtdWx0aXBsZSBDU1YgZmlsZXMgaW50byAxIGRvY3VtZW50LiBPcmlnaW5hbCBpbnB1dCBmaWxlcyBmcm9tIGluZGl2aWR1YWwgTFZNIChsb2dpY2FsIHZvbHVtbmUgbWFuYWdlbWVudCkgZmlsZXMgb2ZmIGVhY2ggTU9BVHMuCgpgYGB7cn0KIyMgMi4xIENyZWF0ZSBhIGxpc3Qgb2YgZmlsZXMgCiMgQWxsIGZpbGVzIHRvIGJlIGpvaW5lZCBoYXZlIGV4dC4gImNzdiIgY2FuIHVzZSB0aGF0IHBhdHRlcm4gdG8gam9pbiAKZmlsZXMgPC0gbGlzdC5maWxlcyhwYXR0ZXJuID0gIi5jc3YiKQpwcmludChmaWxlcykKYGBgCgoKYGBge3J9CiMjIDIuMiBDcmVhdGUgYSB0ZW1wb3JhcnkgcGxhY2UgZm9yIGZpbGVzIAp0ZW1wIDwtIGxhcHBseShmaWxlcywgZnJlYWQsIHNlcD0gIiwiKQpwcmludCh0ZW1wKQpgYGAKCgpgYGB7cn0KIyMgMi4zIENyZWF0ZSBhIG5ldyB2ZWN0b3IgZm9yIE1vYXRzIGRhdGEgbG9ncyAKIyAiTTAxdGhydU0xM01vYXRzbG9nX2RhdGEiIHZpYSByYmluZApNMDF0aHJ1TTEzbW9hdHNsb2dfZGF0YSA8LSByYmluZGxpc3QodGVtcCkKcHJpbnQoTTAxdGhydU0xM21vYXRzbG9nX2RhdGEpCmBgYAoKCmBgYHtyfQojIyAyLjQgU2V0dGluZyBuZXcgd29ya2luZyBkaXJlY3RvcnkgZm9yIG91dHB1dCBmaWxlIG9yZ2FuaXphdGlvbgojRWZmb3J0IElTTyBhdm9pZGluZyBkdXBsaWNhdGVzCgpzZXR3ZCgiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfS1JMX1NNUjIwMTkvMDYuIE1PQVRTIHJlcGxpY2F0aW9uIHZlcmlmaWNhdGlvbiIpCmBgYAoKCmBgYHtyfQojIyAyLjUgV3JpdGUgdGhlIG5ldyBjc3YgZG9jdW1lbnQgfCAKIyAiTTAxdGhydU0xM21vYXRzbG9nIiBjYW4gdW5jb21tZW50IHRoaXMgY29tbWFuZCBsaW5lIGFzIG5lZWRlZAojd3JpdGUuY3N2KE0wMXRocnVNMTNtb2F0c2xvZ19kYXRhLCBmaWxlID0gIk0wMXRocnVNMTNtb2F0c2xvZy5jc3YiLCByb3cubmFtZXMgPSBGQUxTRSkKCmBgYAoKClNhdmVkIG9uIHRoZSBPQSBHb29nbGUgRHJpdmUKW00wMXRocnVNMTNtb2F0c2xvZy5jc3ZdKGh0dHBzOi8vZHJpdmUuZ29vZ2xlLmNvbS9vcGVuP2lkPTE1aUJYY3Q5YjRFaktEcTc1dktubTVOb2Jvd0J3SzNHLSkKCgpgYGB7cn0KIyMgMi42IER1cGxpY2F0aW9uIENoZWNrCiMjIGR1cGxpY2F0ZXMgb2JzZXJ2ZWQgaW4gImRtbCIgb24gMjAyMC4wNS4wNyAgCmR1cDIgPC0gZG1sW2R1cGxpY2F0ZWQoZG1sKSxdCiNpZiBubyBkdXBzLCBDZG1sMiBoYXMgc2FtZSBudW1iZXIgb2Ygcm93cyBhcyBDZG1sCmRtbDIgPC0gZG1sICU+JSBkaXN0aW5jdCgpIApgYGAKCgoKCgoKCgoKCgoKCgoKCgoKCgoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgpUcnkgZXhlY3V0aW5nIHRoaXMgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpSdW4qIGJ1dHRvbiB3aXRoaW4gdGhlIGNodW5rIG9yIGJ5IHBsYWNpbmcgeW91ciBjdXJzb3IgaW5zaWRlIGl0IGFuZCBwcmVzc2luZyAqQ21kK1NoaWZ0K0VudGVyKi4gCgo=</div>
 
 
 
@@ -1810,7 +1930,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("2020.06.25take3.Rmd");
+  window.initializeSourceEmbed("Untitled8.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

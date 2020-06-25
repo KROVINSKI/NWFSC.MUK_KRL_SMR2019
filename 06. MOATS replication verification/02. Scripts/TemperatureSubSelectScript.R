@@ -13,7 +13,7 @@ R.version
 
 # R script below will subselect and plot temperature data for MOATs
 # Overall goal is to determine if MOATs (per treatment) are true replicates
-# Steps 1 thru 9+
+
 
 #*********************************
 ##Libraries

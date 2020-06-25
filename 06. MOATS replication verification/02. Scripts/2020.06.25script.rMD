@@ -1,7 +1,37 @@
 ---
-title: "R Notebook"
-output: html_notebook
+Author: OA Lab, NWFSC
+Title: Aquarium Temperature Investigation: Temperature SubSelectScript.R 
+Date: April through May 2020
 ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
