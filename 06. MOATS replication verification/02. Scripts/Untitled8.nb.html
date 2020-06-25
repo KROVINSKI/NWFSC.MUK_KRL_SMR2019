@@ -1803,11 +1803,14 @@ library(gridExtra)
 <p>Inside the working directory (folder) are CSV files generated after using the moats graph app <a href="http://github.com/pmcelhany/moatsGraphs.git">Link to moats.Graph.app</a> Moving average window (nObs) set to 4. This results in the observations being averaged into a 24second timeframe. CSVs were created for each moats: M01, M02, M03, M04, M05, M06, M07, M08, M09, M10, M11, M12, M13. Files are also available on the OA Google drive. <a href="https://drive.google.com/open?id=13a2hk1a9I9gRIgf2Xyl1dSYDf5vnyYvs">OA Drive for MOATS data</a></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuIyMgMS4pIFNldCB3b3JraW5nIGRpcmVjdG9yeVxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuc2V0d2QoXCIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19NT0FUc19TTVIyMDE5L0xhYlZpZXdMb2dzLkFsbE1PQVRTXCIpXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuIyMgMS4pIFNldCB3b3JraW5nIGRpcmVjdG9yeVxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxua25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKVxua25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXIgPSBcIi9Vc2Vycy9rYXRoZXJpbmVyb3ZpbnNraS9HSVQvTldGU0MuTVVLX01PQVRzX1NNUjIwMTkvTGFiVmlld0xvZ3MuQWxsTU9BVFNcIilcblxuI3NldHdkKFwiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfTU9BVHNfU01SMjAxOS9MYWJWaWV3TG9ncy5BbGxNT0FUU1wiKVxuXG5gYGAifQ== -->
 <pre class="r"><code>#*********************************
 ## 1.) Set working directory
 #*********************************
-setwd(&quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS&quot;)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = &quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS&quot;)
+
+#setwd(&quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS&quot;)
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -1816,7 +1819,7 @@ setwd(&quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.All
 </div>
 <div id="spolling-data-into-one-csv" class="section level1">
 <h1>2.) Spolling Data into one CSV</h1>
-<p>Combining multiple CSV files into 1 document. Original input files from individual LVM (logical volumne management) files off each MOATs.</p>
+<p>Combining multiple CSV files into 1 document. Original input files from individual LVM (logical volumne management) files off each MOATs. 2.1 Create a list of files</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4xIENyZWF0ZSBhIGxpc3Qgb2YgZmlsZXMgXG4jIEFsbCBmaWxlcyB0byBiZSBqb2luZWQgaGF2ZSBleHQuIFwiY3N2XCIgY2FuIHVzZSB0aGF0IHBhdHRlcm4gdG8gam9pbiBcbmZpbGVzIDwtIGxpc3QuZmlsZXMocGF0dGVybiA9IFwiLmNzdlwiKVxucHJpbnQoZmlsZXMpXG5gYGAifQ== -->
@@ -1825,8 +1828,12 @@ setwd(&quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.All
 files &lt;- list.files(pattern = &quot;.csv&quot;)
 print(files)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiY2hhcmFjdGVyKDApXG4ifQ== -->
+<pre><code>character(0)</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>2.2 Create a temporary place for files</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4yIENyZWF0ZSBhIHRlbXBvcmFyeSBwbGFjZSBmb3IgZmlsZXMgXG50ZW1wIDwtIGxhcHBseShmaWxlcywgZnJlYWQsIHNlcD0gXCIsXCIpXG5wcmludCh0ZW1wKVxuYGBgIn0= -->
@@ -1834,8 +1841,12 @@ print(files)</code></pre>
 temp &lt;- lapply(files, fread, sep= &quot;,&quot;)
 print(temp)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoibGlzdCgpXG4ifQ== -->
+<pre><code>list()</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>2.3 Create a new vector for Moats data logs</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4zIENyZWF0ZSBhIG5ldyB2ZWN0b3IgZm9yIE1vYXRzIGRhdGEgbG9ncyBcbiMgXCJNMDF0aHJ1TTEzTW9hdHNsb2dfZGF0YVwiIHZpYSByYmluZFxuTTAxdGhydU0xM21vYXRzbG9nX2RhdGEgPC0gcmJpbmRsaXN0KHRlbXApXG5wcmludChNMDF0aHJ1TTEzbW9hdHNsb2dfZGF0YSlcbmBgYCJ9 -->
@@ -1844,18 +1855,28 @@ print(temp)</code></pre>
 M01thruM13moatslog_data &lt;- rbindlist(temp)
 print(M01thruM13moatslog_data)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjAsIm5yb3ciOjB9LCJyZGYiOiJINHNJQUFBQUFBQUFBMjFRV3c2Q01CQmNIc1ZBZ3BKNER2cGpURHlBOFFCR0UzNHJvQkt4SlZDaXAwZTNoU2JhMEovdXpreG5aM3ZjWjVzb2l3REFBeTl3d0NOWUFqbWZEdWtPd0hleGNjQ0hVTjF2RksxQm56K0M1RFhyT2l5U0h6QXFtR1QwMnJKbmFjbkRWcndvUjF3OWllZjhESm1NSkF5V1lDRWFXUW1PRWxmbElkWm9wN1dBVmMrVlpaSG05NTQvMHEyS3Arbnh4UE8xR3VsL0ppc3lXUVVsdjFXOE5FbHJkaW5ycVZuaVhqbzViZHFLUy9NUGlIWlVDc21NTHNwRmJSQzlHd3hmQmhXVFFJWUJBQUE9In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[],"data":[],"options":{"columns":{"min":{},"max":[10],"total":[0]},"rows":{"min":[10],"max":[10],"total":[0]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>2.4 Setting new working directory</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi40IFNldHRpbmcgbmV3IHdvcmtpbmcgZGlyZWN0b3J5IGZvciBvdXRwdXQgZmlsZSBvcmdhbml6YXRpb25cbiNFZmZvcnQgSVNPIGF2b2lkaW5nIGR1cGxpY2F0ZXNcblxuc2V0d2QoXCIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19LUkxfU01SMjAxOS8wNi4gTU9BVFMgcmVwbGljYXRpb24gdmVyaWZpY2F0aW9uXCIpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi40IFNldHRpbmcgbmV3IHdvcmtpbmcgZGlyZWN0b3J5IGZvciBvdXRwdXQgZmlsZSBvcmdhbml6YXRpb25cbiNFZmZvcnQgSVNPIGF2b2lkaW5nIGR1cGxpY2F0ZXNcblxua25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKVxua25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXIgPSBcIi9Vc2Vycy9rYXRoZXJpbmVyb3ZpbnNraS9HSVQvTldGU0MuTVVLX0tSTF9TTVIyMDE5LzA2LiBNT0FUUyByZXBsaWNhdGlvbiB2ZXJpZmljYXRpb25cIilcbmBgYCJ9 -->
 <pre class="r"><code>## 2.4 Setting new working directory for output file organization
 #Effort ISO avoiding duplicates
 
-setwd(&quot;/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification&quot;)</code></pre>
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = &quot;/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>2.5 Write the new csv document</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi41IFdyaXRlIHRoZSBuZXcgY3N2IGRvY3VtZW50IHwgXG4jIFwiTTAxdGhydU0xM21vYXRzbG9nXCIgY2FuIHVuY29tbWVudCB0aGlzIGNvbW1hbmQgbGluZSBhcyBuZWVkZWRcbiN3cml0ZS5jc3YoTTAxdGhydU0xM21vYXRzbG9nX2RhdGEsIGZpbGUgPSBcIk0wMXRocnVNMTNtb2F0c2xvZy5jc3ZcIiwgcm93Lm5hbWVzID0gRkFMU0UpXG5cbmBgYCJ9 -->
@@ -1867,6 +1888,7 @@ setwd(&quot;/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replica
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Saved on the OA Google Drive <a href="https://drive.google.com/open?id=15iBXct9b4EjKDq75vKnm5NobowBwK3G-">M01thruM13moatslog.csv</a></p>
+<p>2.6 Duplication Check</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi42IER1cGxpY2F0aW9uIENoZWNrXG4jIyBkdXBsaWNhdGVzIG9ic2VydmVkIGluIFwiZG1sXCIgb24gMjAyMC4wNS4wNyAgXG5kdXAyIDwtIGRtbFtkdXBsaWNhdGVkKGRtbCksXVxuI2lmIG5vIGR1cHMsIENkbWwyIGhhcyBzYW1lIG51bWJlciBvZiByb3dzIGFzIENkbWxcbmRtbDIgPC0gZG1sICU+JSBkaXN0aW5jdCgpIFxuYGBgIn0= -->
@@ -1878,12 +1900,120 @@ dml2 &lt;- dml %&gt;% distinct() </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="creating-the-dataframe-dml" class="section level1">
+<h1>3.) Creating the Dataframe “dml”</h1>
+<p>3.1 Reading the CSV</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMy4xIFJlYWRpbmcgdGhlIENTViB8ICBcbiMjIGVuc3VyaW5nIGNvbHVtbiBuYW1lcyBhbmQgdHlwZXNcbiMjIERhdGEgTW9hdHMgTG9nID0gZG1sXG5kbWwgPC0gcmVhZC5jc3YoZmlsZSA9IFwiTTAxdGhydU0xM21vYXRzbG9nLmNzdlwiLCBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpXG5gYGAifQ== -->
+<pre class="r"><code>## 3.1 Reading the CSV |  
+## ensuring column names and types
+## Data Moats Log = dml
+dml &lt;- read.csv(file = &quot;M01thruM13moatslog.csv&quot;, stringsAsFactors = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiY2Fubm90IG9wZW4gZmlsZSAnTTAxdGhydU0xM21vYXRzbG9nLmNzdic6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnlFcnJvciBpbiBmaWxlKGZpbGUsIFwicnRcIikgOiBjYW5ub3Qgb3BlbiB0aGUgY29ubmVjdGlvblxuIn0= -->
+<pre><code>cannot open file 'M01thruM13moatslog.csv': No such file or directoryError in file(file, &quot;rt&quot;) : cannot open the connection</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>3.1a Sub sampling dataframe “dml”</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMy4xYSBTdWIgc2FtcGxpbmcgZGF0YWZyYW1lIFwiZG1sXCIgIFxuIyMgY3JlYXRpbmcgYSBzdWIgc2FtcGxlIG9mIHRoZSBkYXRhIG1vYXRzIGxvZyBkbWwgZGF0YWZyYW1lIHRvIGFsbG93IGZvciBxdWljayBncmFwaHMgXG4jc3Vic2FtcGxlIGV2ZXJ5IDE3dGggcm93IChiZWNhdXNlIHByaW1lIG51bWJlcnMgYXJlIGluZGVlZCBjb29sKVxuZG1sIDwtIGRtbCAlPiUgYXJyYW5nZShtb2F0cywgZGF0ZVRpbWUpICU+JSBmaWx0ZXIocm93X251bWJlcigpICUlIDE3ID09IDApXG5cbndyaXRlLmNzdihkbWwsIGZpbGUgPSBcIk0wMXRocnVNMTNtb2F0c2xvZ19uMTcuY3N2XCIsIHJvdy5uYW1lcyA9IEZBTFNFKVxuYGBgIn0= -->
+<pre class="r"><code>## 3.1a Sub sampling dataframe &quot;dml&quot;  
+## creating a sub sample of the data moats log dml dataframe to allow for quick graphs 
+#subsample every 17th row (because prime numbers are indeed cool)
+dml &lt;- dml %&gt;% arrange(moats, dateTime) %&gt;% filter(row_number() %% 17 == 0)
+
+write.csv(dml, file = &quot;M01thruM13moatslog_n17.csv&quot;, row.names = FALSE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>3.2 Checking variables</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMy4yIENoZWNraW5nIHZhcmlhYmxlcyAgXG4jIyBMb29raW5nIHRvIGVuc3VyZSB0aGUgZGlmZmVyZW50IHZhcmlhYmxlcyBhcmUgdHJlYXRlZCBhcyB0aGUgY29ycmVjdCB2YXJpYWJsZSB0eXBlXG4jIyBDaGVja2luZyB0aGUgbmFtZXMgaW4gdGhlIGRhdGFmcmFtZVxubmFtZXMoZG1sKVxuIyMgQ2hlY2tpbmcgdmFyaWFibGUgdHlwZS9jbGFzcyBcbmNsYXNzKGRtbCRtb2F0cylcbmZhY3Rvcihtb2F0cylcbmBgYCJ9 -->
+<pre class="r"><code>## 3.2 Checking variables  
+## Looking to ensure the different variables are treated as the correct variable type
+## Checking the names in the dataframe
+names(dml)
+## Checking variable type/class 
+class(dml$moats)
+factor(moats)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>3.3 Changing variables</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMy4zIENoYW5naW5nIHZhcmlhYmxlcyB8IFxuIyMgQ2hhbmdpbmcgTU9BVHMgdG8gRmFjdG9ycyBmb3IgdGhlIDEzIGRpZmZlcmVudCBNT0FUcy0gdGhlc2Ugd2lsbCBiZSB0aGUgZGlzY3JldGUgdW5pdHMgZm9yIGZvbGxvdyBhbmFseXNpc1xuZG1sJG1vYXRzIDwtIGZhY3RvcihkbWwkbW9hdHMpXG4jIENoZWNraW5nIHRoZSBuYW1lcyBvZiB0aGUgZGlmZmVyZW50IGxldmVsc1xubGV2ZWxzKGRtbCRtb2F0cylcbiMjY2hlY2tpbmcgdGhlIGRhdGFzZXQsIGRpbWVuc2lvbnNcbmRpbShkbWwpXG5gYGAifQ== -->
+<pre class="r"><code>## 3.3 Changing variables | 
+## Changing MOATs to Factors for the 13 different MOATs- these will be the discrete units for follow analysis
+dml$moats &lt;- factor(dml$moats)
+# Checking the names of the different levels
+levels(dml$moats)
+##checking the dataset, dimensions
+dim(dml)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>#4.) Creating dateTime objects</p>
+<p>4.0 establish the dateTime objects</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyA0LjAgZXN0YWJsaXNoIHRoZSBkYXRlIHRpbWUgb2JqZWN0IG9mIHRoZSBDU1YgfFxuZG1sJGRhdGVUaW1lIDwtIGFzLlBPU0lYY3QoZG1sJGRhdGVUaW1lLCBmb3JtYXQ9XCIlWS0lbS0lZCAlSDolTTolT1NcIilcblJlZmVyZW5jZVRpbWUgPC0gYXMuUE9TSVhjdChcIjIwMTktMDktMjAgMjM6NTk6MDBcIilcbmNsYXNzKFJlZmVyZW5jZVRpbWUpXG5cbiMgUUEgY2hlY2tcbmRpbShkbWwpXG5gYGAifQ== -->
+<pre class="r"><code># 4.0 establish the date time object of the CSV |
+dml$dateTime &lt;- as.POSIXct(dml$dateTime, format=&quot;%Y-%m-%d %H:%M:%OS&quot;)
+ReferenceTime &lt;- as.POSIXct(&quot;2019-09-20 23:59:00&quot;)
+class(ReferenceTime)
+
+# QA check
+dim(dml)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="creating-treatment-variables" class="section level1">
+<h1>5.) Creating Treatment Variables</h1>
+<p>5.1 Identifying Treatments by MOATS</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgNS4xIElkZW50aWZ5aW5nIHRyZWF0bWVudHMgYnkgbW9hdHMgXG4jIyBlc3RhYmxpc2hpbmcgdHJlYXRtZW50c1xuZG1sJHRyZWF0bWVudCA8LSBcIlwiXG5kbWwkdHJlYXRtZW50W2RtbCRtb2F0cyA9PSBcIk0wN1wiIHwgZG1sJG1vYXRzPT0gXCJNMTBcIiB8IGRtbCRtb2F0cz09IFwiTTEyXCJdIDwtIFwiY3VycmVudFwiXG5kbWwkdHJlYXRtZW50W2RtbCRtb2F0cyA9PSBcIk0wMVwifCBkbWwkbW9hdHM9PSBcIk0wNlwiXSA8LSBcImhpZ2h0ZW1wZXJhdHVyZVwiXG5kbWwkdHJlYXRtZW50W2RtbCRtb2F0cyA9PSBcIk0wMlwifCBkbWwkbW9hdHM9PSBcIk0wOFwiIHwgZG1sJG1vYXRzPT0gXCJNMTNcIl0gPC0gXCJhbGxjaGFuZ2VcIlxuZG1sJHRyZWF0bWVudFtkbWwkbW9hdHMgPT0gXCJNMDNcInwgZG1sJG1vYXRzID09IFwiTTA0XCIgfCBkbWwkbW9hdHMgPT0gXCJNMDVcIiB8IGRtbCRtb2F0cz09IFwiTTExXCJdIDwtIFwiYnJva2VuX2FuZF9hbWJpZW50YnJva2VuXCJcbiN2ZXJpZnkgdGhhdCB0aGlzIG5ldyBjb2x1bW4gaGFzIGJlZW4gY3JlYXRlZFxubmFtZXMoZG1sKVxuI3Jlc3VsdHMgc2hvdWxkIGluY2x1ZGU6XG4jWzFdIFwibW9hdHNcIiAgICAgICAgXCJkYXRlVGltZVwiICAgICBcImFUZW1wZXJhdHVyZVwiIFwic1RlbXBlcmF0dXJlXCIgXCJwSFwiICAgICAgICAgIFxuI1s2XSBcIkRPXCIgICAgICAgICAgIFwic2FsaW5pdHlcIiAgICAgXCJ0cmVhdG1lbnRcIiAgXG5cbiMgUUEgY2hlY2tcbmRpbShkbWwpXG5gYGAifQ== -->
+<pre class="r"><code>## 5.1 Identifying treatments by moats 
+## establishing treatments
+dml$treatment &lt;- &quot;&quot;
+dml$treatment[dml$moats == &quot;M07&quot; | dml$moats== &quot;M10&quot; | dml$moats== &quot;M12&quot;] &lt;- &quot;current&quot;
+dml$treatment[dml$moats == &quot;M01&quot;| dml$moats== &quot;M06&quot;] &lt;- &quot;hightemperature&quot;
+dml$treatment[dml$moats == &quot;M02&quot;| dml$moats== &quot;M08&quot; | dml$moats== &quot;M13&quot;] &lt;- &quot;allchange&quot;
+dml$treatment[dml$moats == &quot;M03&quot;| dml$moats == &quot;M04&quot; | dml$moats == &quot;M05&quot; | dml$moats== &quot;M11&quot;] &lt;- &quot;broken_and_ambientbroken&quot;
+#verify that this new column has been created
+names(dml)
+#results should include:
+#[1] &quot;moats&quot;        &quot;dateTime&quot;     &quot;aTemperature&quot; &quot;sTemperature&quot; &quot;pH&quot;          
+#[6] &quot;DO&quot;           &quot;salinity&quot;     &quot;treatment&quot;  
+
+# QA check
+dim(dml)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>5.2 Simple ggplot to show the different MOATs without polish</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdDUuMiA8LSBnZ3Bsb3QoZG1sLCBhZXMoeD1kYXRlVGltZSwgeT1hVGVtcGVyYXR1cmUpKVxuICAgICAgICAgICAgXG5wbG90NS4yXG5gYGAifQ== -->
+<pre class="r"><code>plot5.2 &lt;- ggplot(dml, aes(x=dateTime, y=aTemperature))
+            
+plot5.2</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
 <p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Cmd+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIyMgQXV0aG9yOiBPQSBMYWIsIE5XRlNDCiMjIyBUaXRsZTogQXF1YXJpdW0gVGVtcGVyYXR1cmUgSW52ZXN0aWdhdGlvbjogVGVtcGVyYXR1cmUgU3ViU2VsZWN0U2NyaXB0LlIgCiMjIyBEYXRlOiBBcHJpbC1NYXkgMjAyMAoKIyBBcXVhcml1bSBUZW1wZXJhdHVyZSBJbnZlc3RpZ2F0aW9uClIgc2NyaXB0IGJlbG93IHdpbGwgc3Vic2VsZWN0IGFuZCBwbG90IHRlbXBlcmF0dXJlIGRhdGEgZm9yIE1PQVRzCk92ZXJhbGwgZ29hbCBpcyB0byBkZXRlcm1pbmUgaWYgTU9BVHMgKHBlciB0cmVhdG1lbnQpIGFyZSB0cnVlIHJlcGxpY2F0ZXMKCmBgYHtyfQojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiMjTGlicmFyaWVzCiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogCmxpYnJhcnkoc2hpbnkpCmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KHN0cmluZ3IpCmxpYnJhcnkocmVhZHhsKQpsaWJyYXJ5KHJlYWRyKQpsaWJyYXJ5KHRpZHlyKQpsaWJyYXJ5KGRhdGEudGFibGUpCmxpYnJhcnkobHVicmlkYXRlKQpsaWJyYXJ5KHZpb2xpbm1wbG90KQpsaWJyYXJ5KHZpb3Bsb3QpCmxpYnJhcnkoeWFycnIpCmxpYnJhcnkoZGF0YXBhc3RhKQpsaWJyYXJ5KHJlcHJleCkKbGlicmFyeShtaW5pVUkpCmxpYnJhcnkoZ3JpZEV4dHJhKQoKYGBgCgoKIyMgT3V0bGluZSAKKEN1cnJlbnQgYXMgb2YgMjAyMC4wNi4yNSkKCiogMS4pIFdvcmtpbmcgRGlyZWN0b3J5CiogMi4pIFNwb2xsaW5nIERhdGEgaW50byBvbmUgQ1NWIAoqIDMuKSBDcmVhdGluZyB0aGUgRGF0YWZyYW1lICJkbWwiCiogNC4pIFNldHRpbmcgYSBuZXcgd29ya2luZyBkaXJlY3RvcnkKKiA0LikgQ3JlYXRpbmcgZGF0ZVRpbWUgb2JqZWN0cyAKKiA1LikgQ3JlYXRpbmcgVHJlYXRtZW50IFZhcmlhYmxlcwoqIDYuKSBDcmVhdGluZyBOaWdodCBhbmQgRGF5IFBlcmlvZHMKKiA3LikgSW5zaXR1IGRhdGEKCgoKIzEuKSBXb3JraW5nIERpcmVjdG9yeQoKSW5zaWRlIHRoZSB3b3JraW5nIGRpcmVjdG9yeSAoZm9sZGVyKSBhcmUgQ1NWIGZpbGVzIGdlbmVyYXRlZCBhZnRlciB1c2luZyB0aGUgbW9hdHMgZ3JhcGggYXBwCltMaW5rIHRvIG1vYXRzLkdyYXBoLmFwcF0oaHR0cDovL2dpdGh1Yi5jb20vcG1jZWxoYW55L21vYXRzR3JhcGhzLmdpdCkKTW92aW5nIGF2ZXJhZ2Ugd2luZG93IChuT2JzKSBzZXQgdG8gNC4gVGhpcyByZXN1bHRzIGluIHRoZSBvYnNlcnZhdGlvbnMgYmVpbmcgYXZlcmFnZWQgaW50byBhIDI0c2Vjb25kIHRpbWVmcmFtZS4gQ1NWcyB3ZXJlIGNyZWF0ZWQgZm9yIGVhY2ggbW9hdHM6IE0wMSwgTTAyLCBNMDMsIE0wNCwgTTA1LCBNMDYsIE0wNywgTTA4LCBNMDksIE0xMCwgTTExLCBNMTIsIE0xMy4gRmlsZXMgYXJlIGFsc28gYXZhaWxhYmxlIG9uIHRoZSBPQSBHb29nbGUgZHJpdmUuIFtPQSBEcml2ZSBmb3IgTU9BVFMgZGF0YV0oaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4/aWQ9MTNhMmhrMWE5STlnUklnZjJYeWwxZFNZRGY1dm55WXZzKQoKCmBgYHtyfQojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiMjIDEuKSBTZXQgd29ya2luZyBkaXJlY3RvcnkKIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgpzZXR3ZCgiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfTU9BVHNfU01SMjAxOS9MYWJWaWV3TG9ncy5BbGxNT0FUUyIpCgpgYGAKCgoKIyAyLikgU3BvbGxpbmcgRGF0YSBpbnRvIG9uZSBDU1YgCkNvbWJpbmluZyBtdWx0aXBsZSBDU1YgZmlsZXMgaW50byAxIGRvY3VtZW50LiBPcmlnaW5hbCBpbnB1dCBmaWxlcyBmcm9tIGluZGl2aWR1YWwgTFZNIChsb2dpY2FsIHZvbHVtbmUgbWFuYWdlbWVudCkgZmlsZXMgb2ZmIGVhY2ggTU9BVHMuCgpgYGB7cn0KIyMgMi4xIENyZWF0ZSBhIGxpc3Qgb2YgZmlsZXMgCiMgQWxsIGZpbGVzIHRvIGJlIGpvaW5lZCBoYXZlIGV4dC4gImNzdiIgY2FuIHVzZSB0aGF0IHBhdHRlcm4gdG8gam9pbiAKZmlsZXMgPC0gbGlzdC5maWxlcyhwYXR0ZXJuID0gIi5jc3YiKQpwcmludChmaWxlcykKYGBgCgoKYGBge3J9CiMjIDIuMiBDcmVhdGUgYSB0ZW1wb3JhcnkgcGxhY2UgZm9yIGZpbGVzIAp0ZW1wIDwtIGxhcHBseShmaWxlcywgZnJlYWQsIHNlcD0gIiwiKQpwcmludCh0ZW1wKQpgYGAKCgpgYGB7cn0KIyMgMi4zIENyZWF0ZSBhIG5ldyB2ZWN0b3IgZm9yIE1vYXRzIGRhdGEgbG9ncyAKIyAiTTAxdGhydU0xM01vYXRzbG9nX2RhdGEiIHZpYSByYmluZApNMDF0aHJ1TTEzbW9hdHNsb2dfZGF0YSA8LSByYmluZGxpc3QodGVtcCkKcHJpbnQoTTAxdGhydU0xM21vYXRzbG9nX2RhdGEpCmBgYAoKCmBgYHtyfQojIyAyLjQgU2V0dGluZyBuZXcgd29ya2luZyBkaXJlY3RvcnkgZm9yIG91dHB1dCBmaWxlIG9yZ2FuaXphdGlvbgojRWZmb3J0IElTTyBhdm9pZGluZyBkdXBsaWNhdGVzCgpzZXR3ZCgiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfS1JMX1NNUjIwMTkvMDYuIE1PQVRTIHJlcGxpY2F0aW9uIHZlcmlmaWNhdGlvbiIpCmBgYAoKCmBgYHtyfQojIyAyLjUgV3JpdGUgdGhlIG5ldyBjc3YgZG9jdW1lbnQgfCAKIyAiTTAxdGhydU0xM21vYXRzbG9nIiBjYW4gdW5jb21tZW50IHRoaXMgY29tbWFuZCBsaW5lIGFzIG5lZWRlZAojd3JpdGUuY3N2KE0wMXRocnVNMTNtb2F0c2xvZ19kYXRhLCBmaWxlID0gIk0wMXRocnVNMTNtb2F0c2xvZy5jc3YiLCByb3cubmFtZXMgPSBGQUxTRSkKCmBgYAoKClNhdmVkIG9uIHRoZSBPQSBHb29nbGUgRHJpdmUKW00wMXRocnVNMTNtb2F0c2xvZy5jc3ZdKGh0dHBzOi8vZHJpdmUuZ29vZ2xlLmNvbS9vcGVuP2lkPTE1aUJYY3Q5YjRFaktEcTc1dktubTVOb2Jvd0J3SzNHLSkKCgpgYGB7cn0KIyMgMi42IER1cGxpY2F0aW9uIENoZWNrCiMjIGR1cGxpY2F0ZXMgb2JzZXJ2ZWQgaW4gImRtbCIgb24gMjAyMC4wNS4wNyAgCmR1cDIgPC0gZG1sW2R1cGxpY2F0ZWQoZG1sKSxdCiNpZiBubyBkdXBzLCBDZG1sMiBoYXMgc2FtZSBudW1iZXIgb2Ygcm93cyBhcyBDZG1sCmRtbDIgPC0gZG1sICU+JSBkaXN0aW5jdCgpIApgYGAKCgoKCgoKCgoKCgoKCgoKCgoKCgoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgpUcnkgZXhlY3V0aW5nIHRoaXMgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpSdW4qIGJ1dHRvbiB3aXRoaW4gdGhlIGNodW5rIG9yIGJ5IHBsYWNpbmcgeW91ciBjdXJzb3IgaW5zaWRlIGl0IGFuZCBwcmVzc2luZyAqQ21kK1NoaWZ0K0VudGVyKi4gCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIyMgQXV0aG9yOiBPQSBMYWIsIE5XRlNDCiMjIyBUaXRsZTogQXF1YXJpdW0gVGVtcGVyYXR1cmUgSW52ZXN0aWdhdGlvbjogVGVtcGVyYXR1cmUgU3ViU2VsZWN0U2NyaXB0LlIgCiMjIyBEYXRlOiBBcHJpbC1NYXkgMjAyMAoKIyBBcXVhcml1bSBUZW1wZXJhdHVyZSBJbnZlc3RpZ2F0aW9uClIgc2NyaXB0IGJlbG93IHdpbGwgc3Vic2VsZWN0IGFuZCBwbG90IHRlbXBlcmF0dXJlIGRhdGEgZm9yIE1PQVRzCk92ZXJhbGwgZ29hbCBpcyB0byBkZXRlcm1pbmUgaWYgTU9BVHMgKHBlciB0cmVhdG1lbnQpIGFyZSB0cnVlIHJlcGxpY2F0ZXMKCmBgYHtyfQojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiMjTGlicmFyaWVzCiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogCmxpYnJhcnkoc2hpbnkpCmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KHN0cmluZ3IpCmxpYnJhcnkocmVhZHhsKQpsaWJyYXJ5KHJlYWRyKQpsaWJyYXJ5KHRpZHlyKQpsaWJyYXJ5KGRhdGEudGFibGUpCmxpYnJhcnkobHVicmlkYXRlKQpsaWJyYXJ5KHZpb2xpbm1wbG90KQpsaWJyYXJ5KHZpb3Bsb3QpCmxpYnJhcnkoeWFycnIpCmxpYnJhcnkoZGF0YXBhc3RhKQpsaWJyYXJ5KHJlcHJleCkKbGlicmFyeShtaW5pVUkpCmxpYnJhcnkoZ3JpZEV4dHJhKQoKYGBgCgoKIyMgT3V0bGluZSAKKEN1cnJlbnQgYXMgb2YgMjAyMC4wNi4yNSkKCiogMS4pIFdvcmtpbmcgRGlyZWN0b3J5CiogMi4pIFNwb2xsaW5nIERhdGEgaW50byBvbmUgQ1NWIAoqIDMuKSBDcmVhdGluZyB0aGUgRGF0YWZyYW1lICJkbWwiCiogNC4pIFNldHRpbmcgYSBuZXcgd29ya2luZyBkaXJlY3RvcnkKKiA0LikgQ3JlYXRpbmcgZGF0ZVRpbWUgb2JqZWN0cyAKKiA1LikgQ3JlYXRpbmcgVHJlYXRtZW50IFZhcmlhYmxlcwoqIDYuKSBDcmVhdGluZyBOaWdodCBhbmQgRGF5IFBlcmlvZHMKKiA3LikgSW5zaXR1IGRhdGEKCgoKIzEuKSBXb3JraW5nIERpcmVjdG9yeQoKSW5zaWRlIHRoZSB3b3JraW5nIGRpcmVjdG9yeSAoZm9sZGVyKSBhcmUgQ1NWIGZpbGVzIGdlbmVyYXRlZCBhZnRlciB1c2luZyB0aGUgbW9hdHMgZ3JhcGggYXBwCltMaW5rIHRvIG1vYXRzLkdyYXBoLmFwcF0oaHR0cDovL2dpdGh1Yi5jb20vcG1jZWxoYW55L21vYXRzR3JhcGhzLmdpdCkKTW92aW5nIGF2ZXJhZ2Ugd2luZG93IChuT2JzKSBzZXQgdG8gNC4gVGhpcyByZXN1bHRzIGluIHRoZSBvYnNlcnZhdGlvbnMgYmVpbmcgYXZlcmFnZWQgaW50byBhIDI0c2Vjb25kIHRpbWVmcmFtZS4gQ1NWcyB3ZXJlIGNyZWF0ZWQgZm9yIGVhY2ggbW9hdHM6IE0wMSwgTTAyLCBNMDMsIE0wNCwgTTA1LCBNMDYsIE0wNywgTTA4LCBNMDksIE0xMCwgTTExLCBNMTIsIE0xMy4gRmlsZXMgYXJlIGFsc28gYXZhaWxhYmxlIG9uIHRoZSBPQSBHb29nbGUgZHJpdmUuIFtPQSBEcml2ZSBmb3IgTU9BVFMgZGF0YV0oaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4/aWQ9MTNhMmhrMWE5STlnUklnZjJYeWwxZFNZRGY1dm55WXZzKQoKCmBgYHtyfQojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiMjIDEuKSBTZXQgd29ya2luZyBkaXJlY3RvcnkKIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCmtuaXRyOjpvcHRzX2tuaXQkc2V0KHJvb3QuZGlyID0gIi9Vc2Vycy9rYXRoZXJpbmVyb3ZpbnNraS9HSVQvTldGU0MuTVVLX01PQVRzX1NNUjIwMTkvTGFiVmlld0xvZ3MuQWxsTU9BVFMiKQoKI3NldHdkKCIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19NT0FUc19TTVIyMDE5L0xhYlZpZXdMb2dzLkFsbE1PQVRTIikKCmBgYAoKCgojIDIuKSBTcG9sbGluZyBEYXRhIGludG8gb25lIENTViAKQ29tYmluaW5nIG11bHRpcGxlIENTViBmaWxlcyBpbnRvIDEgZG9jdW1lbnQuIE9yaWdpbmFsIGlucHV0IGZpbGVzIGZyb20gaW5kaXZpZHVhbCBMVk0gKGxvZ2ljYWwgdm9sdW1uZSBtYW5hZ2VtZW50KSBmaWxlcyBvZmYgZWFjaCBNT0FUcy4KMi4xIENyZWF0ZSBhIGxpc3Qgb2YgZmlsZXMKYGBge3J9CiMjIDIuMSBDcmVhdGUgYSBsaXN0IG9mIGZpbGVzIAojIEFsbCBmaWxlcyB0byBiZSBqb2luZWQgaGF2ZSBleHQuICJjc3YiIGNhbiB1c2UgdGhhdCBwYXR0ZXJuIHRvIGpvaW4gCmZpbGVzIDwtIGxpc3QuZmlsZXMocGF0dGVybiA9ICIuY3N2IikKcHJpbnQoZmlsZXMpCmBgYAoKMi4yIENyZWF0ZSBhIHRlbXBvcmFyeSBwbGFjZSBmb3IgZmlsZXMKYGBge3J9CiMjIDIuMiBDcmVhdGUgYSB0ZW1wb3JhcnkgcGxhY2UgZm9yIGZpbGVzIAp0ZW1wIDwtIGxhcHBseShmaWxlcywgZnJlYWQsIHNlcD0gIiwiKQpwcmludCh0ZW1wKQpgYGAKCjIuMyBDcmVhdGUgYSBuZXcgdmVjdG9yIGZvciBNb2F0cyBkYXRhIGxvZ3MKYGBge3J9CiMjIDIuMyBDcmVhdGUgYSBuZXcgdmVjdG9yIGZvciBNb2F0cyBkYXRhIGxvZ3MgCiMgIk0wMXRocnVNMTNNb2F0c2xvZ19kYXRhIiB2aWEgcmJpbmQKTTAxdGhydU0xM21vYXRzbG9nX2RhdGEgPC0gcmJpbmRsaXN0KHRlbXApCnByaW50KE0wMXRocnVNMTNtb2F0c2xvZ19kYXRhKQpgYGAKCjIuNCBTZXR0aW5nIG5ldyB3b3JraW5nIGRpcmVjdG9yeQpgYGB7cn0KIyMgMi40IFNldHRpbmcgbmV3IHdvcmtpbmcgZGlyZWN0b3J5IGZvciBvdXRwdXQgZmlsZSBvcmdhbml6YXRpb24KI0VmZm9ydCBJU08gYXZvaWRpbmcgZHVwbGljYXRlcwoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQprbml0cjo6b3B0c19rbml0JHNldChyb290LmRpciA9ICIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19LUkxfU01SMjAxOS8wNi4gTU9BVFMgcmVwbGljYXRpb24gdmVyaWZpY2F0aW9uIikKYGBgCgoyLjUgV3JpdGUgdGhlIG5ldyBjc3YgZG9jdW1lbnQKYGBge3J9CiMjIDIuNSBXcml0ZSB0aGUgbmV3IGNzdiBkb2N1bWVudCB8IAojICJNMDF0aHJ1TTEzbW9hdHNsb2ciIGNhbiB1bmNvbW1lbnQgdGhpcyBjb21tYW5kIGxpbmUgYXMgbmVlZGVkCiN3cml0ZS5jc3YoTTAxdGhydU0xM21vYXRzbG9nX2RhdGEsIGZpbGUgPSAiTTAxdGhydU0xM21vYXRzbG9nLmNzdiIsIHJvdy5uYW1lcyA9IEZBTFNFKQoKYGBgCgoKU2F2ZWQgb24gdGhlIE9BIEdvb2dsZSBEcml2ZQpbTTAxdGhydU0xM21vYXRzbG9nLmNzdl0oaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4/aWQ9MTVpQlhjdDliNEVqS0RxNzV2S25tNU5vYm93QndLM0ctKQoKMi42IER1cGxpY2F0aW9uIENoZWNrCmBgYHtyfQojIyAyLjYgRHVwbGljYXRpb24gQ2hlY2sKIyMgZHVwbGljYXRlcyBvYnNlcnZlZCBpbiAiZG1sIiBvbiAyMDIwLjA1LjA3ICAKZHVwMiA8LSBkbWxbZHVwbGljYXRlZChkbWwpLF0KI2lmIG5vIGR1cHMsIENkbWwyIGhhcyBzYW1lIG51bWJlciBvZiByb3dzIGFzIENkbWwKZG1sMiA8LSBkbWwgJT4lIGRpc3RpbmN0KCkgCmBgYAoKCgojIDMuKSBDcmVhdGluZyB0aGUgRGF0YWZyYW1lICJkbWwiIAoKMy4xIFJlYWRpbmcgdGhlIENTVgpgYGB7cn0KIyMgMy4xIFJlYWRpbmcgdGhlIENTViB8ICAKIyMgZW5zdXJpbmcgY29sdW1uIG5hbWVzIGFuZCB0eXBlcwojIyBEYXRhIE1vYXRzIExvZyA9IGRtbApkbWwgPC0gcmVhZC5jc3YoZmlsZSA9ICJNMDF0aHJ1TTEzbW9hdHNsb2cuY3N2Iiwgc3RyaW5nc0FzRmFjdG9ycyA9IEZBTFNFKQpkaW0oZG1sKQpgYGAKCjMuMWEgU3ViIHNhbXBsaW5nIGRhdGFmcmFtZSAiZG1sIgpgYGB7cn0KIyMgMy4xYSBTdWIgc2FtcGxpbmcgZGF0YWZyYW1lICJkbWwiICAKIyMgY3JlYXRpbmcgYSBzdWIgc2FtcGxlIG9mIHRoZSBkYXRhIG1vYXRzIGxvZyBkbWwgZGF0YWZyYW1lIHRvIGFsbG93IGZvciBxdWljayBncmFwaHMgCiNzdWJzYW1wbGUgZXZlcnkgMTd0aCByb3cgKGJlY2F1c2UgcHJpbWUgbnVtYmVycyBhcmUgaW5kZWVkIGNvb2wpCmRtbCA8LSBkbWwgJT4lIGFycmFuZ2UobW9hdHMsIGRhdGVUaW1lKSAlPiUgZmlsdGVyKHJvd19udW1iZXIoKSAlJSAxNyA9PSAwKQoKd3JpdGUuY3N2KGRtbCwgZmlsZSA9ICJNMDF0aHJ1TTEzbW9hdHNsb2dfbjE3LmNzdiIsIHJvdy5uYW1lcyA9IEZBTFNFKQpgYGAKCjMuMiBDaGVja2luZyB2YXJpYWJsZXMKYGBge3J9CiMjIDMuMiBDaGVja2luZyB2YXJpYWJsZXMgIAojIyBMb29raW5nIHRvIGVuc3VyZSB0aGUgZGlmZmVyZW50IHZhcmlhYmxlcyBhcmUgdHJlYXRlZCBhcyB0aGUgY29ycmVjdCB2YXJpYWJsZSB0eXBlCiMjIENoZWNraW5nIHRoZSBuYW1lcyBpbiB0aGUgZGF0YWZyYW1lCm5hbWVzKGRtbCkKIyMgQ2hlY2tpbmcgdmFyaWFibGUgdHlwZS9jbGFzcyAKY2xhc3MoZG1sJG1vYXRzKQpmYWN0b3IobW9hdHMpCmBgYAoKCjMuMyBDaGFuZ2luZyB2YXJpYWJsZXMKYGBge3J9CiMjIDMuMyBDaGFuZ2luZyB2YXJpYWJsZXMgfCAKIyMgQ2hhbmdpbmcgTU9BVHMgdG8gRmFjdG9ycyBmb3IgdGhlIDEzIGRpZmZlcmVudCBNT0FUcy0gdGhlc2Ugd2lsbCBiZSB0aGUgZGlzY3JldGUgdW5pdHMgZm9yIGZvbGxvdyBhbmFseXNpcwpkbWwkbW9hdHMgPC0gZmFjdG9yKGRtbCRtb2F0cykKIyBDaGVja2luZyB0aGUgbmFtZXMgb2YgdGhlIGRpZmZlcmVudCBsZXZlbHMKbGV2ZWxzKGRtbCRtb2F0cykKIyNjaGVja2luZyB0aGUgZGF0YXNldCwgZGltZW5zaW9ucwpkaW0oZG1sKQpgYGAKCgojNC4pIENyZWF0aW5nIGRhdGVUaW1lIG9iamVjdHMKCjQuMCBlc3RhYmxpc2ggdGhlIGRhdGVUaW1lIG9iamVjdHMKYGBge3J9CiMgNC4wIGVzdGFibGlzaCB0aGUgZGF0ZSB0aW1lIG9iamVjdCBvZiB0aGUgQ1NWIHwKZG1sJGRhdGVUaW1lIDwtIGFzLlBPU0lYY3QoZG1sJGRhdGVUaW1lLCBmb3JtYXQ9IiVZLSVtLSVkICVIOiVNOiVPUyIpClJlZmVyZW5jZVRpbWUgPC0gYXMuUE9TSVhjdCgiMjAxOS0wOS0yMCAyMzo1OTowMCIpCmNsYXNzKFJlZmVyZW5jZVRpbWUpCgojIFFBIGNoZWNrCmRpbShkbWwpCmBgYAoKCiMgNS4pIENyZWF0aW5nIFRyZWF0bWVudCBWYXJpYWJsZXMgIAoKIDUuMSBJZGVudGlmeWluZyBUcmVhdG1lbnRzIGJ5IE1PQVRTCmBgYHtyfQojIyA1LjEgSWRlbnRpZnlpbmcgdHJlYXRtZW50cyBieSBtb2F0cyAKIyMgZXN0YWJsaXNoaW5nIHRyZWF0bWVudHMKZG1sJHRyZWF0bWVudCA8LSAiIgpkbWwkdHJlYXRtZW50W2RtbCRtb2F0cyA9PSAiTTA3IiB8IGRtbCRtb2F0cz09ICJNMTAiIHwgZG1sJG1vYXRzPT0gIk0xMiJdIDwtICJjdXJyZW50IgpkbWwkdHJlYXRtZW50W2RtbCRtb2F0cyA9PSAiTTAxInwgZG1sJG1vYXRzPT0gIk0wNiJdIDwtICJoaWdodGVtcGVyYXR1cmUiCmRtbCR0cmVhdG1lbnRbZG1sJG1vYXRzID09ICJNMDIifCBkbWwkbW9hdHM9PSAiTTA4IiB8IGRtbCRtb2F0cz09ICJNMTMiXSA8LSAiYWxsY2hhbmdlIgpkbWwkdHJlYXRtZW50W2RtbCRtb2F0cyA9PSAiTTAzInwgZG1sJG1vYXRzID09ICJNMDQiIHwgZG1sJG1vYXRzID09ICJNMDUiIHwgZG1sJG1vYXRzPT0gIk0xMSJdIDwtICJicm9rZW5fYW5kX2FtYmllbnRicm9rZW4iCiN2ZXJpZnkgdGhhdCB0aGlzIG5ldyBjb2x1bW4gaGFzIGJlZW4gY3JlYXRlZApuYW1lcyhkbWwpCiNyZXN1bHRzIHNob3VsZCBpbmNsdWRlOgojWzFdICJtb2F0cyIgICAgICAgICJkYXRlVGltZSIgICAgICJhVGVtcGVyYXR1cmUiICJzVGVtcGVyYXR1cmUiICJwSCIgICAgICAgICAgCiNbNl0gIkRPIiAgICAgICAgICAgInNhbGluaXR5IiAgICAgInRyZWF0bWVudCIgIAoKIyBRQSBjaGVjawpkaW0oZG1sKQpgYGAKCgo1LjIgU2ltcGxlIGdncGxvdCB0byBzaG93IHRoZSBkaWZmZXJlbnQgTU9BVHMgd2l0aG91dCBwb2xpc2gKYGBge3J9CnBsb3Q1LjIgPC0gZ2dwbG90KGRtbCwgYWVzKHg9ZGF0ZVRpbWUsIHk9YVRlbXBlcmF0dXJlKSkKICAgICAgICAgICAgCnBsb3Q1LjIKYGBgCgoKCgoKCgpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiAKClRyeSBleGVjdXRpbmcgdGhpcyBjaHVuayBieSBjbGlja2luZyB0aGUgKlJ1biogYnV0dG9uIHdpdGhpbiB0aGUgY2h1bmsgb3IgYnkgcGxhY2luZyB5b3VyIGN1cnNvciBpbnNpZGUgaXQgYW5kIHByZXNzaW5nICpDbWQrU2hpZnQrRW50ZXIqLiAKCg==</div>
 
 
 
