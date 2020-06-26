@@ -107,7 +107,7 @@ setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 ## 2.5 Write the new csv document | 
-# "M01thruM13moatslog"
+# # "M01thruM13moatslog"
 write.csv(M01thruM13moatslog_data, file = "M01thruM13moatslog.csv", row.names = FALSE)
 
 #Saved on the OA Google Drive
@@ -134,7 +134,7 @@ dml2 <- dml %>% distinct()
 ## 3.1 Reading the CSV |  
 ## ensuring column names and types
 ## Data Moats Log = dml
-dml <- read.csv(file = "M01thruM13moatslog.csv", stringsAsFactors = FALSE)
+dml <- read.csv( file = "M01thruM13moatslog.csv", stringsAsFactors = FALSE)
 dim(dml)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 ## 3.1a Sub sampling dataframe "dml"  
@@ -152,6 +152,9 @@ names(dml)
 ## Checking variable type/class 
 class(dml$moats)
 factor(moats)
+
+dml$moats <- as.factor(dml$moats)
+
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
@@ -202,6 +205,13 @@ names(dml)
 
 # QA check
 dim(dml)
+
+
+ggplot(dml, aes(x=dateTime, y=aTemperature)) + 
+  geom_point(aes(colour=moats, point=)) + 
+  ggtitle("All MOATs, All Treatment aTemperature Time Series, No Filters") 
+
+
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 

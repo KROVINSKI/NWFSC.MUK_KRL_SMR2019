@@ -45,7 +45,15 @@ library(gridExtra)
 * 5.) Creating Treatment Variables
 * 6.) Creating Night and Day Periods
 * 7.) Insitu data
-
+* 8.) Cleaning up dml "Cdml"
+* 9.) Framing filters for Cdml
+* 10.) Temperature "Jumps"
+* 11.) Calculating averages by treatment & day/night
+* 12.) Summary & Group by Cdml
+* 13.) Plots Boxplots & timeseries
+* 14.) Duration between conditions- Histogram & Cummulative Distribtuion Plot  section
+* 15.) aTemp bands investig.
+* 16.) Share-able tibbles & reprex readiness  
 
 
 #1.) Working Directory
@@ -114,15 +122,6 @@ knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2
 Saved on the OA Google Drive
 [M01thruM13moatslog.csv](https://drive.google.com/open?id=15iBXct9b4EjKDq75vKnm5NobowBwK3G-)
 
-2.6 Duplication Check
-```{r}
-## 2.6 Duplication Check
-## duplicates observed in "dml" on 2020.05.07  
-dup2 <- dml[duplicated(dml),]
-#if no dups, Cdml2 has same number of rows as Cdml
-dml2 <- dml %>% distinct() 
-```
-
 
 
 # 3.) Creating the Dataframe "dml" 
@@ -132,14 +131,28 @@ dml2 <- dml %>% distinct()
 ## 3.1 Reading the CSV |  
 ## ensuring column names and types
 ## Data Moats Log = dml
-dml <- read.csv(file = "M01thruM13moatslog.csv", stringsAsFactors = FALSE)
+dml <- read.csv( file = "M01thruM13moatslog.csv", stringsAsFactors = FALSE)
 dim(dml)
 ```
 
-3.1a Sub sampling dataframe "dml"
+
+3.1a Duplication Check
 ```{r}
-## 3.1a Sub sampling dataframe "dml"  
+## 3.1a Duplication Check
+## duplicates observed in "dml" on 2020.05.07  
+dup2 <- dml[duplicated(dml),]
+#if no dups, Cdml2 has same number of rows as Cdml
+dml2 <- dml %>% distinct() 
+```
+
+
+
+3.1b Sub sampling dataframe "dml"
+```{r}
+## 3.1b Sub sampling dataframe "dml"  
 ## creating a sub sample of the data moats log dml dataframe to allow for quick graphs 
+
+
 #subsample every 17th row (because prime numbers are indeed cool)
 dml <- dml %>% arrange(moats, dateTime) %>% filter(row_number() %% 17 == 0)
 
@@ -154,8 +167,10 @@ write.csv(dml, file = "M01thruM13moatslog_n17.csv", row.names = FALSE)
 names(dml)
 ## Checking variable type/class 
 class(dml$moats)
-factor(moats)
+dml$moats <- as.factor(dml$moats)
 ```
+
+
 
 
 3.3 Changing variables
@@ -208,10 +223,177 @@ dim(dml)
 
 5.2 Simple ggplot to show the different MOATs without polish
 ```{r}
-plot5.2 <- ggplot(dml, aes(x=dateTime, y=aTemperature))
-            
+
+plot5.2 <- ggplot(dml, aes(x=dateTime, y=aTemperature)) + 
+  geom_point(aes(colour=moats, point=)) + 
+  ggtitle("All MOATs, All Treatment aTemperature Time Series") 
+
 plot5.2
+
 ```
+
+
+![Plot 5.2 Figure1](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/Rplot.timeseries.aTemp.plot5.2.png)
+
+# 6.) Creating Night and Day Periods
+
+6.1 Narrative (Overall)
+Creating a day and night variables 
+Day and night periods exclude the acclimation period by their definition.
+Day and night changed at about ~ 1230 on 05OCT19 
+Treatment start date considered to begin Monday 23SEP19 at 1200pm
+
+Krill Night Started 1200 (~1230*) and ends 2100
+Krill Days Started 2101 and ends 1159 (~1229*) 
+
+#### Interval 1 start 1200 23SEP19, end 1229 05OCT19
+#### Interval 2 start 1230 05OCT19, end 2100 30OCT19
+
+# Concept Diagram graphic
+![Day/Night Definitions Concept Diagram Figure2](/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/02a. Scripts.conceptdiagrams/Day_Night Period Loop diagram.png)
+
+
+6.2 New Column, New Variable
+```{r}
+## 6.2 New Column, New Variable in dml
+#creating a new column, new variable "period"
+dml$period <- ""
+```
+
+
+6.3 Disassembling dateTime to create 2 new variables
+```{r}
+## 6.3 Disassembling dateTime to create 2 new variables
+# Create new split date and time columns
+dml$ObservationDate <- as.Date(dml$dateTime)
+dml$ObservationTime <- format(as.POSIXct(dml$dateTime) ,format = "%H:%M:%S")
+```
+
+
+### 6.4 Narrative about Intervals 
+
+### Interval 1
+  * Interval Date Start  "2019-09-23"
+  * Interval Date End    "2019-10-05"
+  * Day Start Time       "21:01:00"
+  * Day End Time         "12:01:00"
+  * Night Start Time     "12:00:00"
+  * Night End Time       "21:00:00"
+  * Other Time
+  
+### Interval 2
+
+  * Interval Date Start  "2019-10-05"
+  * Interval Date End    "2019-10-30"
+  * Day Start Time       "21:01:00"
+  * Day End Time         "12:29:00"
+  * Night Start Time     "12:30:00"
+  * Night End Time       "21:00:00"
+  * Other Time
+
+
+
+6.5 Day / Night Assignments 
+```{r}
+## 6.5 Day / Night Assignments 
+# Using the "case_when" function in the tidyverse in the place of a loop
+
+dml <- dml %>% mutate(period=case_when(
+                          (ObservationDate >= "2019-09-23") 
+                          & (ObservationDate <="2019-10-05") 
+                          & (ObservationTime >= "12:00:00") 
+                          & (ObservationTime <="21:00:00") ~"night",
+                          
+                          (ObservationDate >= "2019-10-05")
+                          & (ObservationDate <= "2019-10-30")
+                          & (ObservationTime >= "12:30:00") 
+                          & (ObservationTime <="21:00:00") ~"night",
+                          
+                          (ObservationDate >= "2019-09-23") 
+                          & (ObservationDate <="2019-10-05")
+                          & ((ObservationTime >= "21:01:00") 
+                          | (ObservationTime <="11:59:00")) ~"day",
+                          
+                          (ObservationDate >= "2019-10-05")
+                          & (ObservationDate <= "2019-10-30")
+                          & ((ObservationTime >= "21:01:00")
+                          | (ObservationTime <= "12:29:00")) ~"day",
+                          TRUE ~"other"
+                        )
+
+                    ) 
+```
+
+
+# 7.) Insitu data  
+
+
+7.0 In-situ data files
+Two files represent manual checks of aquarium salinity.
+Extracted from this are point measurements of aquarim temperature
+
+```{r}
+## 7.1 Read in files
+# carefule about navigating to the second working directory
+read_csv()
+
+d.insitu <- read.csv(file = "KRL19_insitu_sample_Day.csv", stringsAsFactors = FALSE)
+n.insitu <- read.csv(file = "KRL19_insitu_sample_Night.csv", stringsAsFactors = FALSE)
+
+```
+
+
+
+
+# 8.) Cleaning up dml  
+
+Creating a new dataframe cleaned with the various filters below
+checking on the variables inside dml
+Cleaned-Up dml = Cdml
+
+
+```{r}
+## 8.1 Noting names of the different variables in dml
+names(dml)
+```
+
+
+# 8.2 Narrative on desired changes to create Cdml
+
+8.2 Narrative on Cdml
+Temperatures below 5C and above 30C are thought to be less than probable 
+```{r}
+# Changes to be made the dataframe by variable
+#[1] "moats" "M03", "M04", "M05", "M09", "M11" to be filtered out- all these 
+#                                           MOATs were dropped from the study
+#[2] "dateTime" - no changes
+#[3] "aTemperature" - no changes 
+#[4] "sTemperature" - no changes    
+#[5] "pH" - no changes
+#[6] "DO"- no changes
+#[7] "salinity" - no changes 
+#[8] "treatment" - dropping the listed MOATs will eliminate the 
+#                           "broken_and_ambientbroken" treatment
+#[9] "period" - filtering out "other"
+#[10] "ObservationDate" - no changes
+#[11] "ObservationTime" - no changes, note that each observation could be 
+#                                                 spaced 6.8minutes apart
+          
+Cdml <- dml %>% filter(!moats %in% c("M03", "M04", "M05", "M11")) %>%
+  filter(aTemperature>= 5 & aTemperature<=30) %>%
+  filter(treatment %in% c("current", "allchange", "hightemperature")) %>%
+  filter(period != "other")
+
+```
+
+
+
+
+
+
+
+
+
 
 
 
