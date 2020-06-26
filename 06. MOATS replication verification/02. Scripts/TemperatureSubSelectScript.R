@@ -415,6 +415,29 @@ filteredFrame$treatment <- factor(filteredFrame$treatment)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 
+ggplot(subset(Cdml[Cdml$treatment == "allchange", ])) + 
+  aes(x=dateTime, y=aTemperature) + 
+  geom_point(aes(colour=moats, point=)) +
+  ggtitle("All Change Treatment Timeseries")
+
+simpleplot_allchg_night
+
+# ggplot(Cdml(Cdml$treatment == "all change"),
+#        aes(x=dateTime, y=aTemperature)) +
+#        geom_point(aes(colour=moats, point=)) +
+#       ggtitle("All Change Treatment Timeseries")
+
+
+
+ggplot(subset(Cdml[Cdml$treatment == "allchange", ]), 
+                                  aes(x=dateTime, y=aTemperature, 
+                                      colour=treatment))
+
+
+
+
+
+
 #*********************************
 ## 10.) Temperature Jumps
 #*********************************
