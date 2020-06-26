@@ -335,14 +335,16 @@ Extracted from this are point measurements of aquarim temperature
 ```{r}
 ## 7.1 Read in files
 # carefule about navigating to the second working directory
-read_csv()
+
+
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/01. Raw Data/InSituSampling")
+
 
 d.insitu <- read.csv(file = "KRL19_insitu_sample_Day.csv", stringsAsFactors = FALSE)
 n.insitu <- read.csv(file = "KRL19_insitu_sample_Night.csv", stringsAsFactors = FALSE)
 
 ```
-
-
 
 
 # 8.) Cleaning up dml  
@@ -386,12 +388,53 @@ Cdml <- dml %>% filter(!moats %in% c("M03", "M04", "M05", "M11")) %>%
 
 ```
 
+# 8.3 Option to write a CSV of Cdml parameters
+droping the levels of the moats 
+```{r}
+levels(Cdml$moats)
+Cdml$moats <- droplevels(Cdml$moats)
+```
 
 
 
+# 9.) Framing filters for Cdml
+
+9.0 cleaning names of levels, factors
+```{r}
+## 9.0 Removing the names of moats & treatments removed from Cdml 
+# Removal should allow for cleaner graphs 
+# Determined moats lab never got under 5C and was never over 30C 
+ 
+filteredFrame = filter(Cdml,
+  !moats %in% c('M03', "M04", "M05", "M11") & 
+  (aTemperature>= 5 & aTemperature<=30) &
+  treatment %in% c("current", "allchange", "hightemperature") &
+  period != "other")
+```
+
+Without dropping levels and factors not named label may still crowd plots
+9.1 Dropping names and factors
+```{r}
+## 9.1 Dropping levels and factors
+filteredFrame$moats <- droplevels(filteredFrame$moats)
+filteredFrame$treatment <- factor(filteredFrame$treatment)
+```
+
+9.2 Broad-gague test of plots by treatment
+```{r}
+simpleplot_allchg <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ], 
+                                          period %in% ("day")), 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment)) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_hline(yintercept = avg_allchgDayaTemp) +
+                                          geom_boxplot() +
+                                          ggtitle("All Change Day Period")
 
 
-
+p_allchg_d_yinter
+```
 
 
 
