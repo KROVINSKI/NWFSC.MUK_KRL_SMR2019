@@ -1763,27 +1763,149 @@ summary {
 <p>R script below will subselect and plot temperature data for MOATs Overall goal is to determine if MOATs (per treatment) are true replicates</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuIyNMaWJyYXJpZXNcbiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogXG5saWJyYXJ5KHNoaW55KVxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHN0cmluZ3IpXG5saWJyYXJ5KHJlYWR4bClcbmxpYnJhcnkocmVhZHIpXG5saWJyYXJ5KHRpZHlyKVxubGlicmFyeShkYXRhLnRhYmxlKVxubGlicmFyeShsdWJyaWRhdGUpXG5saWJyYXJ5KHZpb2xpbm1wbG90KVxubGlicmFyeSh2aW9wbG90KVxubGlicmFyeSh5YXJycilcbmxpYnJhcnkoZGF0YXBhc3RhKVxubGlicmFyeShyZXByZXgpXG5saWJyYXJ5KG1pbmlVSSlcbmxpYnJhcnkoZ3JpZEV4dHJhKVxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuIyNMaWJyYXJpZXNcbiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogXG5saWJyYXJ5KHNoaW55KVxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
 <pre class="r"><code>#*********************************
 ##Libraries
 #********************************* 
 library(shiny)
-library(tidyverse)
-library(stringr)
+library(tidyverse)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2RzIG92ZXJ3cml0dGVuIGJ5ICdkYnBseXInOlxuICBtZXRob2QgICAgICAgICBmcm9tXG4gIHByaW50LnRibF9sYXp5ICAgICBcbiAgcHJpbnQudGJsX3NxbCAgICAgIFxuXHUwMDFiWzMwbeKUgOKUgCBcdTAwMWJbMW1BdHRhY2hpbmcgcGFja2FnZXNcdTAwMWJbMjJtIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2UgMS4zLjAg4pSA4pSAXHUwMDFiWzM5bVxuXHUwMDFiWzMwbVx1MDAxYlszMm3inJNcdTAwMWJbMzBtIFx1MDAxYlszNG1nZ3Bsb3QyXHUwMDFiWzMwbSAzLjMuMCAgICAgXHUwMDFiWzMybeKck1x1MDAxYlszMG0gXHUwMDFiWzM0bXB1cnJyICBcdTAwMWJbMzBtIDAuMy40XG5cdTAwMWJbMzJt4pyTXHUwMDFiWzMwbSBcdTAwMWJbMzRtdGliYmxlIFx1MDAxYlszMG0gMy4wLjEgICAgIFx1MDAxYlszMm3inJNcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5ciAgXHUwMDFiWzMwbSAwLjguNVxuXHUwMDFiWzMybeKck1x1MDAxYlszMG0gXHUwMDFiWzM0bXRpZHlyICBcdTAwMWJbMzBtIDEuMC4zICAgICBcdTAwMWJbMzJt4pyTXHUwMDFiWzMwbSBcdTAwMWJbMzRtc3RyaW5nclx1MDAxYlszMG0gMS40LjBcblx1MDAxYlszMm3inJNcdTAwMWJbMzBtIFx1MDAxYlszNG1yZWFkciAgXHUwMDFiWzMwbSAxLjMuMSAgICAgXHUwMDFiWzMybeKck1x1MDAxYlszMG0gXHUwMDFiWzM0bWZvcmNhdHNcdTAwMWJbMzBtIDAuNS4wXHUwMDFiWzM5bVxucGFja2FnZSDigJh0aWJibGXigJkgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiAzLjYuMnBhY2thZ2Ug4oCYdGlkeXLigJkgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiAzLjYuMnBhY2thZ2Ug4oCYcHVycnLigJkgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiAzLjYuMlx1MDAxYlszMG3ilIDilIAgXHUwMDFiWzFtQ29uZmxpY3RzXHUwMDFiWzIybSDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxuXHUwMDFiWzMxbXhcdTAwMWJbMzBtIFx1MDAxYlszNG1kcGx5clx1MDAxYlszMG06Olx1MDAxYlszMm1maWx0ZXIoKVx1MDAxYlszMG0gbWFza3MgXHUwMDFiWzM0bXN0YXRzXHUwMDFiWzMwbTo6ZmlsdGVyKClcblx1MDAxYlszMW14XHUwMDFiWzMwbSBcdTAwMWJbMzRtZHBseXJcdTAwMWJbMzBtOjpcdTAwMWJbMzJtbGFnKClcdTAwMWJbMzBtICAgIG1hc2tzIFx1MDAxYlszNG1zdGF0c1x1MDAxYlszMG06OmxhZygpXHUwMDFiWzM5bVxuIn0= -->
+<pre><code>Registered S3 methods overwritten by 'dbplyr':
+  method         from
+  print.tbl_lazy     
+  print.tbl_sql      
+[30m── [1mAttaching packages[22m ──────────────────────────────────────── tidyverse 1.3.0 ──[39m
+[30m[32m✓[30m [34mggplot2[30m 3.3.0     [32m✓[30m [34mpurrr  [30m 0.3.4
+[32m✓[30m [34mtibble [30m 3.0.1     [32m✓[30m [34mdplyr  [30m 0.8.5
+[32m✓[30m [34mtidyr  [30m 1.0.3     [32m✓[30m [34mstringr[30m 1.4.0
+[32m✓[30m [34mreadr  [30m 1.3.1     [32m✓[30m [34mforcats[30m 0.5.0[39m
+package ‘tibble’ was built under R version 3.6.2package ‘tidyr’ was built under R version 3.6.2package ‘purrr’ was built under R version 3.6.2[30m── [1mConflicts[22m ─────────────────────────────────────────── tidyverse_conflicts() ──
+[31mx[30m [34mdplyr[30m::[32mfilter()[30m masks [34mstats[30m::filter()
+[31mx[30m [34mdplyr[30m::[32mlag()[30m    masks [34mstats[30m::lag()[39m</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzdHJpbmdyKVxubGlicmFyeShyZWFkeGwpXG5saWJyYXJ5KHJlYWRyKVxubGlicmFyeSh0aWR5cilcbmxpYnJhcnkoZGF0YS50YWJsZSlcbmBgYCJ9 -->
+<pre class="r"><code>library(stringr)
 library(readxl)
 library(readr)
 library(tidyr)
-library(data.table)
-library(lubridate)
-library(violinmplot)
-library(vioplot)
-library(yarrr)
-library(datapasta)
+library(data.table)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG5kYXRhLnRhYmxlIDEuMTIuOCB1c2luZyAyIHRocmVhZHMgKHNlZSA/Z2V0RFR0aHJlYWRzKS4gIExhdGVzdCBuZXdzOiByLWRhdGF0YWJsZS5jb21cblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGRhdGEudGFibGXigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmRwbHly4oCZOlxuXG4gICAgYmV0d2VlbiwgZmlyc3QsIGxhc3RcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpwdXJycuKAmTpcblxuICAgIHRyYW5zcG9zZVxuIn0= -->
+<pre><code>Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+data.table 1.12.8 using 2 threads (see ?getDTthreads).  Latest news: r-datatable.com
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+
+The following object is masked from ‘package:purrr’:
+
+    transpose</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShsdWJyaWRhdGUpXG5gYGAifQ== -->
+<pre class="r"><code>library(lubridate)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicGFja2FnZSDigJhsdWJyaWRhdGXigJkgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiAzLjYuMlxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGx1YnJpZGF0ZeKAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdHMgYXJlIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6ZGF0YS50YWJsZeKAmTpcblxuICAgIGhvdXIsIGlzb3dlZWssIG1kYXksIG1pbnV0ZSwgbW9udGgsIHF1YXJ0ZXIsIHNlY29uZCwgd2RheSwgd2VlayxcbiAgICB5ZGF5LCB5ZWFyXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkcGx5cuKAmTpcblxuICAgIGludGVyc2VjdCwgc2V0ZGlmZiwgdW5pb25cblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmJhc2XigJk6XG5cbiAgICBkYXRlLCBpbnRlcnNlY3QsIHNldGRpZmYsIHVuaW9uXG4ifQ== -->
+<pre><code>package ‘lubridate’ was built under R version 3.6.2
+Attaching package: ‘lubridate’
+
+The following objects are masked from ‘package:data.table’:
+
+    hour, isoweek, mday, minute, month, quarter, second, wday, week,
+    yday, year
+
+The following objects are masked from ‘package:dplyr’:
+
+    intersect, setdiff, union
+
+The following objects are masked from ‘package:base’:
+
+    date, intersect, setdiff, union</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh2aW9saW5tcGxvdClcbmBgYCJ9 -->
+<pre class="r"><code>library(violinmplot)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBsYXR0aWNlXG5wYWNrYWdlIOKAmGxhdHRpY2XigJkgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiAzLjYuMlxuIn0= -->
+<pre><code>Loading required package: lattice
+package ‘lattice’ was built under R version 3.6.2</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh2aW9wbG90KVxuYGBgIn0= -->
+<pre class="r"><code>library(vioplot)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBzbVxuUGFja2FnZSAnc20nLCB2ZXJzaW9uIDIuMi01LjY6IHR5cGUgaGVscChzbSkgZm9yIHN1bW1hcnkgaW5mb3JtYXRpb25cbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogem9vXG5wYWNrYWdlIOKAmHpvb+KAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDMuNi4yXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYem9v4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTpiYXNl4oCZOlxuXG4gICAgYXMuRGF0ZSwgYXMuRGF0ZS5udW1lcmljXG4ifQ== -->
+<pre><code>Loading required package: sm
+Package 'sm', version 2.2-5.6: type help(sm) for summary information
+Loading required package: zoo
+package ‘zoo’ was built under R version 3.6.2
+Attaching package: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh5YXJycilcbmBgYCJ9 -->
+<pre class="r"><code>library(yarrr)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBqcGVnXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IEJheWVzRmFjdG9yXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGNvZGFcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogTWF0cml4XG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhNYXRyaXjigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnRpZHly4oCZOlxuXG4gICAgZXhwYW5kLCBwYWNrLCB1bnBhY2tcblxuKioqKioqKioqKioqXG5XZWxjb21lIHRvIEJheWVzRmFjdG9yIDAuOS4xMi00LjIuIElmIHlvdSBoYXZlIHF1ZXN0aW9ucywgcGxlYXNlIGNvbnRhY3QgUmljaGFyZCBNb3JleSAocmljaGFyZGRtb3JleUBnbWFpbC5jb20pLlxuXG5UeXBlIEJGTWFudWFsKCkgdG8gb3BlbiB0aGUgbWFudWFsLlxuKioqKioqKioqKioqXG5Mb2FkaW5nIHJlcXVpcmVkIHBhY2thZ2U6IGNpcmNsaXplXG5wYWNrYWdlIOKAmGNpcmNsaXpl4oCZIHdhcyBidWlsdCB1bmRlciBSIHZlcnNpb24gMy42LjI9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG5jaXJjbGl6ZSB2ZXJzaW9uIDAuNC45XG5DUkFOIHBhZ2U6IGh0dHBzOi8vY3Jhbi5yLXByb2plY3Qub3JnL3BhY2thZ2U9Y2lyY2xpemVcbkdpdGh1YiBwYWdlOiBodHRwczovL2dpdGh1Yi5jb20vam9rZXJnb28vY2lyY2xpemVcbkRvY3VtZW50YXRpb246IGh0dHBzOi8vam9rZXJnb28uZ2l0aHViLmlvL2NpcmNsaXplX2Jvb2svYm9vay9cblxuSWYgeW91IHVzZSBpdCBpbiBwdWJsaXNoZWQgcmVzZWFyY2gsIHBsZWFzZSBjaXRlOlxuR3UsIFouIGNpcmNsaXplIGltcGxlbWVudHMgYW5kIGVuaGFuY2VzIGNpcmN1bGFyIHZpc3VhbGl6YXRpb25cbiAgaW4gUi4gQmlvaW5mb3JtYXRpY3MgMjAxNC5cblxuVGhpcyBtZXNzYWdlIGNhbiBiZSBzdXBwcmVzc2VkIGJ5OlxuICBzdXBwcmVzc1BhY2thZ2VTdGFydHVwTWVzc2FnZXMobGlicmFyeShjaXJjbGl6ZSkpXG49PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09XG5cbnlhcnJyIHYwLjEuNS4gQ2l0YXRpb24gaW5mbyBhdCBjaXRhdGlvbigneWFycnInKS4gUGFja2FnZSBndWlkZSBhdCB5YXJyci5ndWlkZSgpXG5FbWFpbCBtZSBhdCBOYXRoYW5pZWwuRC5QaGlsbGlwcy5pc0BnbWFpbC5jb21cblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmHlhcnJy4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6Z2dwbG90MuKAmTpcblxuICAgIGRpYW1vbmRzXG4ifQ== -->
+<pre><code>Loading required package: jpeg
+Loading required package: BayesFactor
+Loading required package: coda
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following objects are masked from ‘package:tidyr’:
+
+    expand, pack, unpack
+
+************
+Welcome to BayesFactor 0.9.12-4.2. If you have questions, please contact Richard Morey (richarddmorey@gmail.com).
+
+Type BFManual() to open the manual.
+************
+Loading required package: circlize
+package ‘circlize’ was built under R version 3.6.2========================================
+circlize version 0.4.9
+CRAN page: https://cran.r-project.org/package=circlize
+Github page: https://github.com/jokergoo/circlize
+Documentation: https://jokergoo.github.io/circlize_book/book/
+
+If you use it in published research, please cite:
+Gu, Z. circlize implements and enhances circular visualization
+  in R. Bioinformatics 2014.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(circlize))
+========================================
+
+yarrr v0.1.5. Citation info at citation('yarrr'). Package guide at yarrr.guide()
+Email me at Nathaniel.D.Phillips.is@gmail.com
+
+Attaching package: ‘yarrr’
+
+The following object is masked from ‘package:ggplot2’:
+
+    diamonds</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkYXRhcGFzdGEpXG5saWJyYXJ5KHJlcHJleClcbmxpYnJhcnkobWluaVVJKVxubGlicmFyeShncmlkRXh0cmEpXG5gYGAifQ== -->
+<pre class="r"><code>library(datapasta)
 library(reprex)
 library(miniUI)
-library(gridExtra)
-</code></pre>
+library(gridExtra)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYZ3JpZEV4dHJh4oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6ZHBseXLigJk6XG5cbiAgICBjb21iaW5lXG4ifQ== -->
+<pre><code>
+Attaching package: ‘gridExtra’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="outline" class="section level2">
@@ -1837,6 +1959,9 @@ knitr::opts_knit$set(root.dir = &quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOA
 files &lt;- list.files(pattern = &quot;.csv&quot;)
 print(files)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiY2hhcmFjdGVyKDApXG4ifQ== -->
+<pre><code>character(0)</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>2.2 Create a temporary place for files</p>
@@ -1847,6 +1972,9 @@ print(files)</code></pre>
 temp &lt;- lapply(files, fread, sep= &quot;,&quot;)
 print(temp)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoibGlzdCgpXG4ifQ== -->
+<pre><code>list()</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>2.3 Create a new vector for Moats data logs</p>
@@ -1858,6 +1986,13 @@ print(temp)</code></pre>
 M01thruM13moatslog_data &lt;- rbindlist(temp)
 print(M01thruM13moatslog_data)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjAsIm5yb3ciOjB9LCJyZGYiOiJINHNJQUFBQUFBQUFBMjFRV3c2Q01CQmNIc1ZBZ3BKNER2cGpURHlBOFFCR0UzNHJvQkt4SlZDaXAwZTNoU2JhMEovdXpreG5aM3ZjWjVzb2l3REFBeTl3d0NOWUFqbWZEdWtPd0hleGNjQ0hVTjF2RksxQm56K0M1RFhyT2l5U0h6QXFtR1QwMnJKbmFjbkRWcndvUjF3OWllZjhESm1NSkF5V1lDRWFXUW1PRWxmbElkWm9wN1dBVmMrVlpaSG05NTQvMHEyS3Arbnh4UE8xR3VsL0ppc3lXUVVsdjFXOE5FbHJkaW5ycVZuaVhqbzViZHFLUy9NUGlIWlVDc21NTHNwRmJSQzlHd3hmQmhXVFFJWUJBQUE9In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[],"data":[],"options":{"columns":{"min":{},"max":[10],"total":[0]},"rows":{"min":[10],"max":[10],"total":[0]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>2.4 Setting new working directory</p>
