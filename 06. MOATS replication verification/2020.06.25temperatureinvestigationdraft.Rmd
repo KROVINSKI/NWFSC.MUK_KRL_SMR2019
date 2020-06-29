@@ -15,7 +15,7 @@ output:
 R script below will subselect and plot temperature data for MOATs
 Overall goal is to determine if MOATs (per treatment) are true replicates
 
-```{r}
+```{r Library Section}
 #*********************************
 ##Libraries
 #********************************* 
@@ -67,7 +67,7 @@ Inside the working directory (folder) are CSV files generated after using the mo
 Moving average window (nObs) set to 4. This results in the observations being averaged into a 24second timeframe. CSVs were created for each moats: M01, M02, M03, M04, M05, M06, M07, M08, M09, M10, M11, M12, M13. Files are also available on the OA Google drive. [OA Drive for MOATS data](https://drive.google.com/open?id=13a2hk1a9I9gRIgf2Xyl1dSYDf5vnyYvs)
 
 
-```{r}
+```{r 1.) Setting the Working Directory}
 #*********************************
 ## 1.) Set working directory
 #*********************************
@@ -83,7 +83,7 @@ knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SM
 # 2.) Spolling Data into one CSV 
 Combining multiple CSV files into 1 document. Original input files from individual LVM (logical volumne management) files off each MOATs.
 2.1 Create a list of files
-```{r} 
+```{r 2.) Spolling Data | 2.1) Creating a List} 
 ## 2.1 Create a list of files 
 # All files to be joined have ext. "csv" can use that pattern to join 
 files <- list.files(pattern = ".csv")
@@ -91,14 +91,14 @@ print(files)
 ```
 
 2.2 Create a temporary place for files
-```{r}
+```{r 2.) Spolling Data | 2.2) Temp File Folder}
 ## 2.2 Create a temporary place for files 
 temp <- lapply(files, fread, sep= ",")
 print(temp)
 ```
 
 2.3 Create a new vector for Moats data logs
-```{r}
+```{r 2.) Spolling Data | 2.3) Creating New Vector}
 ## 2.3 Create a new vector for Moats data logs 
 # "M01thruM13Moatslog_data" via rbind
 M01thruM13moatslog_data <- rbindlist(temp)
@@ -106,7 +106,7 @@ print(M01thruM13moatslog_data)
 ```
 
 2.4 Setting new working directory
-```{r}
+```{r 2.) Spolling Data | 2.4) New Directory}
 ## 2.4 Setting new working directory for output file organization
 #Effort ISO avoiding duplicates
 
@@ -115,7 +115,7 @@ knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2
 ```
 
 2.5 Write the new csv document
-```{r}
+```{r 2.) Spolling Data | 2.5) Write New CSV document}
 ## 2.5 Write the new csv document | 
 # "M01thruM13moatslog" can uncomment this command line as needed
 #write.csv(M01thruM13moatslog_data, file = "M01thruM13moatslog.csv", row.names = FALSE)
@@ -131,7 +131,7 @@ Saved on the OA Google Drive
 # 3.) Creating the Dataframe "dml" 
 
 3.1 Reading the CSV
-```{r}
+```{r 3.) Creating Datafram dml | 3.1) Reading CSV}
 ## 3.1 Reading the CSV |  
 ## ensuring column names and types
 ## Data Moats Log = dml
@@ -141,7 +141,7 @@ dim(dml)
 
 
 3.1a Duplication Check
-```{r}
+```{r 3.) Creating Datafram dml | 3.1a) Duplication Check}
 ## 3.1a Duplication Check
 ## duplicates observed in "dml" on 2020.05.07  
 dup2 <- dml[duplicated(dml),]
@@ -152,10 +152,9 @@ dml2 <- dml %>% distinct()
 
 
 3.1b Sub sampling dataframe "dml"
-```{r}
+```{r 3.) Creating Datafram dml | 3.1b) Sub Sampling}
 ## 3.1b Sub sampling dataframe "dml"  
 ## creating a sub sample of the data moats log dml dataframe to allow for quick graphs 
-
 
 #subsample every 17th row (because prime numbers are indeed cool)
 dml <- dml %>% arrange(moats, dateTime) %>% filter(row_number() %% 17 == 0)
