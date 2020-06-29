@@ -163,7 +163,7 @@ write.csv(dml, file = "M01thruM13moatslog_n17.csv", row.names = FALSE)
 ```
 
 3.2 Checking variables
-```{r}
+```{r 3.) Creating Datafram dml | 3.2) Checking Variables }
 ## 3.2 Checking variables  
 ## Looking to ensure the different variables are treated as the correct variable type
 ## Checking the names in the dataframe
@@ -177,7 +177,7 @@ dml$moats <- as.factor(dml$moats)
 
 
 3.3 Changing variables
-```{r}
+```{r 3.) Creating Datafram dml | 3.3) Checking Variables- Factors}
 ## 3.3 Changing variables | 
 ## Changing MOATs to Factors for the 13 different MOATs- these will be the discrete units for follow analysis
 dml$moats <- factor(dml$moats)
@@ -522,7 +522,56 @@ simpleplot_cur_timeseries
 
 
 
+#### 9.2.7 High Temperature Day Period Boxplot
 
+```{r}
+simpleplot_hitemp_day <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ], 
+                                          period %in% ("day")), 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment)) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_boxplot() +
+                                          ggtitle("High Temperature Conditions Day Period Boxplot")
+
+
+simpleplot_cur_day
+
+
+```
+
+
+
+#### 9.2.8 High Temperature Night Period Boxplot
+
+
+```{r}
+simpleplot_hitemp_night <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ], 
+                                          period %in% ("night")), 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment)) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_boxplot() +
+                                          ggtitle("High Temperature Conditions Night Period Boxplot")
+
+
+simpleplot_cur_night
+
+
+```
+
+
+#### 9.2.9 High Temperature Conditions Timeseries
+
+```{r}
+simpleplot_cur_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "current", ]))+
+                                  aes(x=dateTime, y=aTemperature) + 
+                                  geom_point(aes(colour=moats, point=)) +
+                                  ggtitle("Current Conditions Treatment Timeseries")
+
+simpleplot_cur_timeseries
+```
 
 
 
