@@ -191,7 +191,7 @@ dim(dml)
 #4.) Creating dateTime objects
 
 4.0 establish the dateTime objects
-```{r}
+```{r 4.) Creating dateTime objects |}
 # 4.0 establish the date time object of the CSV |
 dml$dateTime <- as.POSIXct(dml$dateTime, format="%Y-%m-%d %H:%M:%OS")
 ReferenceTime <- as.POSIXct("2019-09-20 23:59:00")
@@ -205,7 +205,7 @@ dim(dml)
 # 5.) Creating Treatment Variables  
 
  5.1 Identifying Treatments by MOATS
-```{r}
+```{r 5.) Creating Treatments by MOATS | 5.1) Identifying Treatments by MOATs}
 ## 5.1 Identifying treatments by moats 
 ## establishing treatments
 dml$treatment <- ""
@@ -225,7 +225,7 @@ dim(dml)
 
 
 5.2 Simple ggplot to show the different MOATs without polish
-```{r}
+```{r 5.) Creating Treatments by MOATS | 5.2 All Treatments Time Series) }
 
 plot5.2 <- ggplot(dml, aes(x=dateTime, y=aTemperature)) + 
   geom_point(aes(colour=moats, point=)) + 
@@ -257,7 +257,7 @@ Krill Days Started 2101 and ends 1159 (~1229*)
 
 
 6.2 New Column, New Variable
-```{r}
+```{r 6.) Creating Day/Night Periods | 6.2) New Variables, New Columns}
 ## 6.2 New Column, New Variable in dml
 #creating a new column, new variable "period"
 dml$period <- ""
@@ -265,7 +265,7 @@ dml$period <- ""
 
 
 6.3 Disassembling dateTime to create 2 new variables
-```{r}
+```{r 6.) Creating Day/Night Periods | 6.3) Observation Date, Observation Time }
 ## 6.3 Disassembling dateTime to create 2 new variables
 # Create new split date and time columns
 dml$ObservationDate <- as.Date(dml$dateTime)
@@ -297,7 +297,7 @@ dml$ObservationTime <- format(as.POSIXct(dml$dateTime) ,format = "%H:%M:%S")
 
 
 6.5 Day / Night Assignments 
-```{r}
+```{r 6.) Creating Day/Night Periods | 6.5) Mutate function & Day/Night }
 ## 6.5 Day / Night Assignments 
 # Using the "case_when" function in the tidyverse in the place of a loop
 
@@ -335,7 +335,7 @@ dml <- dml %>% mutate(period=case_when(
 Two files represent manual checks of aquarium salinity.
 Extracted from this are point measurements of aquarim temperature
 
-```{r}
+```{r 7.) In-Situ Data Files | 7.1) Read in Files }
 # ## 7.1 Read in files
 # # carefule about navigating to the second working directory
 # 
@@ -357,7 +357,7 @@ checking on the variables inside dml
 Cleaned-Up dml = Cdml
 
 
-```{r}
+```{r 8.) Cleaning up dml | 8.1) Different Variables in dml }
 ## 8.1 Noting names of the different variables in dml
 names(dml)
 ```
@@ -367,7 +367,7 @@ names(dml)
 
 8.2 Narrative on Cdml
 Temperatures below 5C and above 30C are thought to be less than probable 
-```{r}
+```{r 8.) Cleaning up dml | 8.2) Narrative on Cdml }
 # Changes to be made the dataframe by variable
 #[1] "moats" "M03", "M04", "M05", "M09", "M11" to be filtered out- all these 
 #                                           MOATs were dropped from the study
@@ -393,7 +393,7 @@ Cdml <- dml %>% filter(!moats %in% c("M03", "M04", "M05", "M11")) %>%
 
 # 8.3 Option to write a CSV of Cdml parameters
 droping the levels of the moats 
-```{r}
+```{r 8.) Cleaning up dml | 8.3) Dropping levels }
 levels(Cdml$moats)
 Cdml$moats <- droplevels(Cdml$moats)
 ```
@@ -403,7 +403,7 @@ Cdml$moats <- droplevels(Cdml$moats)
 # 9.) Framing filters for Cdml
 
 9.0 cleaning names of levels, factors
-```{r}
+```{r 9.) Names of levels | 9.0) Narrative }
 ## 9.0 Removing the names of moats & treatments removed from Cdml 
 # Removal should allow for cleaner graphs 
 # Determined moats lab never got under 5C and was never over 30C 
@@ -417,7 +417,7 @@ filteredFrame = filter(Cdml,
 
 Without dropping levels and factors not named label may still crowd plots
 9.1 Dropping names and factors
-```{r}
+```{r 9.) Names of levels | 9.1) Dropping levels and Factors }
 ## 9.1 Dropping levels and factors
 filteredFrame$moats <- droplevels(filteredFrame$moats)
 filteredFrame$treatment <- factor(filteredFrame$treatment)
@@ -427,7 +427,7 @@ filteredFrame$treatment <- factor(filteredFrame$treatment)
 
 #### 9.2.1 All Change Day Period Boxplot
 
-```{r}
+```{r 9.2.1 All Change Day Period Boxplot}
 simpleplot_allchg_day <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ], 
                                           period %in% ("day")), 
                                           aes(x=moats, y=aTemperature, 
@@ -445,7 +445,7 @@ simpleplot_allchg_day
 
 
 #### 9.2.2 All Change Night Period Boxplot
-```{r}
+```{r 9.2.2 All Change Night Period Boxplot}
 simpleplot_allchg_night <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ], 
                                           period %in% ("night")), 
                                           aes(x=moats, y=aTemperature, 
@@ -460,7 +460,7 @@ simpleplot_allchg_night
 ```
 
 #### 9.2.3 All Change Timeseries
-```{r}
+```{r 9.2.3 All Change Timeseries}
 simpleplot_allchg_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ]))+
                                   aes(x=dateTime, y=aTemperature) + 
                                   geom_point(aes(colour=moats, point=)) +
@@ -472,7 +472,7 @@ simpleplot_allchg_timeseries
  
 #### 9.2.4 Current Day Period Boxplot
 
-```{r}
+```{r 9.2.4 Current Day Period Boxplot}
 simpleplot_cur_day <- ggplot(subset(Cdml[Cdml$treatment == "current", ], 
                                           period %in% ("day")), 
                                           aes(x=moats, y=aTemperature, 
@@ -492,7 +492,7 @@ simpleplot_cur_day
  
 #### 9.2.5 Current Night Period Boxplot
 
-```{r}
+```{r 9.2.5 Current Night Period Boxplot}
 simpleplot_cur_night <- ggplot(subset(Cdml[Cdml$treatment == "current", ], 
                                           period %in% ("night")), 
                                           aes(x=moats, y=aTemperature, 
@@ -511,7 +511,7 @@ simpleplot_cur_night
 
 
 #### 9.2.6 Current Conditions Timeseries
-```{r}
+```{r 9.2.6 Current Conditions Timeseries}
 simpleplot_cur_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "current", ]))+
                                   aes(x=dateTime, y=aTemperature) + 
                                   geom_point(aes(colour=moats, point=)) +
@@ -524,7 +524,7 @@ simpleplot_cur_timeseries
 
 #### 9.2.7 High Temperature Day Period Boxplot
 
-```{r}
+```{r 9.2.7 High Temperature Day Period Boxplo}
 simpleplot_hitemp_day <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ], 
                                           period %in% ("day")), 
                                           aes(x=moats, y=aTemperature, 
@@ -545,7 +545,7 @@ simpleplot_cur_day
 #### 9.2.8 High Temperature Night Period Boxplot
 
 
-```{r}
+```{r 9.2.8 High Temperature Night Period Boxplot}
 simpleplot_hitemp_night <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ], 
                                           period %in% ("night")), 
                                           aes(x=moats, y=aTemperature, 
@@ -564,13 +564,13 @@ simpleplot_cur_night
 
 #### 9.2.9 High Temperature Conditions Timeseries
 
-```{r}
-simpleplot_cur_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "current", ]))+
+```{r 9.2.9 High Temperature Conditions Timeseries}
+simpleplot_hitemp_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ]))+
                                   aes(x=dateTime, y=aTemperature) + 
                                   geom_point(aes(colour=moats, point=)) +
-                                  ggtitle("Current Conditions Treatment Timeseries")
+                                  ggtitle("High Temperature Conditions Treatment Timeseries")
 
-simpleplot_cur_timeseries
+simpleplot_hitemp_timeseries
 ```
 
 
