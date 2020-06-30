@@ -654,7 +654,6 @@ ggplot(Cdml, aes(treatment, aTemperature)) +
 11.0 Intercept Narrative
 These averages will be the yintercepts in plots
 
-
 ```{r 11.) Day/Night Averages | 11.1) Night and Day Period }
 ## 11.1 All Treatments (Day & Night)
 # Night Period
@@ -666,9 +665,66 @@ subsetDayaTemp <- subset(filteredFrame, period == "day" & aTemperature >0,
                            select = c( moats, dateTime, treatment, aTemperature ))
 ```
 
+11.2 Current Treatment
+Current Night & Day
+
+```{r 11.) Day/Night Averages | 11.2) Night and Day Period Current Conditions}
+## 11.2 Current Treatment
+# Current Night
+curNightaTemp <- subset(Cdml, period == "night" & treatment == "current",
+                           select = c(dateTime, aTemperature ))
+avg_curNightaTemp <- mean(curNightaTemp$aTemperature)
+print(avg_curNightaTemp)
+# [1] 11.95122
 
 
+# Current Day
+curDayaTemp <- subset(Cdml, period == "day" & treatment == "current",
+                        select = c(dateTime, aTemperature ))
+avg_curDayaTemp <- mean(curDayaTemp$aTemperature)
+print(avg_curDayaTemp)
+# [1] 11.09983
+```
 
+
+11.3 All Change Treatment
+All Change Treatment Average
+
+```{r 11.) Day/Night Averages | 11.3) Night and Day Period All Change Conditions}
+## 11.3 All Change Treatment
+# All Change Treatment Averages 
+# All Change Night
+allchgNightaTemp <- subset(Cdml, period == "night" & treatment == "allchange",
+                        select = c(dateTime, aTemperature ))
+avg_allchgNightaTemp <- mean(allchgNightaTemp$aTemperature)
+print(avg_allchgNightaTemp)
+# [1] 13.89847
+
+# All Change Day
+allchgDayaTemp <- subset(Cdml, period == "day" & treatment == "allchange",
+                      select = c(dateTime, aTemperature ))
+avg_allchgDayaTemp <- mean(allchgDayaTemp$aTemperature)
+print(avg_allchgDayaTemp)
+# [1] 12.97466
+```
+
+```{r 11.) Day/Night Averages | 11.4) Night and Day Period High Temperature Conditions }
+# 11.4 High Temperature Treatment
+# High Temperature Treatment Averages 
+# High Temperature Night
+hitempNightaTemp <- subset(Cdml, period == "night" & treatment == "hightemperature",
+                           select = c(dateTime, aTemperature ))
+avg_hitempNightaTemp <- mean(hitempNightaTemp$aTemperature)
+print(avg_hitempNightaTemp)
+#[1] 13.80397
+
+# High Temperature Day
+hitempDayaTemp <- subset(Cdml, period == "day" & treatment == "hightemperature",
+                           select = c(dateTime, aTemperature ))
+avg_hitempDayaTemp <- mean(hitempDayaTemp$aTemperature)
+print(avg_hitempDayaTemp)
+#[1] 12.92148
+```
 
 
 
