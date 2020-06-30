@@ -728,6 +728,21 @@ print(avg_hitempDayaTemp)
 
 
 
+11.) Day/Night Averages Review of Treatments
+
+```{r 11.) Day/Night Averages | 11.5) Review of Treatments }
+## 11.5 Review of all Treatments
+# Review of 6 new variables 
+
+avg_allchgDayaTemp
+avg_allchgNightaTemp
+avg_curDayaTemp
+avg_curNightaTemp
+avg_hitempDayaTemp
+avg_hitempNightaTemp
+```
+
+
 
 
 
