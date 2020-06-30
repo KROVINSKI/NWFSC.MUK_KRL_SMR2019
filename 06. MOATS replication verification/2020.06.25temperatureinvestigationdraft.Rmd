@@ -743,11 +743,85 @@ avg_hitempNightaTemp
 ```
 
 
+11.6 Table of Averages
+
+```{r 11.) Day/Night Averages | 11.6) Table of Averages }
+## 11.6 Table of Averages
+meanCdmldatemp <- filteredFrame %>% group_by(treatment, period) %>% 
+                                                      summarise(mean(aTemperature))
+# Groups:   treatment [3]
+#treatment       period `mean(aTemperature)`
+#<chr>           <chr>                 <dbl>
+# 1 allchange       day                    13.0
+# 2 allchange       night                  13.9
+# 3 current         day                    11.1
+# 4 current         night                  12.0
+# 5 hightemperature day                    12.9
+# 6 hightemperature night                  13.8
+print(meanCdmldatemp)
+
+```
+
+# 12.) Summary & Group by Cdml
+12.0 Cdml Day Summary, group by, mutate
+```{r 12.) Summary & Group by Cdml | 12.0 Day Night Summary }
+# 12.0 Cdml Day Summary, group by, mutate
+
+Cdml.daynight.summary <- Cdml %>% group_by(treatment, period) %>%
+  summarize(sd = sd(aTemperature, na.rm = TRUE), 
+            mean = mean(aTemperature, na.rm = TRUE), 
+            median = median(aTemperature, na.rm = TRUE),
+            IQR = IQR(aTemperature, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
+
+
+write.csv(Cdml.daynight.summary, "2020.05.07_Cdml_daynight_summary.csv")
+```
 
 
 
+# 13.) Plots
+```{r 13.) Plots | 13.1) Boxplot aTemp by moats}
+## 13.1 Boxplot aTemp by moats
+#boxplot(aTemperature~moats, Cdml)
+
+ggplot(Cdml, aes(treatment, aTemperature)) +
+            geom_jitter(color = "grey") +
+            geom_jitter(aes(colour = tDeltaThreshold)) +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
+            geom_point(data = Cdml.daynight.summary, 
+                       aes(x=treatment, y=mean), size=5, color = "purple") + 
+            geom_errorbar(data = Cdml.daynight.summary, 
+                          aes(x=treatment, y=mean, ymin = mean-sd, ymax = mean+sd), 
+                          color = "blue") +
+            geom_errorbar(data = Cdml.daynight.summary,
+                          aes(x=treatment, y=mean, ymin = mean-ci, ymax = mean+ci),
+                          colour = "red") +
+            facet_wrap(~period) +
+            ggtitle("All Treatments, Temperature Jumps at .5C") +
+            theme_bw() 
+
+```
+
+13.1a Boxplots by Treatment
+
+```{r 13.) Plots | 13.1a Boxplots by Treatment }
+## 13.1a Boxplots by Treatment
+# plot boxplot (treatment ~ aTemp ) with intercepts
+p_allchg_d_yinter <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ], 
+                                          period %in% ("day")), 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment)) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  +
+                                          geom_boxplot() +
+                                          ggtitle("All Change Day Period")
 
 
+p_allchg_d_yinter
+```
 
 
 
