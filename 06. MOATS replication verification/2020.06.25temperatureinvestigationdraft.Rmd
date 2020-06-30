@@ -637,7 +637,7 @@ Cdml <- Cdml %>% mutate(tDeltaThreshold = if_else(deltaTempLag1 > 0.5, TRUE, FAL
 
 10.2a "All Treatments, Temperature Jumps Plots"
 
-```{r}
+```{r 10.) Temperature Jumps | 10.2a Temp Jump plots}
 ggplot(Cdml, aes(treatment, aTemperature)) +
             geom_jitter(color = "grey") +
             geom_jitter(aes(colour = tDeltaThreshold)) +
@@ -649,8 +649,51 @@ ggplot(Cdml, aes(treatment, aTemperature)) +
 
 
 
-
 # 11.) Calculating Averages by Treatment & Day/Night
+
+11.0 Intercept Narrative
+These averages will be the yintercepts in plots
+
+
+```{r 11.) Day/Night Averages | 11.1) Night and Day Period }
+## 11.1 All Treatments (Day & Night)
+# Night Period
+subsetNightaTemp <- subset(filteredFrame, period == "night" & aTemperature >0,
+                                  select = c( moats, dateTime, treatment, aTemperature ))
+
+# Day Period
+subsetDayaTemp <- subset(filteredFrame, period == "day" & aTemperature >0,
+                           select = c( moats, dateTime, treatment, aTemperature ))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
