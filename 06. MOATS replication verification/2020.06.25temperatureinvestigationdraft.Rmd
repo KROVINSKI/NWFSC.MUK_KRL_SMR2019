@@ -781,6 +781,27 @@ write.csv(Cdml.daynight.summary, "2020.05.07_Cdml_daynight_summary.csv")
 ```
 
 
+Table
+```{r}
+install.packages("datapasta")
+
+tibble::tribble(
+         ~treatment, ~period,         ~sd,       ~mean,     ~median,        ~IQR,      ~n,         ~se,         ~ci,
+        "allchange",   "day", 0.374745078, 12.97466177, 12.89631825, 0.246942125, 123943L, 0.001064449,  0.00208632,
+        "allchange", "night", 0.244129929, 13.89847023,    13.92304, 0.193499438,  71070L, 0.000915752, 0.001794874,
+          "current",   "day",   0.3488364, 11.09982606,   11.076037,    0.206312,  99455L, 0.001106136, 0.002168026,
+          "current", "night", 0.302587122, 11.95121646,    12.05242,  0.12374575,  57129L, 0.001265966, 0.002481294,
+  "hightemperature",   "day", 0.364054559,   12.921484, 12.91200988,  0.28857575,  67138L, 0.001405019, 0.002753838,
+  "hightemperature", "night",   0.3117599, 13.80397221, 13.87668575, 0.189768188,  37630L, 0.001607138,  0.00314999
+  )
+
+
+```
+
+
+
+
+
 
 # 13.) Plots
 ```{r 13.) Plots | 13.1) Boxplot aTemp by moats}
@@ -822,6 +843,100 @@ p_allchg_d_yinter <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ],
 
 p_allchg_d_yinter
 ```
+
+
+### 13.1b Boxplot by Treatment with Facets
+### All Change 
+```{r 13.1b) Boxplot by Treatment with Facets | All Change }
+## 13.1b Boxplot by Treatment with Facets
+# Boxplot (treatment ~ aTemp ) with intercepts & Facets
+
+p_allchg_dn_facet <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ]),
+                                  aes(x=moats, y=aTemperature, 
+                                                colour=moats)) +
+                                 geom_hline(yintercept = avg_allchgDayaTemp)+
+                                 geom_hline(yintercept = avg_allchgNightaTemp) +
+                                 geom_boxplot() +
+                                 stat_summary(fun=mean, 
+                                 geom="point", size=2, 
+                                 color="red")  +
+                                 facet_grid(period~moats) +
+                                ggtitle("All Change Conditions Day & Night Boxplots")
+
+ p_allchg_dn_facet
+
+```
+
+```{r 13.1b) Boxplot by Treatment with Facets | All Change }
+## 13.1b Boxplot by Treatment with Facets
+# Boxplot (treatment ~ aTemp ) with intercepts & Facets
+
+p_allchg_dn_violin <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ]),
+                                  aes(x=moats, y=aTemperature, 
+                                                colour=moats)) +
+                                 geom_hline(yintercept = avg_allchgDayaTemp)+
+                                 geom_hline(yintercept = avg_allchgNightaTemp) +
+                                 geom_violin() +
+                                 stat_summary(fun=mean, 
+                                 geom="point", size=2, 
+                                 color="red")  +
+                                 facet_grid(period~moats) +
+                                ggtitle("All Change Conditions Day & Night Violin Plots")
+
+ p_allchg_dn_violin
+
+```
+
+
+
+
+
+
+
+
+
+
+
+### Current Conditions
+```{r 13.1b) Boxplot by Treatment with Facets | Current Conditions }
+p_current_dn_facet <- ggplot(subset(Cdml[Cdml$treatment == "current", ]),
+                                  aes(x=moats, y=aTemperature, 
+                                                colour=moats)) +
+                                 geom_hline(yintercept = avg_allchgDayaTemp)+
+                                 geom_hline(yintercept = avg_allchgNightaTemp) +
+                                 geom_boxplot() +
+                                 stat_summary(fun=mean, 
+                                 geom="point", size=2, 
+                                 color="red")  +
+                                 facet_grid(period~moats) +
+                                ggtitle("Current Conditions Day & Night Periods Boxplot")
+
+ p_current_dn_facet
+
+```
+
+
+
+
+
+### High Temperature
+```{r 13.1b) Boxplot by Treatment with Facets | Current Conditions }
+p_hitemp_dn_facet <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ]),
+                                  aes(x=moats, y=aTemperature, 
+                                                colour=moats)) +
+                          geom_hline(yintercept = avg_allchgDayaTemp)+
+                          geom_hline(yintercept = avg_allchgNightaTemp) +
+                          geom_boxplot() +
+                          stat_summary(fun=mean, 
+                          geom="point", size=2, 
+                          color="red")  +
+                          facet_grid(period~moats) +
+                          ggtitle("High Temperature Conditions Day & Night Periods")
+
+ p_hitemp_dn_facet
+
+```
+
 
 
 
