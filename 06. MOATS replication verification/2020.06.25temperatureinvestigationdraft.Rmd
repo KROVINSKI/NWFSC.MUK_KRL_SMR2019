@@ -72,9 +72,9 @@ Moving average window (nObs) set to 4. This results in the observations being av
 ## 1.) Set working directory
 #*********************************
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS")
+knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind")
 
-#setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS")
+#setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind")
 
 ```
 
@@ -111,7 +111,7 @@ print(M01thruM13moatslog_data)
 #Effort ISO avoiding duplicates
 
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification")
+knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/02. Scripts/01. Water Temperature")
 ```
 
 2.5 Write the new csv document
@@ -845,9 +845,9 @@ p_allchg_d_yinter
 ```
 
 
-### 13.1b Boxplot by Treatment with Facets
+### 13.1b Boxplots by Treatment with Facets
 ### All Change 
-```{r 13.1b) Boxplot by Treatment with Facets | All Change }
+```{r 13.1b.1) Boxplot by Treatment with Facets | All Change }
 ## 13.1b Boxplot by Treatment with Facets
 # Boxplot (treatment ~ aTemp ) with intercepts & Facets
 
@@ -867,7 +867,7 @@ p_allchg_dn_facet <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ]),
 
 ```
 
-```{r 13.1b) Boxplot by Treatment with Facets | All Change }
+```{r 13.1b.2) Boxplot by Treatment with Facets | All Change }
 ## 13.1b Boxplot by Treatment with Facets
 # Boxplot (treatment ~ aTemp ) with intercepts & Facets
 
@@ -898,12 +898,12 @@ p_allchg_dn_violin <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ]),
 
 
 ### Current Conditions
-```{r 13.1b) Boxplot by Treatment with Facets | Current Conditions }
+```{r 13.1b.3) Boxplot by Treatment with Facets | Current Conditions }
 p_current_dn_facet <- ggplot(subset(Cdml[Cdml$treatment == "current", ]),
                                   aes(x=moats, y=aTemperature, 
                                                 colour=moats)) +
-                                 geom_hline(yintercept = avg_allchgDayaTemp)+
-                                 geom_hline(yintercept = avg_allchgNightaTemp) +
+                                 geom_hline(yintercept = avg_curDayaTemp)+
+                                 geom_hline(yintercept = avg_curNightaTemp) +
                                  geom_boxplot() +
                                  stat_summary(fun=mean, 
                                  geom="point", size=2, 
@@ -931,9 +931,30 @@ p_hitemp_dn_facet <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ]),
                           geom="point", size=2, 
                           color="red")  +
                           facet_grid(period~moats) +
-                          ggtitle("High Temperature Conditions Day & Night Periods")
+                          ggtitle("High Temperature Conditions Day & Night Periods Boxplots")
 
  p_hitemp_dn_facet
+
+```
+
+
+```{r 13.1b) Boxplot by Treatment with Facets | All Change }
+## 13.1b Boxplot by Treatment with Facets
+# Boxplot (treatment ~ aTemp ) with intercepts & Facets
+
+p_allchg_dn_violin <- ggplot(subset(Cdml[Cdml$treatment == "hitemperature", ]),
+                                  aes(x=moats, y=aTemperature, 
+                                                colour=moats)) +
+                                 geom_hline(yintercept = avg_allchgDayaTemp)+
+                                 geom_hline(yintercept = avg_allchgNightaTemp) +
+                                 geom_violin() +
+                                 stat_summary(fun=mean, 
+                                 geom="point", size=2, 
+                                 color="red")  +
+                                 facet_grid(period~moats) +
+                                ggtitle("High Temperature Conditions Day & Night Violin Plots")
+
+ p_allchg_dn_violin
 
 ```
 
