@@ -69,9 +69,7 @@ Moving average window (nObs) set to 4. This results in the observations being av
 #*********************************
 knitr::opts_chunk$set(echo = TRUE)
 
-#setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind")
-
-knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind")
+knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification")
 ```
 
 
@@ -82,7 +80,7 @@ Combining multiple CSV files into 1 document. Original input files from individu
 ```{r 2.1 Create a list of files} 
 ## 2.1 Create a list of files 
 # All files to be joined have ext. "csv" can use that pattern to join 
-files <- list.files(pattern = ".*\\.csv")
+files <- list.files(path= "/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind", pattern = ".*\\.csv")
 print(files)
 ```
 
@@ -101,17 +99,9 @@ M01thruM13moatslog_data <- rbindlist(temp)
 print(M01thruM13moatslog_data)
 ```
 
-2.4 Setting new working directory
-```{r, setup, include=FALSE}
-## 2.4 Setting new working directory for output file organization
-#Effort ISO avoiding duplicates
-knitr::opts_chunk$set(echo = TRUE)
-
-knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification")
-```
 
 
-2.5 Write the new csv document
+2.4 Write the new csv document
 ```{r 2.5 Write the new csv document}
 ## 2.5 Write the new csv document | 
 # "M01thruM13moatslog" can uncomment this command line as needed
@@ -835,6 +825,37 @@ p_allchg_facetwrap_vio
 
 
 ```
+
+#### 13.1.2 Aquarium Temperature, Current Conditions, Day & Night
+```{r 13.1.2 Aquarium Temperature, Current Conditions, Day & Night}
+
+p_cur_facetwrap_box <- ggplot(subset(Cdml[Cdml$treatment == "current", ])) + 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_boxplot() +
+                                          facet_wrap(~period) +
+                                          ggtitle("Current Conditions, Aquarium Temperature, Day/Night Period Boxplots")
+
+p_cur_facetwrap_box
+
+```
+
+
+```{r}
+
+p_allchg_facetwrap_vio <- ggplot(subset(Cdml[Cdml$treatment == "current", ])) + 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_violin() +
+                                          facet_wrap(~period) +
+                                          ggtitle("Current Conditions, Aquarium Temperature, Day/Night Period Violin Plots")
+
+p_allchg_facetwrap_vio 
+
 ```
 
 
@@ -845,7 +866,7 @@ p_allchg_facetwrap_vio
 
 
 
-
+current to line 879
 
 
 

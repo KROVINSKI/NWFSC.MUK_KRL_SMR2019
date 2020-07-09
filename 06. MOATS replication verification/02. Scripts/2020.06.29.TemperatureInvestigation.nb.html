@@ -1811,18 +1811,6 @@ library(gridExtra)
 <p>#1.) Working Directory</p>
 <p>Inside the working directory (folder) are CSV files generated after using the moats graph app <a href="http://github.com/pmcelhany/moatsGraphs.git">Link to moats.Graph.app</a> Moving average window (nObs) set to 4. This results in the observations being averaged into a 24second timeframe. CSVs were created for each moats: M01, M02, M03, M04, M05, M06, M07, M08, M09, M10, M11, M12, M13. Files are also available on the OA Google drive. <a href="https://drive.google.com/open?id=13a2hk1a9I9gRIgf2Xyl1dSYDf5vnyYvs">OA Drive for MOATS data</a></p>
 <!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuIyMgMS4pIFNldCB3b3JraW5nIGRpcmVjdG9yeVxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxua25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKVxua25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXIgPSBcIi9Vc2Vycy9rYXRoZXJpbmVyb3ZpbnNraS9HSVQvTldGU0MuTVVLX01PQVRzX1NNUjIwMTkvTGFiVmlld0xvZ3MuQWxsTU9BVFNcIilcblxuI3NldHdkKFwiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfTU9BVHNfU01SMjAxOS9MYWJWaWV3TG9ncy5BbGxNT0FUU1wiKVxuXG5gYGAifQ== -->
-<pre class="r"><code>#*********************************
-## 1.) Set working directory
-#*********************************
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = &quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS&quot;)
-
-#setwd(&quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS&quot;)
-</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
 </div>
@@ -1831,61 +1819,40 @@ knitr::opts_knit$set(root.dir = &quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOA
 <p>Combining multiple CSV files into 1 document. Original input files from individual LVM (logical volumne management) files off each MOATs. 2.1 Create a list of files</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4xIENyZWF0ZSBhIGxpc3Qgb2YgZmlsZXMgXG4jIEFsbCBmaWxlcyB0byBiZSBqb2luZWQgaGF2ZSBleHQuIFwiY3N2XCIgY2FuIHVzZSB0aGF0IHBhdHRlcm4gdG8gam9pbiBcbmZpbGVzIDwtIGxpc3QuZmlsZXMocGF0dGVybiA9IFwiLmNzdlwiKVxucHJpbnQoZmlsZXMpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4xIENyZWF0ZSBhIGxpc3Qgb2YgZmlsZXMgXG4jIEFsbCBmaWxlcyB0byBiZSBqb2luZWQgaGF2ZSBleHQuIFwiY3N2XCIgY2FuIHVzZSB0aGF0IHBhdHRlcm4gdG8gam9pbiBcbmZpbGVzIDwtIGxpc3QuZmlsZXMocGF0aD0gXCIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19NT0FUc19TTVIyMDE5L0xhYlZpZXdMb2dzKENTVilSYmluZFwiLCBwYXR0ZXJuID0gXCIuKlxcXFwuY3N2XCIpXG5wcmludChmaWxlcylcbmBgYCJ9 -->
 <pre class="r"><code>## 2.1 Create a list of files 
 # All files to be joined have ext. &quot;csv&quot; can use that pattern to join 
-files &lt;- list.files(pattern = &quot;.csv&quot;)
+files &lt;- list.files(path= &quot;/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind&quot;, pattern = &quot;.*\\.csv&quot;)
 print(files)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiY2hhcmFjdGVyKDApXG4ifQ== -->
-<pre><code>character(0)</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIk0xX2RmX01vYXRzRGF0YS5jc3ZcIiAgXCJNMTBfZGZfTW9hdHNEYXRhLmNzdlwiIFwiTTExX2RmX01vYXRzRGF0YS5jc3ZcIlxuIFs0XSBcIk0xMl9kZl9Nb2F0c0RhdGEuY3N2XCIgXCJNMTNfZGZfTW9hdHNEYXRhLmNzdlwiIFwiTTJfZGZfTW9hdHNEYXRhLmNzdlwiIFxuIFs3XSBcIk0zX2RmX01vYXRzRGF0YS5jc3ZcIiAgXCJNNF9kZl9Nb2F0c0RhdGEuY3N2XCIgIFwiTTVfZGZfTW9hdHNEYXRhLmNzdlwiIFxuWzEwXSBcIk02X2RmX01vYXRzRGF0YS5jc3ZcIiAgXCJNN19kZl9Nb2F0c0RhdGEuY3N2XCIgIFwiTThfZGZfTW9hdHNEYXRhLmNzdlwiIFxuWzEzXSBcIk05X2RmX01vYXRzRGF0YS5jc3ZcIiBcbiJ9 -->
+<pre><code> [1] &quot;M1_df_MoatsData.csv&quot;  &quot;M10_df_MoatsData.csv&quot; &quot;M11_df_MoatsData.csv&quot;
+ [4] &quot;M12_df_MoatsData.csv&quot; &quot;M13_df_MoatsData.csv&quot; &quot;M2_df_MoatsData.csv&quot; 
+ [7] &quot;M3_df_MoatsData.csv&quot;  &quot;M4_df_MoatsData.csv&quot;  &quot;M5_df_MoatsData.csv&quot; 
+[10] &quot;M6_df_MoatsData.csv&quot;  &quot;M7_df_MoatsData.csv&quot;  &quot;M8_df_MoatsData.csv&quot; 
+[13] &quot;M9_df_MoatsData.csv&quot; </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>2.2 Create a temporary place for files</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4yIENyZWF0ZSBhIHRlbXBvcmFyeSBwbGFjZSBmb3IgZmlsZXMgXG50ZW1wIDwtIGxhcHBseShmaWxlcywgZnJlYWQsIHNlcD0gXCIsXCIpXG5wcmludCh0ZW1wKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4yIENyZWF0ZSBhIHRlbXBvcmFyeSBwbGFjZSBmb3IgZmlsZXMgXG50ZW1wIDwtIGxhcHBseShmaWxlcywgZnJlYWQsIHNlcD0gXCIsXCIpXG5gYGAifQ== -->
 <pre class="r"><code>## 2.2 Create a temporary place for files 
-temp &lt;- lapply(files, fread, sep= &quot;,&quot;)
-print(temp)</code></pre>
+temp &lt;- lapply(files, fread, sep= &quot;,&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoibGlzdCgpXG4ifQ== -->
-<pre><code>list()</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gRlVOKFhbW2ldXSwgLi4uKSA6IFxuICBGaWxlICdNMV9kZl9Nb2F0c0RhdGEuY3N2JyBkb2VzIG5vdCBleGlzdCBvciBpcyBub24tcmVhZGFibGUuIGdldHdkKCk9PScvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19LUkxfU01SMjAxOS8wNi4gTU9BVFMgcmVwbGljYXRpb24gdmVyaWZpY2F0aW9uJ1xuIn0= -->
+<pre><code>Error in FUN(X[[i]], ...) : 
+  File 'M1_df_MoatsData.csv' does not exist or is non-readable. getwd()=='/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification'</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>2.3 Create a new vector for Moats data logs</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi4zIENyZWF0ZSBhIG5ldyB2ZWN0b3IgZm9yIE1vYXRzIGRhdGEgbG9ncyBcbiMgXCJNMDF0aHJ1TTEzTW9hdHNsb2dfZGF0YVwiIHZpYSByYmluZFxuTTAxdGhydU0xM21vYXRzbG9nX2RhdGEgPC0gcmJpbmRsaXN0KHRlbXApXG5wcmludChNMDF0aHJ1TTEzbW9hdHNsb2dfZGF0YSlcbmBgYCJ9 -->
-<pre class="r"><code>## 2.3 Create a new vector for Moats data logs 
-# &quot;M01thruM13Moatslog_data&quot; via rbind
-M01thruM13moatslog_data &lt;- rbindlist(temp)
-print(M01thruM13moatslog_data)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5jb2wiOjAsIm5yb3ciOjB9LCJyZGYiOiJINHNJQUFBQUFBQUFBMjFRV3c2Q01CQmNIc1ZBZ3BKNER2cGpURHlBOFFCR0UzNHJvQkt4SlZDaXAwZTNoU2JhMEovdXpreG5aM3ZjWjVzb2l3REFBeTl3d0NOWUFqbWZEdWtPd0hleGNjQ0hVTjF2RksxQm56K0M1RFhyT2l5U0h6QXFtR1QwMnJKbmFjbkRWcndvUjF3OWllZjhESm1NSkF5V1lDRWFXUW1PRWxmbElkWm9wN1dBVmMrVlpaSG05NTQvMHEyS3Arbnh4UE8xR3VsL0ppc3lXUVVsdjFXOE5FbHJkaW5ycVZuaVhqbzViZHFLUy9NUGlIWlVDc21NTHNwRmJSQzlHd3hmQmhXVFFJWUJBQUE9In0= -->
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[],"data":[],"options":{"columns":{"min":{},"max":[10],"total":[0]},"rows":{"min":[10],"max":[10],"total":[0]},"pages":{}}}
-  </script>
-</div>
-<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>2.4 Setting new working directory</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi40IFNldHRpbmcgbmV3IHdvcmtpbmcgZGlyZWN0b3J5IGZvciBvdXRwdXQgZmlsZSBvcmdhbml6YXRpb25cbiNFZmZvcnQgSVNPIGF2b2lkaW5nIGR1cGxpY2F0ZXNcblxua25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKVxua25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXIgPSBcIi9Vc2Vycy9rYXRoZXJpbmVyb3ZpbnNraS9HSVQvTldGU0MuTVVLX0tSTF9TTVIyMDE5LzA2LiBNT0FUUyByZXBsaWNhdGlvbiB2ZXJpZmljYXRpb25cIilcbmBgYCJ9 -->
-<pre class="r"><code>## 2.4 Setting new working directory for output file organization
-#Effort ISO avoiding duplicates
-
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = &quot;/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>2.5 Write the new csv document</p>
+<p>2.4 Write the new csv document</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMi41IFdyaXRlIHRoZSBuZXcgY3N2IGRvY3VtZW50IHwgXG4jIFwiTTAxdGhydU0xM21vYXRzbG9nXCIgY2FuIHVuY29tbWVudCB0aGlzIGNvbW1hbmQgbGluZSBhcyBuZWVkZWRcbiN3cml0ZS5jc3YoTTAxdGhydU0xM21vYXRzbG9nX2RhdGEsIGZpbGUgPSBcIk0wMXRocnVNMTNtb2F0c2xvZy5jc3ZcIiwgcm93Lm5hbWVzID0gRkFMU0UpXG5cbmBgYCJ9 -->
@@ -1927,7 +1894,7 @@ dml2 &lt;- dml %&gt;% distinct() </code></pre>
 <p>3.1b Sub sampling dataframe “dml”</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMy4xYiBTdWIgc2FtcGxpbmcgZGF0YWZyYW1lIFwiZG1sXCIgIFxuIyMgY3JlYXRpbmcgYSBzdWIgc2FtcGxlIG9mIHRoZSBkYXRhIG1vYXRzIGxvZyBkbWwgZGF0YWZyYW1lIHRvIGFsbG93IGZvciBxdWljayBncmFwaHMgXG5cblxuI3N1YnNhbXBsZSBldmVyeSAxN3RoIHJvdyAoYmVjYXVzZSBwcmltZSBudW1iZXJzIGFyZSBpbmRlZWQgY29vbClcbmRtbCA8LSBkbWwgJT4lIGFycmFuZ2UobW9hdHMsIGRhdGVUaW1lKSAlPiUgZmlsdGVyKHJvd19udW1iZXIoKSAlJSAxNyA9PSAwKVxuXG53cml0ZS5jc3YoZG1sLCBmaWxlID0gXCJNMDF0aHJ1TTEzbW9hdHNsb2dfbjE3LmNzdlwiLCByb3cubmFtZXMgPSBGQUxTRSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMy4xYiBTdWIgc2FtcGxpbmcgZGF0YWZyYW1lIFwiZG1sXCIgIFxuIyMgY3JlYXRpbmcgYSBzdWIgc2FtcGxlIG9mIHRoZSBkYXRhIG1vYXRzIGxvZyBkbWwgZGF0YWZyYW1lIHRvIGFsbG93IGZvciBxdWljayBncmFwaHMgXG5cblxuI3N1YnNhbXBsZSBldmVyeSAxN3RoIHJvdyAoYmVjYXVzZSBwcmltZSBudW1iZXJzIGFyZSBpbmRlZWQgY29vbClcbmRtbCA8LSBkbWwgJT4lIGFycmFuZ2UobW9hdHMsIGRhdGVUaW1lKSAlPiUgZmlsdGVyKHJvd19udW1iZXIoKSAlJSAxNyA9PSAwKVxuXG4jd3JpdGUuY3N2KGRtbCwgZmlsZSA9IFwiTTAxdGhydU0xM21vYXRzbG9nX24xNy5jc3ZcIiwgcm93Lm5hbWVzID0gRkFMU0UpXG5gYGAifQ== -->
 <pre class="r"><code>## 3.1b Sub sampling dataframe &quot;dml&quot;  
 ## creating a sub sample of the data moats log dml dataframe to allow for quick graphs 
 
@@ -1935,7 +1902,7 @@ dml2 &lt;- dml %&gt;% distinct() </code></pre>
 #subsample every 17th row (because prime numbers are indeed cool)
 dml &lt;- dml %&gt;% arrange(moats, dateTime) %&gt;% filter(row_number() %% 17 == 0)
 
-write.csv(dml, file = &quot;M01thruM13moatslog_n17.csv&quot;, row.names = FALSE)</code></pre>
+#write.csv(dml, file = &quot;M01thruM13moatslog_n17.csv&quot;, row.names = FALSE)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1968,7 +1935,7 @@ dim(dml)</code></pre>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>#4.) Creating dateTime objects</p>
-<p>4.0 establish the dateTime objects</p>
+<p>4.0 Establish the dateTime objects</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyA0LjAgZXN0YWJsaXNoIHRoZSBkYXRlIHRpbWUgb2JqZWN0IG9mIHRoZSBDU1YgfFxuZG1sJGRhdGVUaW1lIDwtIGFzLlBPU0lYY3QoZG1sJGRhdGVUaW1lLCBmb3JtYXQ9XCIlWS0lbS0lZCAlSDolTTolT1NcIilcblJlZmVyZW5jZVRpbWUgPC0gYXMuUE9TSVhjdChcIjIwMTktMDktMjAgMjM6NTk6MDBcIilcbmNsYXNzKFJlZmVyZW5jZVRpbWUpXG5cbiMgUUEgY2hlY2tcbmRpbShkbWwpXG5gYGAifQ== -->
@@ -2093,34 +2060,13 @@ dml$ObservationTime &lt;- format(as.POSIXct(dml$dateTime) ,format = &quot;%H:%M:
 <p>6.5 Day / Night Assignments</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgNi41IERheSAvIE5pZ2h0IEFzc2lnbm1lbnRzIFxuIyBVc2luZyB0aGUgXCJjYXNlX3doZW5cIiBmdW5jdGlvbiBpbiB0aGUgdGlkeXZlcnNlIGluIHRoZSBwbGFjZSBvZiBhIGxvb3BcblxuZG1sIDwtIGRtbCAlPiUgbXV0YXRlKHBlcmlvZD1jYXNlX3doZW4oXG4gICAgICAgICAgICAgICAgICAgICAgICAgIChPYnNlcnZhdGlvbkRhdGUgPj0gXCIyMDE5LTA5LTIzXCIpIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvbkRhdGUgPD1cIjIwMTktMTAtMDVcIikgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICYgKE9ic2VydmF0aW9uVGltZSA+PSBcIjEyOjAwOjAwXCIpIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvblRpbWUgPD1cIjIxOjAwOjAwXCIpIH5cIm5pZ2h0XCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAoT2JzZXJ2YXRpb25EYXRlID49IFwiMjAxOS0xMC0wNVwiKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvbkRhdGUgPD0gXCIyMDE5LTEwLTMwXCIpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICYgKE9ic2VydmF0aW9uVGltZSA+PSBcIjEyOjMwOjAwXCIpIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvblRpbWUgPD1cIjIxOjAwOjAwXCIpIH5cIm5pZ2h0XCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAoT2JzZXJ2YXRpb25EYXRlID49IFwiMjAxOS0wOS0yM1wiKSBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgJiAoT2JzZXJ2YXRpb25EYXRlIDw9XCIyMDE5LTEwLTA1XCIpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICYgKChPYnNlcnZhdGlvblRpbWUgPj0gXCIyMTowMTowMFwiKSBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgfCAoT2JzZXJ2YXRpb25UaW1lIDw9XCIxMTo1OTowMFwiKSkgflwiZGF5XCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAoT2JzZXJ2YXRpb25EYXRlID49IFwiMjAxOS0xMC0wNVwiKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvbkRhdGUgPD0gXCIyMDE5LTEwLTMwXCIpXG4gICAgICAgICAgICAgICAgICAgICAgICAgICYgKChPYnNlcnZhdGlvblRpbWUgPj0gXCIyMTowMTowMFwiKVxuICAgICAgICAgICAgICAgICAgICAgICAgICB8IChPYnNlcnZhdGlvblRpbWUgPD0gXCIxMjoyOTowMFwiKSkgflwiZGF5XCIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgIFRSVUUgflwib3RoZXJcIlxuICAgICAgICAgICAgICAgICAgICAgICAgKVxuXG4gICAgICAgICAgICAgICAgICAgICkgXG5gYGAifQ== -->
-<pre class="r"><code>## 6.5 Day / Night Assignments 
-# Using the &quot;case_when&quot; function in the tidyverse in the place of a loop
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuIyMgMS4pIFNldCB3b3JraW5nIGRpcmVjdG9yeVxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxua25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKVxuXG5rbml0cjo6b3B0c19rbml0JHNldChyb290LmRpciA9IFwiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfS1JMX1NNUjIwMTkvMDYuIE1PQVRTIHJlcGxpY2F0aW9uIHZlcmlmaWNhdGlvblwiKVxuYGBgIn0= -->
+<pre class="r"><code>#*********************************
+## 1.) Set working directory
+#*********************************
+knitr::opts_chunk$set(echo = TRUE)
 
-dml &lt;- dml %&gt;% mutate(period=case_when(
-                          (ObservationDate &gt;= &quot;2019-09-23&quot;) 
-                          &amp; (ObservationDate &lt;=&quot;2019-10-05&quot;) 
-                          &amp; (ObservationTime &gt;= &quot;12:00:00&quot;) 
-                          &amp; (ObservationTime &lt;=&quot;21:00:00&quot;) ~&quot;night&quot;,
-                          
-                          (ObservationDate &gt;= &quot;2019-10-05&quot;)
-                          &amp; (ObservationDate &lt;= &quot;2019-10-30&quot;)
-                          &amp; (ObservationTime &gt;= &quot;12:30:00&quot;) 
-                          &amp; (ObservationTime &lt;=&quot;21:00:00&quot;) ~&quot;night&quot;,
-                          
-                          (ObservationDate &gt;= &quot;2019-09-23&quot;) 
-                          &amp; (ObservationDate &lt;=&quot;2019-10-05&quot;)
-                          &amp; ((ObservationTime &gt;= &quot;21:01:00&quot;) 
-                          | (ObservationTime &lt;=&quot;11:59:00&quot;)) ~&quot;day&quot;,
-                          
-                          (ObservationDate &gt;= &quot;2019-10-05&quot;)
-                          &amp; (ObservationDate &lt;= &quot;2019-10-30&quot;)
-                          &amp; ((ObservationTime &gt;= &quot;21:01:00&quot;)
-                          | (ObservationTime &lt;= &quot;12:29:00&quot;)) ~&quot;day&quot;,
-                          TRUE ~&quot;other&quot;
-                        )
-
-                    ) </code></pre>
+knitr::opts_knit$set(root.dir = &quot;/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -2235,7 +2181,7 @@ filteredFrame$treatment &lt;- factor(filteredFrame$treatment)</code></pre>
 <h4>9.2.1 All Change Day Period Boxplot</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9hbGxjaGdfZGF5IDwtIGdncGxvdChzdWJzZXQoQ2RtbFtDZG1sJHRyZWF0bWVudCA9PSBcImFsbGNoYW5nZVwiLCBdLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlcmlvZCAlaW4lIChcImRheVwiKSksIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9bW9hdHMsIHk9YVRlbXBlcmF0dXJlLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkpICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0X3N1bW1hcnkoZnVuPW1lYW4sIGdlb209XCJwb2ludFwiLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZT0yLCBjb2xvcj1cInJlZFwiKSAgKyBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21fYm94cGxvdCgpICtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdndGl0bGUoXCJBbGwgQ2hhbmdlIERheSBQZXJpb2QgQm94cGxvdFwiKVxuXG5cbnNpbXBsZXBsb3RfYWxsY2hnX2RheVxuXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9hbGxjaGdfZGF5IDwtIGdncGxvdChzdWJzZXQoQ2RtbFtDZG1sJHRyZWF0bWVudCA9PSBcImFsbGNoYW5nZVwiLCBdLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlcmlvZCAlaW4lIChcImRheVwiKSksIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9bW9hdHMsIHk9YVRlbXBlcmF0dXJlLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkpICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0X3N1bW1hcnkoZnVuPW1lYW4sIGdlb209XCJwb2ludFwiLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZT0yLCBjb2xvcj1cInJlZFwiKSAgKyBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21fYm94cGxvdCgpICtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdndGl0bGUoXCJBbGwgQ2hhbmdlIFRyZWF0bWVudCwgQXF1YXJpdW0gVGVtcGVyYXR1cmUsRGF5IFBlcmlvZCBCb3hwbG90XCIpXG5cblxuc2ltcGxlcGxvdF9hbGxjaGdfZGF5XG5cblxuYGBgIn0= -->
 <pre class="r"><code>simpleplot_allchg_day &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;allchange&quot;, ], 
                                           period %in% (&quot;day&quot;)), 
                                           aes(x=moats, y=aTemperature, 
@@ -2243,7 +2189,7 @@ filteredFrame$treatment &lt;- factor(filteredFrame$treatment)</code></pre>
                                           stat_summary(fun=mean, geom=&quot;point&quot;, 
                                                         size=2, color=&quot;red&quot;)  + 
                                           geom_boxplot() +
-                                          ggtitle(&quot;All Change Day Period Boxplot&quot;)
+                                          ggtitle(&quot;All Change Treatment, Aquarium Temperature,Day Period Boxplot&quot;)
 
 
 simpleplot_allchg_day
@@ -2256,7 +2202,7 @@ simpleplot_allchg_day
 <h4>9.2.2 All Change Night Period Boxplot</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9hbGxjaGdfbmlnaHQgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09IFwiYWxsY2hhbmdlXCIsIF0sIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVyaW9kICVpbiUgKFwibmlnaHRcIikpLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91cj10cmVhdG1lbnQpKSArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdF9zdW1tYXJ5KGZ1bj1tZWFuLCBnZW9tPVwicG9pbnRcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemU9MiwgY29sb3I9XCJyZWRcIikgICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX2JveHBsb3QoKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKFwiQWxsIENoYW5nZSBOaWdodCBQZXJpb2QgQm94cGxvdFwiKVxuXG5zaW1wbGVwbG90X2FsbGNoZ19uaWdodFxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9hbGxjaGdfbmlnaHQgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09IFwiYWxsY2hhbmdlXCIsIF0sIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVyaW9kICVpbiUgKFwibmlnaHRcIikpLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91cj10cmVhdG1lbnQpKSArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdF9zdW1tYXJ5KGZ1bj1tZWFuLCBnZW9tPVwicG9pbnRcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemU9MiwgY29sb3I9XCJyZWRcIikgICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX2JveHBsb3QoKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKFwiQWxsIENoYW5nZSBUcmVhdG1lbnQsIEFxdWFyaXVtIFRlbXBlcmF0dXJlLCBOaWdodCBQZXJpb2QgQm94cGxvdFwiKVxuXG5zaW1wbGVwbG90X2FsbGNoZ19uaWdodFxuXG5gYGAifQ== -->
 <pre class="r"><code>simpleplot_allchg_night &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;allchange&quot;, ], 
                                           period %in% (&quot;night&quot;)), 
                                           aes(x=moats, y=aTemperature, 
@@ -2264,7 +2210,7 @@ simpleplot_allchg_day
                                           stat_summary(fun=mean, geom=&quot;point&quot;, 
                                                         size=2, color=&quot;red&quot;)  + 
                                           geom_boxplot() +
-                                          ggtitle(&quot;All Change Night Period Boxplot&quot;)
+                                          ggtitle(&quot;All Change Treatment, Aquarium Temperature, Night Period Boxplot&quot;)
 
 simpleplot_allchg_night
 </code></pre>
@@ -2276,11 +2222,11 @@ simpleplot_allchg_night
 <h4>9.2.3 All Change Timeseries</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9hbGxjaGdfdGltZXNlcmllcyA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gXCJhbGxjaGFuZ2VcIiwgXSkpK1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PWRhdGVUaW1lLCB5PWFUZW1wZXJhdHVyZSkgKyBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX3BvaW50KGFlcyhjb2xvdXI9bW9hdHMsIHBvaW50PSkpICtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKFwiQWxsIENoYW5nZSBUcmVhdG1lbnQgVGltZXNlcmllc1wiKVxuXG5zaW1wbGVwbG90X2FsbGNoZ190aW1lc2VyaWVzXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9hbGxjaGdfdGltZXNlcmllcyA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gXCJhbGxjaGFuZ2VcIiwgXSkpK1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PWRhdGVUaW1lLCB5PWFUZW1wZXJhdHVyZSkgKyBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX3BvaW50KGFlcyhjb2xvdXI9bW9hdHMsIHBvaW50PSkpICtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKFwiQWxsIENoYW5nZSBUcmVhdG1lbnQsIEFxdWFyaXVtIFRlbXBlcmF0dXJlLCBUaW1lc2VyaWVzXCIpXG5cbnNpbXBsZXBsb3RfYWxsY2hnX3RpbWVzZXJpZXNcbmBgYCJ9 -->
 <pre class="r"><code>simpleplot_allchg_timeseries &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;allchange&quot;, ]))+
                                   aes(x=dateTime, y=aTemperature) + 
                                   geom_point(aes(colour=moats, point=)) +
-                                  ggtitle(&quot;All Change Treatment Timeseries&quot;)
+                                  ggtitle(&quot;All Change Treatment, Aquarium Temperature, Timeseries&quot;)
 
 simpleplot_allchg_timeseries</code></pre>
 <!-- rnb-source-end -->
@@ -2291,7 +2237,7 @@ simpleplot_allchg_timeseries</code></pre>
 <h4>9.2.4 Current Day Period Boxplot</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9jdXJfZGF5IDwtIGdncGxvdChzdWJzZXQoQ2RtbFtDZG1sJHRyZWF0bWVudCA9PSBcImN1cnJlbnRcIiwgXSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwZXJpb2QgJWluJSAoXCJkYXlcIikpLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91cj10cmVhdG1lbnQpKSArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdF9zdW1tYXJ5KGZ1bj1tZWFuLCBnZW9tPVwicG9pbnRcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemU9MiwgY29sb3I9XCJyZWRcIikgICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX2JveHBsb3QoKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKFwiQ3VycmVudCBDb25kaXRpb25zIERheSBQZXJpb2QgQm94cGxvdFwiKVxuXG5cbnNpbXBsZXBsb3RfY3VyX2RheVxuXG5cbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9jdXJfZGF5IDwtIGdncGxvdChzdWJzZXQoQ2RtbFtDZG1sJHRyZWF0bWVudCA9PSBcImN1cnJlbnRcIiwgXSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwZXJpb2QgJWluJSAoXCJkYXlcIikpLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91cj10cmVhdG1lbnQpKSArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdF9zdW1tYXJ5KGZ1bj1tZWFuLCBnZW9tPVwicG9pbnRcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemU9MiwgY29sb3I9XCJyZWRcIikgICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX2JveHBsb3QoKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKFwiQ3VycmVudCBDb25kaXRpb25zIFRyZWF0bWVudCwgQXF1YXJpdW0gVGVtcGVyYXR1cmUsIERheSBQZXJpb2QgQm94cGxvdFwiKVxuXG5cbnNpbXBsZXBsb3RfY3VyX2RheVxuXG5cbmBgYCJ9 -->
 <pre class="r"><code>simpleplot_cur_day &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;current&quot;, ], 
                                           period %in% (&quot;day&quot;)), 
                                           aes(x=moats, y=aTemperature, 
@@ -2299,7 +2245,7 @@ simpleplot_allchg_timeseries</code></pre>
                                           stat_summary(fun=mean, geom=&quot;point&quot;, 
                                                         size=2, color=&quot;red&quot;)  + 
                                           geom_boxplot() +
-                                          ggtitle(&quot;Current Conditions Day Period Boxplot&quot;)
+                                          ggtitle(&quot;Current Conditions Treatment, Aquarium Temperature, Day Period Boxplot&quot;)
 
 
 simpleplot_cur_day
@@ -2312,7 +2258,7 @@ simpleplot_cur_day
 <h4>9.2.5 Current Night Period Boxplot</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9jdXJfbmlnaHQgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09IFwiY3VycmVudFwiLCBdLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlcmlvZCAlaW4lIChcIm5pZ2h0XCIpKSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD1tb2F0cywgeT1hVGVtcGVyYXR1cmUsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXI9dHJlYXRtZW50KSkgKyBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRfc3VtbWFyeShmdW49bWVhbiwgZ2VvbT1cInBvaW50XCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplPTIsIGNvbG9yPVwicmVkXCIpICArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9ib3hwbG90KCkgK1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZShcIkN1cnJlbnQgQ29uZGl0aW9ucyBOaWdodCBQZXJpb2QgQm94cGxvdFwiKVxuXG5cbnNpbXBsZXBsb3RfY3VyX25pZ2h0XG5cblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9jdXJfbmlnaHQgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09IFwiY3VycmVudFwiLCBdLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlcmlvZCAlaW4lIChcIm5pZ2h0XCIpKSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD1tb2F0cywgeT1hVGVtcGVyYXR1cmUsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXI9dHJlYXRtZW50KSkgKyBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRfc3VtbWFyeShmdW49bWVhbiwgZ2VvbT1cInBvaW50XCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplPTIsIGNvbG9yPVwicmVkXCIpICArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9ib3hwbG90KCkgK1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZShcIkN1cnJlbnQgQ29uZGl0aW9ucyBUcmVhdG1lbnQsIEFxdWFyaXVtIFRlbXBlcmF0dXJlLCBOaWdodCBQZXJpb2QgQm94cGxvdFwiKVxuXG5cbnNpbXBsZXBsb3RfY3VyX25pZ2h0XG5cblxuYGBgIn0= -->
 <pre class="r"><code>simpleplot_cur_night &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;current&quot;, ], 
                                           period %in% (&quot;night&quot;)), 
                                           aes(x=moats, y=aTemperature, 
@@ -2320,7 +2266,7 @@ simpleplot_cur_day
                                           stat_summary(fun=mean, geom=&quot;point&quot;, 
                                                         size=2, color=&quot;red&quot;)  + 
                                           geom_boxplot() +
-                                          ggtitle(&quot;Current Conditions Night Period Boxplot&quot;)
+                                          ggtitle(&quot;Current Conditions Treatment, Aquarium Temperature, Night Period Boxplot&quot;)
 
 
 simpleplot_cur_night
@@ -2333,16 +2279,443 @@ simpleplot_cur_night
 <h4>9.2.6 Current Conditions Timeseries</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9jdXJfdGltZXNlcmllcyA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gXCJjdXJyZW50XCIsIF0pKStcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD1kYXRlVGltZSwgeT1hVGVtcGVyYXR1cmUpICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9wb2ludChhZXMoY29sb3VyPW1vYXRzLCBwb2ludD0pKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZShcIkN1cnJlbnQgQ29uZGl0aW9ucyBUcmVhdG1lbnQgVGltZXNlcmllc1wiKVxuXG5zaW1wbGVwbG90X2N1cl90aW1lc2VyaWVzXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9jdXJfdGltZXNlcmllcyA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gXCJjdXJyZW50XCIsIF0pKStcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD1kYXRlVGltZSwgeT1hVGVtcGVyYXR1cmUpICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9wb2ludChhZXMoY29sb3VyPW1vYXRzLCBwb2ludD0pKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZShcIkN1cnJlbnQgQ29uZGl0aW9ucyBUcmVhdG1lbnQsIEFxdWFyaXVtIFRlbXBlcmF0dXJlLCBUaW1lc2VyaWVzXCIpXG5cbnNpbXBsZXBsb3RfY3VyX3RpbWVzZXJpZXNcbmBgYCJ9 -->
 <pre class="r"><code>simpleplot_cur_timeseries &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;current&quot;, ]))+
                                   aes(x=dateTime, y=aTemperature) + 
                                   geom_point(aes(colour=moats, point=)) +
-                                  ggtitle(&quot;Current Conditions Treatment Timeseries&quot;)
+                                  ggtitle(&quot;Current Conditions Treatment, Aquarium Temperature, Timeseries&quot;)
 
 simpleplot_cur_timeseries</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="high-temperature-day-period-boxplot" class="section level4">
+<h4>9.2.7 High Temperature Day Period Boxplot</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9oaXRlbXBfZGF5IDwtIGdncGxvdChzdWJzZXQoQ2RtbFtDZG1sJHRyZWF0bWVudCA9PSBcImhpZ2h0ZW1wZXJhdHVyZVwiLCBdLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlcmlvZCAlaW4lIChcImRheVwiKSksIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9bW9hdHMsIHk9YVRlbXBlcmF0dXJlLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkpICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0X3N1bW1hcnkoZnVuPW1lYW4sIGdlb209XCJwb2ludFwiLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZT0yLCBjb2xvcj1cInJlZFwiKSAgKyBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21fYm94cGxvdCgpICtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdndGl0bGUoXCJIaWdoIFRlbXBlcmF0dXJlLCBBcXVhcml1bSBUZW1wZXJhdHVyZSwgQ29uZGl0aW9ucyBEYXkgUGVyaW9kIEJveHBsb3RcIilcblxuXG5zaW1wbGVwbG90X2hpdGVtcF9kYXlcbmBgYCJ9 -->
+<pre class="r"><code>simpleplot_hitemp_day &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;hightemperature&quot;, ], 
+                                          period %in% (&quot;day&quot;)), 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment)) + 
+                                          stat_summary(fun=mean, geom=&quot;point&quot;, 
+                                                        size=2, color=&quot;red&quot;)  + 
+                                          geom_boxplot() +
+                                          ggtitle(&quot;High Temperature, Aquarium Temperature, Conditions Day Period Boxplot&quot;)
+
+
+simpleplot_hitemp_day</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="high-temperature-night-period-boxplot" class="section level4">
+<h4>9.2.8 High Temperature Night Period Boxplot</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9oaXRlbXBfbmlnaHQgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09IFwiaGlnaHRlbXBlcmF0dXJlXCIsIF0sIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVyaW9kICVpbiUgKFwibmlnaHRcIikpLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91cj10cmVhdG1lbnQpKSArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdF9zdW1tYXJ5KGZ1bj1tZWFuLCBnZW9tPVwicG9pbnRcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemU9MiwgY29sb3I9XCJyZWRcIikgICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX2JveHBsb3QoKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKFwiSGlnaCBUZW1wZXJhdHVyZSBDb25kaXRpb25zLCBBcXVhcml1bSBUZW1wZXJhdHVyZSwgTmlnaHQgUGVyaW9kIEJveHBsb3RcIilcblxuXG5zaW1wbGVwbG90X2hpdGVtcF9uaWdodFxuXG5cblxuYGBgIn0= -->
+<pre class="r"><code>simpleplot_hitemp_night &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;hightemperature&quot;, ], 
+                                          period %in% (&quot;night&quot;)), 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment)) + 
+                                          stat_summary(fun=mean, geom=&quot;point&quot;, 
+                                                        size=2, color=&quot;red&quot;)  + 
+                                          geom_boxplot() +
+                                          ggtitle(&quot;High Temperature Conditions, Aquarium Temperature, Night Period Boxplot&quot;)
+
+
+simpleplot_hitemp_night
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="high-temperature-timeseries" class="section level4">
+<h4>9.2.9 High Temperature Timeseries</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlcGxvdF9jdXJfdGltZXNlcmllcyA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gXCJjdXJyZW50XCIsIF0pKStcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD1kYXRlVGltZSwgeT1hVGVtcGVyYXR1cmUpICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9wb2ludChhZXMoY29sb3VyPW1vYXRzLCBwb2ludD0pKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZShcIkN1cnJlbnQgQ29uZGl0aW9ucyBBcXVhcml1bSBUZW1wZXJhdHVyZSBUcmVhdG1lbnQgVGltZXNlcmllc1wiKVxuXG5zaW1wbGVwbG90X2N1cl90aW1lc2VyaWVzXG5gYGAifQ== -->
+<pre class="r"><code>simpleplot_cur_timeseries &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;current&quot;, ]))+
+                                  aes(x=dateTime, y=aTemperature) + 
+                                  geom_point(aes(colour=moats, point=)) +
+                                  ggtitle(&quot;Current Conditions Aquarium Temperature Treatment Timeseries&quot;)
+
+simpleplot_cur_timeseries</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="temperature-jumps" class="section level2">
+<h2>10.) Temperature Jumps</h2>
+<div id="creating-new-column" class="section level4">
+<h4>10.0 Creating new column</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTAuMCBDcmVhdGluZyBuZXcgY29sdW1uIC0gc2hvd2luZyB0aGUgZGlmZmVyZW50IGJldHdlZW4gMiBhZGphY2VudCB0aW1lc1xuIyBmaXJzdCBzb3J0IHRoZSBkYXRhIHNvIHlvdSBhcmUgY29tcGFyaW5nIGFkamFjZW50IHRpbWVzXG4jIHRoZW4gYWRkIG5ldyBjb2x1bW5cbiMgdGhlIGRpZmYoKSBmdW5jdGlvbiBjb21wdXRlcyB4W2krbGFnXSAtIHhbaV0sIHRoZSBkZWZhdWx0IHZhbHVlIGlzIGxhZyA9IDFcbmBgYCJ9 -->
+<pre class="r"><code>## 10.0 Creating new column - showing the different between 2 adjacent times
+# first sort the data so you are comparing adjacent times
+# then add new column
+# the diff() function computes x[i+lag] - x[i], the default value is lag = 1</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="difffunction-deltatemplag1-narrative" class="section level4">
+<h4>10.1 diff()function &amp; deltaTempLag1 Narrative</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTAuMSBkaWZmKClmdW5jdGlvbiAgJiBkZWx0YVRlbXBMYWcxIE5hcnJhdGl2ZVxuI3RoZSByZXN1bHQgb2YgdGhlIGRpZmYoKSBmdW5jdGlvbiBoYXMgYSBsZW5ndGggdGhhdCBpcyB0aGUgbGVuZ3RoIG9mIFxuIyB0aGUgb3JpZ2luYWwgdmVjdG9yIC0gbGFnXG5cbiN0aGVyZWZvcmUgbmVlZCB0byBmaWxsIHRoZSBuZXcgdmFyaWFibGUsIGRlbHRhVGVtcExhZzEsXG4jIHdpdGggYygwLGFicyhkaWZmKGFUZW1wZXJhdHVyZSkpKSBpdCBpcyByaWdodCBsZW5ndGggYW5kIGZpcnN0IHZhbHVlIFxuIyAod2l0aCBubyB2YWxpZCBkaWZmKSBpcyB6ZXJvXG5cbiMgY3JlYXRpbmcgYSBuZXcgb2JqZWN0IHRvIGJlIGEgdmFsaWRhdGlvbiBmbGFnIHVuZGVyIG5hbWUgZGVsdGFUZW1wTGFnMVxuXG4jIHdpbGwgY3JlYXRlIGEgbnVtZXJpY2FsIHZhbHVlIHRoYXQgd2lsbCByZXByZXNlbnQgdGhvc2Ugb2JzZXJ2YXRpb25zIFxuIyB0byBiZSBmaWx0ZXJlZCBvdXRcbmBgYCJ9 -->
+<pre class="r"><code>## 10.1 diff()function  &amp; deltaTempLag1 Narrative
+#the result of the diff() function has a length that is the length of 
+# the original vector - lag
+
+#therefore need to fill the new variable, deltaTempLag1,
+# with c(0,abs(diff(aTemperature))) it is right length and first value 
+# (with no valid diff) is zero
+
+# creating a new object to be a validation flag under name deltaTempLag1
+
+# will create a numerical value that will represent those observations 
+# to be filtered out</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="creating-deltatemplag1" class="section level4">
+<h4>10.2 Creating deltaTempLag1</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTAuMiBDcmVhdGluZyBkZWx0YVRlbXBMYWcxXG5DZG1sIDwtIGZpbHRlcmVkRnJhbWUgJT4lIGFycmFuZ2UobW9hdHMsIGRhdGVUaW1lKSU+JSBcbiAgbXV0YXRlKGRlbHRhVGVtcExhZzEgPSBjKDAsYWJzKGRpZmYoYVRlbXBlcmF0dXJlKSkpKVxuI3RoZSBkaWZmIHZhbHVlIGNvbXBhcmluZyB0aGUgbGFzdCB0aW1lIGluIE0wMSB0byB0aGUgZmlyc3QgdGltZSBpbiBNMDIgKGV0Yy4pIFxuIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaXMgbm90IHZhbGlkLCBcbiMgU2V0IHRob3NlIHRvIHplcm9cbkNkbWwkZGVsdGFUZW1wTGFnMVtsYWcoQ2RtbCRtb2F0cykgIT0gQ2RtbCRtb2F0c10gPC0gMFxuXG4jdGhpcyBzaG93cyBhbGwgdGhlIHJvd3MgdGhhdCBqdW1wIG1vcmUgdGhhdCAxIGRlZ3JlZSBmcm9tIHByZXZpb3VzIHJvdyBcbiMgICAgICAgICAgICAgICAgICAgICAoaW5nb3Jpbmcgcm93cyB0aGF0IGFyZSB0cmFuc2l0aW9uIGZyb20gb25lIG1vYXRzIHRvIGFub3RoZXIpXG5DZG1sICU+JSBmaWx0ZXIoZGVsdGFUZW1wTGFnMSA+MSlcbmBgYCJ9 -->
+<pre class="r"><code>## 10.2 Creating deltaTempLag1
+Cdml &lt;- filteredFrame %&gt;% arrange(moats, dateTime)%&gt;% 
+  mutate(deltaTempLag1 = c(0,abs(diff(aTemperature))))
+#the diff value comparing the last time in M01 to the first time in M02 (etc.) 
+#                                                                 is not valid, 
+# Set those to zero
+Cdml$deltaTempLag1[lag(Cdml$moats) != Cdml$moats] &lt;- 0
+
+#this shows all the rows that jump more that 1 degree from previous row 
+#                     (ingoring rows that are transition from one moats to another)
+Cdml %&gt;% filter(deltaTempLag1 &gt;1)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="creating-tdeltathreshold" class="section level4">
+<h4>10.3 Creating tDeltaThreshold</h4>
+<p>```{r10.3 Creating tDeltaThreshold}</p>
+</div>
+</div>
+<div id="creating-tdeltathreshold-1" class="section level2">
+<h2>10.3 Creating tDeltaThreshold</h2>
+<p>#Creating another column of variables to be able to graph the temperature jumps Cdml &lt;- Cdml %&gt;% mutate(tDeltaThreshold = if_else(deltaTempLag1 &gt; 0.5, TRUE, FALSE)) ```</p>
+</div>
+<div id="calculating-averages-by-treatment-daynight" class="section level2">
+<h2>11.) Calculating Averages by Treatment &amp; Day/Night</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTEuMCBJbnRlcmNlcHQgTmFycmF0aXZlXG4jIFRoZXNlIGF2ZXJhZ2VzIHdpbGwgYmUgdGhlIHlpbnRlcmNlcHRzIGluIHBsb3RzXG4jIGV4YW1wbGUgb2Ygd2hhdCB0byBwdXQgaW50byB3aXRoIGdncGxvdCBcIiAgXG4jICAgIGdlb21faGxpbmUoeWludGVyY2VwdCA9IGR0ZW1wZXJhdHVyJGBtZWFuKGFUZW1wZXJhdHVyZSlgKSAgXG5gYGAifQ== -->
+<pre class="r"><code>## 11.0 Intercept Narrative
+# These averages will be the yintercepts in plots
+# example of what to put into with ggplot &quot;  
+#    geom_hline(yintercept = dtemperatur$`mean(aTemperature)`)  </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="all-treatments-day-night" class="section level4">
+<h4>11.1 All Treatments (Day &amp; Night)</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTEuMSBBbGwgVHJlYXRtZW50cyAoRGF5ICYgTmlnaHQpXG4jIE5pZ2h0IFBlcmlvZFxuc3Vic2V0TmlnaHRhVGVtcCA8LSBzdWJzZXQoZmlsdGVyZWRGcmFtZSwgcGVyaW9kID09IFwibmlnaHRcIiAmIGFUZW1wZXJhdHVyZSA+MCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzZWxlY3QgPSBjKCBtb2F0cywgZGF0ZVRpbWUsIHRyZWF0bWVudCwgYVRlbXBlcmF0dXJlICkpXG5cbiMgRGF5IFBlcmlvZFxuc3Vic2V0RGF5YVRlbXAgPC0gc3Vic2V0KGZpbHRlcmVkRnJhbWUsIHBlcmlvZCA9PSBcImRheVwiICYgYVRlbXBlcmF0dXJlID4wLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ID0gYyggbW9hdHMsIGRhdGVUaW1lLCB0cmVhdG1lbnQsIGFUZW1wZXJhdHVyZSApKVxuYGBgIn0= -->
+<pre class="r"><code>## 11.1 All Treatments (Day &amp; Night)
+# Night Period
+subsetNightaTemp &lt;- subset(filteredFrame, period == &quot;night&quot; &amp; aTemperature &gt;0,
+                                  select = c( moats, dateTime, treatment, aTemperature ))
+
+# Day Period
+subsetDayaTemp &lt;- subset(filteredFrame, period == &quot;day&quot; &amp; aTemperature &gt;0,
+                           select = c( moats, dateTime, treatment, aTemperature ))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="current-treatment-daynight-averages" class="section level4">
+<h4>11.2 Current Treatment Day/Night Averages</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTEuMiBDdXJyZW50IFRyZWF0bWVudFxuIyBDdXJyZW50IE5pZ2h0XG5jdXJOaWdodGFUZW1wIDwtIHN1YnNldChDZG1sLCBwZXJpb2QgPT0gXCJuaWdodFwiICYgdHJlYXRtZW50ID09IFwiY3VycmVudFwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ID0gYyhkYXRlVGltZSwgYVRlbXBlcmF0dXJlICkpXG5hdmdfY3VyTmlnaHRhVGVtcCA8LSBtZWFuKGN1ck5pZ2h0YVRlbXAkYVRlbXBlcmF0dXJlKVxucHJpbnQoYXZnX2N1ck5pZ2h0YVRlbXApXG4jIFsxXSAxMS45NTEyMlxuXG5cbiMgQ3VycmVudCBEYXlcbmN1ckRheWFUZW1wIDwtIHN1YnNldChDZG1sLCBwZXJpb2QgPT0gXCJkYXlcIiAmIHRyZWF0bWVudCA9PSBcImN1cnJlbnRcIixcbiAgICAgICAgICAgICAgICAgICAgICAgIHNlbGVjdCA9IGMoZGF0ZVRpbWUsIGFUZW1wZXJhdHVyZSApKVxuYXZnX2N1ckRheWFUZW1wIDwtIG1lYW4oY3VyRGF5YVRlbXAkYVRlbXBlcmF0dXJlKVxucHJpbnQoYXZnX2N1ckRheWFUZW1wKVxuIyBbMV0gMTEuMDk5ODNcbmBgYCJ9 -->
+<pre class="r"><code>## 11.2 Current Treatment
+# Current Night
+curNightaTemp &lt;- subset(Cdml, period == &quot;night&quot; &amp; treatment == &quot;current&quot;,
+                           select = c(dateTime, aTemperature ))
+avg_curNightaTemp &lt;- mean(curNightaTemp$aTemperature)
+print(avg_curNightaTemp)
+# [1] 11.95122
+
+
+# Current Day
+curDayaTemp &lt;- subset(Cdml, period == &quot;day&quot; &amp; treatment == &quot;current&quot;,
+                        select = c(dateTime, aTemperature ))
+avg_curDayaTemp &lt;- mean(curDayaTemp$aTemperature)
+print(avg_curDayaTemp)
+# [1] 11.09983</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="all-change-treatment-daynight-averages" class="section level4">
+<h4>11.3 All Change Treatment Day/Night Averages</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTEuMyBBbGwgQ2hhbmdlIFRyZWF0bWVudFxuIyBBbGwgQ2hhbmdlIE5pZ2h0XG5hbGxjaGdOaWdodGFUZW1wIDwtIHN1YnNldChDZG1sLCBwZXJpb2QgPT0gXCJuaWdodFwiICYgdHJlYXRtZW50ID09IFwiYWxsY2hhbmdlXCIsXG4gICAgICAgICAgICAgICAgICAgICAgICBzZWxlY3QgPSBjKGRhdGVUaW1lLCBhVGVtcGVyYXR1cmUgKSlcbmF2Z19hbGxjaGdOaWdodGFUZW1wIDwtIG1lYW4oYWxsY2hnTmlnaHRhVGVtcCRhVGVtcGVyYXR1cmUpXG5wcmludChhdmdfYWxsY2hnTmlnaHRhVGVtcClcbiMgWzFdIDEzLjg5ODQ3XG5cbiMgQWxsIENoYW5nZSBEYXlcbmFsbGNoZ0RheWFUZW1wIDwtIHN1YnNldChDZG1sLCBwZXJpb2QgPT0gXCJkYXlcIiAmIHRyZWF0bWVudCA9PSBcImFsbGNoYW5nZVwiLFxuICAgICAgICAgICAgICAgICAgICAgIHNlbGVjdCA9IGMoZGF0ZVRpbWUsIGFUZW1wZXJhdHVyZSApKVxuYXZnX2FsbGNoZ0RheWFUZW1wIDwtIG1lYW4oYWxsY2hnRGF5YVRlbXAkYVRlbXBlcmF0dXJlKVxucHJpbnQoYXZnX2FsbGNoZ0RheWFUZW1wKVxuIyBbMV0gMTIuOTc0NjZcbmBgYCJ9 -->
+<pre class="r"><code>## 11.3 All Change Treatment
+# All Change Night
+allchgNightaTemp &lt;- subset(Cdml, period == &quot;night&quot; &amp; treatment == &quot;allchange&quot;,
+                        select = c(dateTime, aTemperature ))
+avg_allchgNightaTemp &lt;- mean(allchgNightaTemp$aTemperature)
+print(avg_allchgNightaTemp)
+# [1] 13.89847
+
+# All Change Day
+allchgDayaTemp &lt;- subset(Cdml, period == &quot;day&quot; &amp; treatment == &quot;allchange&quot;,
+                      select = c(dateTime, aTemperature ))
+avg_allchgDayaTemp &lt;- mean(allchgDayaTemp$aTemperature)
+print(avg_allchgDayaTemp)
+# [1] 12.97466</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="high-temperature-treatment" class="section level4">
+<h4>11.4 High Temperature Treatment</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBIaWdoIFRlbXBlcmF0dXJlIENvbmRpdGlvbnNcbiMgSGlnaCBUZW1wZXJhdHVyZSBOaWdodFxuaGl0ZW1wTmlnaHRhVGVtcCA8LSBzdWJzZXQoQ2RtbCwgcGVyaW9kID09IFwibmlnaHRcIiAmIHRyZWF0bWVudCA9PSBcImhpZ2h0ZW1wZXJhdHVyZVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ID0gYyhkYXRlVGltZSwgYVRlbXBlcmF0dXJlICkpXG5hdmdfaGl0ZW1wTmlnaHRhVGVtcCA8LSBtZWFuKGhpdGVtcE5pZ2h0YVRlbXAkYVRlbXBlcmF0dXJlKVxucHJpbnQoYXZnX2hpdGVtcE5pZ2h0YVRlbXApXG4jWzFdIDEzLjgwMzk3XG5cbiMgSGlnaCBUZW1wZXJhdHVyZSBEYXlcbmhpdGVtcERheWFUZW1wIDwtIHN1YnNldChDZG1sLCBwZXJpb2QgPT0gXCJkYXlcIiAmIHRyZWF0bWVudCA9PSBcImhpZ2h0ZW1wZXJhdHVyZVwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ID0gYyhkYXRlVGltZSwgYVRlbXBlcmF0dXJlICkpXG5hdmdfaGl0ZW1wRGF5YVRlbXAgPC0gbWVhbihoaXRlbXBEYXlhVGVtcCRhVGVtcGVyYXR1cmUpXG5wcmludChhdmdfaGl0ZW1wRGF5YVRlbXApXG4jWzFdIDEyLjkyMTQ4XG5gYGAifQ== -->
+<pre class="r"><code># High Temperature Conditions
+# High Temperature Night
+hitempNightaTemp &lt;- subset(Cdml, period == &quot;night&quot; &amp; treatment == &quot;hightemperature&quot;,
+                           select = c(dateTime, aTemperature ))
+avg_hitempNightaTemp &lt;- mean(hitempNightaTemp$aTemperature)
+print(avg_hitempNightaTemp)
+#[1] 13.80397
+
+# High Temperature Day
+hitempDayaTemp &lt;- subset(Cdml, period == &quot;day&quot; &amp; treatment == &quot;hightemperature&quot;,
+                           select = c(dateTime, aTemperature ))
+avg_hitempDayaTemp &lt;- mean(hitempDayaTemp$aTemperature)
+print(avg_hitempDayaTemp)
+#[1] 12.92148</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="review-of-all-treatments" class="section level4">
+<h4>11.5 Review of all Treatments</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTEuNSBSZXZpZXcgb2YgYWxsIFRyZWF0bWVudHNcbiMgUmV2aWV3IG9mIDYgbmV3IHZhcmlhYmxlcyBcbmF2Z19hbGxjaGdEYXlhVGVtcFxuYXZnX2FsbGNoZ05pZ2h0YVRlbXBcbmF2Z19jdXJEYXlhVGVtcFxuYXZnX2N1ck5pZ2h0YVRlbXBcbmF2Z19oaXRlbXBEYXlhVGVtcFxuYXZnX2hpdGVtcE5pZ2h0YVRlbXBcbmBgYCJ9 -->
+<pre class="r"><code>## 11.5 Review of all Treatments
+# Review of 6 new variables 
+avg_allchgDayaTemp
+avg_allchgNightaTemp
+avg_curDayaTemp
+avg_curNightaTemp
+avg_hitempDayaTemp
+avg_hitempNightaTemp</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="table-of-averages" class="section level4">
+<h4>11.6 Table of Averages</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTEuNiBUYWJsZSBvZiBBdmVyYWdlc1xubWVhbkNkbWxkYXRlbXAgPC0gZmlsdGVyZWRGcmFtZSAlPiUgZ3JvdXBfYnkodHJlYXRtZW50LCBwZXJpb2QpICU+JSBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN1bW1hcmlzZShtZWFuKGFUZW1wZXJhdHVyZSkpXG4jIEdyb3VwczogICB0cmVhdG1lbnQgWzNdXG4jdHJlYXRtZW50ICAgICAgIHBlcmlvZCBgbWVhbihhVGVtcGVyYXR1cmUpYFxuIzxjaHI+ICAgICAgICAgICA8Y2hyPiAgICAgICAgICAgICAgICAgPGRibD5cbiMgMSBhbGxjaGFuZ2UgICAgICAgZGF5ICAgICAgICAgICAgICAgICAgICAxMy4wXG4jIDIgYWxsY2hhbmdlICAgICAgIG5pZ2h0ICAgICAgICAgICAgICAgICAgMTMuOVxuIyAzIGN1cnJlbnQgICAgICAgICBkYXkgICAgICAgICAgICAgICAgICAgIDExLjFcbiMgNCBjdXJyZW50ICAgICAgICAgbmlnaHQgICAgICAgICAgICAgICAgICAxMi4wXG4jIDUgaGlnaHRlbXBlcmF0dXJlIGRheSAgICAgICAgICAgICAgICAgICAgMTIuOVxuIyA2IGhpZ2h0ZW1wZXJhdHVyZSBuaWdodCAgICAgICAgICAgICAgICAgIDEzLjhcbnByaW50KG1lYW5DZG1sZGF0ZW1wKVxuYGBgIn0= -->
+<pre class="r"><code>## 11.6 Table of Averages
+meanCdmldatemp &lt;- filteredFrame %&gt;% group_by(treatment, period) %&gt;% 
+                                                      summarise(mean(aTemperature))
+# Groups:   treatment [3]
+#treatment       period `mean(aTemperature)`
+#&lt;chr&gt;           &lt;chr&gt;                 &lt;dbl&gt;
+# 1 allchange       day                    13.0
+# 2 allchange       night                  13.9
+# 3 current         day                    11.1
+# 4 current         night                  12.0
+# 5 hightemperature day                    12.9
+# 6 hightemperature night                  13.8
+print(meanCdmldatemp)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="summary-group-by-cdml" class="section level2">
+<h2>12.) Summary &amp; Group by Cdml</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyAxMi4wIENkbWwgRGF5IFN1bW1hcnksIGdyb3VwIGJ5LCBtdXRhdGVcblxuQ2RtbC5kYXluaWdodC5zdW1tYXJ5IDwtIENkbWwgJT4lIGdyb3VwX2J5KHRyZWF0bWVudCwgcGVyaW9kKSAlPiVcbiAgc3VtbWFyaXplKHNkID0gc2QoYVRlbXBlcmF0dXJlLCBuYS5ybSA9IFRSVUUpLCBcbiAgICAgICAgICAgIG1lYW4gPSBtZWFuKGFUZW1wZXJhdHVyZSwgbmEucm0gPSBUUlVFKSwgXG4gICAgICAgICAgICBtZWRpYW4gPSBtZWRpYW4oYVRlbXBlcmF0dXJlLCBuYS5ybSA9IFRSVUUpLFxuICAgICAgICAgICAgSVFSID0gSVFSKGFUZW1wZXJhdHVyZSwgbmEucm0gPSBUUlVFKSxcbiAgICAgICAgICAgIG4gPSBuKCkpICU+JVxuICBtdXRhdGUoc2UgPSBzZC9zcXJ0KG4pKSAlPiVcbiAgbXV0YXRlKGNpID0gc2UqMS45NilcblxuXG53cml0ZS5jc3YoQ2RtbC5kYXluaWdodC5zdW1tYXJ5LCBcIjIwMjAuMDcuMDhfQ2RtbF9kYXluaWdodF9zdW1tYXJ5LmNzdlwiKVxuYGBgIn0= -->
+<pre class="r"><code># 12.0 Cdml Day Summary, group by, mutate
+
+Cdml.daynight.summary &lt;- Cdml %&gt;% group_by(treatment, period) %&gt;%
+  summarize(sd = sd(aTemperature, na.rm = TRUE), 
+            mean = mean(aTemperature, na.rm = TRUE), 
+            median = median(aTemperature, na.rm = TRUE),
+            IQR = IQR(aTemperature, na.rm = TRUE),
+            n = n()) %&gt;%
+  mutate(se = sd/sqrt(n)) %&gt;%
+  mutate(ci = se*1.96)
+
+
+write.csv(Cdml.daynight.summary, &quot;2020.07.08_Cdml_daynight_summary.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="tribble-of-daynight-summary" class="section level4">
+<h4>12.1 Tribble of Day/Night Summary</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGliYmxlOjp0cmliYmxlKFxuICAgICAgICAgfnRyZWF0bWVudCwgfnBlcmlvZCwgICAgICAgICB+c2QsICAgICAgIH5tZWFuLCAgICAgfm1lZGlhbiwgICAgICAgIH5JUVIsICAgIH5uLCAgICAgICAgIH5zZSwgICAgICAgICB+Y2ksXG4gICAgICAgIFwiYWxsY2hhbmdlXCIsICAgXCJkYXlcIiwgMC4zNzI1MDY4NTUsIDEyLjk3MzMwODQxLCAgIDEyLjg5NjYxMSwgIDAuMjQ3ODAyMjUsIDQ5NTZMLCAwLjAwNTI5MTM3NiwgMC4wMTAzNzEwOTcsXG4gICAgICAgIFwiYWxsY2hhbmdlXCIsIFwibmlnaHRcIiwgMC4yNDc1ODg4OTksIDEzLjg5ODU4Mzc2LCAxMy45MjMyMDUyNSwgMC4xOTM2MjI4NzUsIDI4NDNMLCAwLjAwNDY0MzQ3MSwgMC4wMDkxMDEyMDMsXG4gICAgICAgICAgXCJjdXJyZW50XCIsICAgXCJkYXlcIiwgMC4zNDgyMDYwMzEsIDExLjA5NzgyNTc1LCAxMS4wNzY2MDA3NSwgMC4yMDc2OTA1NjMsIDM5NzRMLCAwLjAwNTUyMzYwMiwgMC4wMTA4MjYyNTksXG4gICAgICAgICAgXCJjdXJyZW50XCIsIFwibmlnaHRcIiwgMC4zMDI1MjYzNjksIDExLjk1MDM4ODM3LCAgMTIuMDUyOTkzNSwgMC4xMjIyNjMwNjMsIDIyOTBMLCAwLjAwNjMyMTg2OSwgMC4wMTIzOTA4NjMsXG4gIFwiaGlnaHRlbXBlcmF0dXJlXCIsICAgXCJkYXlcIiwgMC4zNjI5MTMzODYsIDEyLjkyMjU5MDE1LCAgMTIuOTEwMTk3NSwgMC4yODg0NzQ4NzUsIDI2ODdMLCAwLjAwNzAwMTE0NiwgMC4wMTM3MjIyNDcsXG4gIFwiaGlnaHRlbXBlcmF0dXJlXCIsIFwibmlnaHRcIiwgMC4zMTM0MzM5OTUsIDEzLjgwNDM1MDE2LCAxMy44Nzk1NDczOCwgMC4xODg1MDc4NzUsIDE1MDRMLCAwLjAwODA4MjA2MiwgMC4wMTU4NDA4NDJcbiAgKVxuXG5gYGAifQ== -->
+<pre class="r"><code>tibble::tribble(
+         ~treatment, ~period,         ~sd,       ~mean,     ~median,        ~IQR,    ~n,         ~se,         ~ci,
+        &quot;allchange&quot;,   &quot;day&quot;, 0.372506855, 12.97330841,   12.896611,  0.24780225, 4956L, 0.005291376, 0.010371097,
+        &quot;allchange&quot;, &quot;night&quot;, 0.247588899, 13.89858376, 13.92320525, 0.193622875, 2843L, 0.004643471, 0.009101203,
+          &quot;current&quot;,   &quot;day&quot;, 0.348206031, 11.09782575, 11.07660075, 0.207690563, 3974L, 0.005523602, 0.010826259,
+          &quot;current&quot;, &quot;night&quot;, 0.302526369, 11.95038837,  12.0529935, 0.122263063, 2290L, 0.006321869, 0.012390863,
+  &quot;hightemperature&quot;,   &quot;day&quot;, 0.362913386, 12.92259015,  12.9101975, 0.288474875, 2687L, 0.007001146, 0.013722247,
+  &quot;hightemperature&quot;, &quot;night&quot;, 0.313433995, 13.80435016, 13.87954738, 0.188507875, 1504L, 0.008082062, 0.015840842
+  )
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="plots" class="section level2">
+<h2>13.) Plots</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTMuMSBCb3hwbG90IGFUZW1wIGJ5IG1vYXRzXG4jYm94cGxvdChhVGVtcGVyYXR1cmV+bW9hdHMsIENkbWwpXG5cbmdncGxvdChDZG1sLCBhZXModHJlYXRtZW50LCBhVGVtcGVyYXR1cmUpKSArXG4gICAgICAgICAgICBnZW9tX2ppdHRlcihjb2xvciA9IFwiZ3JleVwiKSArXG4gICAgICAgICAgICBnZW9tX2JveHBsb3Qobm90Y2ggPSBUUlVFLCBvdXRsaWVyLnNoYXBlID0gTkEsIGNvbG91ciA9IFwiZ3JlZW5cIikgK1xuICAgICAgICAgICAgZ2VvbV9wb2ludChkYXRhID0gQ2RtbC5kYXluaWdodC5zdW1tYXJ5LCBhZXMoeD10cmVhdG1lbnQsIHk9bWVhbiksIHNpemU9NSwgY29sb3IgPSBcInB1cnBsZVwiKSArIFxuICAgICAgICAgICAgZ2VvbV9lcnJvcmJhcihkYXRhID0gQ2RtbC5kYXluaWdodC5zdW1tYXJ5LCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9dHJlYXRtZW50LCB5PW1lYW4sIHltaW4gPSBtZWFuLXNkLCB5bWF4ID0gbWVhbitzZCksIFxuICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvciA9IFwiYmx1ZVwiKSArXG4gICAgICAgICAgICBnZW9tX2Vycm9yYmFyKGRhdGEgPSBDZG1sLmRheW5pZ2h0LnN1bW1hcnksXG4gICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PXRyZWF0bWVudCwgeT1tZWFuLCB5bWluID0gbWVhbi1jaSwgeW1heCA9IG1lYW4rY2kpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSBcInJlZFwiKSArXG4gICAgICAgICAgICBmYWNldF93cmFwKH5wZXJpb2QpICtcbiAgICAgICAgICAgIGdndGl0bGUoXCJBbGwgVHJlYXRtZW50cywgRGF5L05pZ2h0IFBlcmlvZCBBcXVhcml1bSBUZW1wZXJhdHVyZSBDb21wYXJpc29uXCIpICtcbiAgICAgICAgICAgIHRoZW1lX2J3KCkgXG5gYGAifQ== -->
+<pre class="r"><code>## 13.1 Boxplot aTemp by moats
+#boxplot(aTemperature~moats, Cdml)
+
+ggplot(Cdml, aes(treatment, aTemperature)) +
+            geom_jitter(color = &quot;grey&quot;) +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = &quot;green&quot;) +
+            geom_point(data = Cdml.daynight.summary, aes(x=treatment, y=mean), size=5, color = &quot;purple&quot;) + 
+            geom_errorbar(data = Cdml.daynight.summary, 
+                          aes(x=treatment, y=mean, ymin = mean-sd, ymax = mean+sd), 
+                          color = &quot;blue&quot;) +
+            geom_errorbar(data = Cdml.daynight.summary,
+                          aes(x=treatment, y=mean, ymin = mean-ci, ymax = mean+ci),
+                          colour = &quot;red&quot;) +
+            facet_wrap(~period) +
+            ggtitle(&quot;All Treatments, Day/Night Period Aquarium Temperature Comparison&quot;) +
+            theme_bw() </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgMTMuMWEgQm94cGxvdCBhVGVtcCBieSBtb2F0c1xuI2JveHBsb3QoYVRlbXBlcmF0dXJlfm1vYXRzLCBDZG1sKVxuXG5nZ3Bsb3QoQ2RtbCwgYWVzKHRyZWF0bWVudCwgYVRlbXBlcmF0dXJlKSkgK1xuICAgICAgICAgICAgZ2VvbV9qaXR0ZXIoY29sb3IgPSBcImdyZXlcIikgK1xuICAgICAgICAgICAgZ2VvbV9ib3hwbG90KG5vdGNoID0gVFJVRSwgb3V0bGllci5zaGFwZSA9IE5BLCBjb2xvdXIgPSBcImdyZWVuXCIpICtcbiAgICAgICAgICAgIGdlb21fcG9pbnQoZGF0YSA9IENkbWwuZGF5bmlnaHQuc3VtbWFyeSwgYWVzKHg9dHJlYXRtZW50LCB5PW1lYW4pLCBzaXplPTUsIGNvbG9yID0gXCJwdXJwbGVcIikgKyBcbiAgICAgICAgICAgIGdlb21faml0dGVyKGFlcyhjb2xvdXIgPSB0RGVsdGFUaHJlc2hvbGQpKSArXG4gICAgICAgICAgICBnZW9tX2Vycm9yYmFyKGRhdGEgPSBDZG1sLmRheW5pZ2h0LnN1bW1hcnksIFxuICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD10cmVhdG1lbnQsIHk9bWVhbiwgeW1pbiA9IG1lYW4tc2QsIHltYXggPSBtZWFuK3NkKSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG9yID0gXCJibHVlXCIpICtcbiAgICAgICAgICAgIGdlb21fZXJyb3JiYXIoZGF0YSA9IENkbWwuZGF5bmlnaHQuc3VtbWFyeSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9dHJlYXRtZW50LCB5PW1lYW4sIHltaW4gPSBtZWFuLWNpLCB5bWF4ID0gbWVhbitjaSksXG4gICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9IFwicmVkXCIpICtcbiAgICAgICAgICAgIGZhY2V0X3dyYXAofnBlcmlvZCkgK1xuICAgICAgICAgICAgZ2d0aXRsZShcIkFsbCBUcmVhdG1lbnRzLCBheS9OaWdodCBQZXJpb2QgQXF1YXJpdW0gVGVtcGVyYXR1cmUgQ29tcGFyaXNvbiwgVGVtcGVyYXR1cmUgSnVtcHMgYXQgLjVDXCIpICtcbiAgICAgICAgICAgIHRoZW1lX2J3KCkgXG5gYGAifQ== -->
+<pre class="r"><code>## 13.1a Boxplot aTemp by moats
+#boxplot(aTemperature~moats, Cdml)
+
+ggplot(Cdml, aes(treatment, aTemperature)) +
+            geom_jitter(color = &quot;grey&quot;) +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = &quot;green&quot;) +
+            geom_point(data = Cdml.daynight.summary, aes(x=treatment, y=mean), size=5, color = &quot;purple&quot;) + 
+            geom_jitter(aes(colour = tDeltaThreshold)) +
+            geom_errorbar(data = Cdml.daynight.summary, 
+                          aes(x=treatment, y=mean, ymin = mean-sd, ymax = mean+sd), 
+                          color = &quot;blue&quot;) +
+            geom_errorbar(data = Cdml.daynight.summary,
+                          aes(x=treatment, y=mean, ymin = mean-ci, ymax = mean+ci),
+                          colour = &quot;red&quot;) +
+            facet_wrap(~period) +
+            ggtitle(&quot;All Treatments, ay/Night Period Aquarium Temperature Comparison, Temperature Jumps at .5C&quot;) +
+            theme_bw() </code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="aquarium-temperature-all-change-conditions-day-night" class="section level4">
+<h4>13.1.1 Aquarium Temperature, All Change Conditions, Day &amp; Night</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5wX2FsbGNoZ19mYWNldHdyYXAgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09IFwiYWxsY2hhbmdlXCIsIF0pKSArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9bW9hdHMsIHk9YVRlbXBlcmF0dXJlLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkgKyBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRfc3VtbWFyeShmdW49bWVhbiwgZ2VvbT1cInBvaW50XCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplPTIsIGNvbG9yPVwicmVkXCIpICArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9ib3hwbG90KCkgK1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmFjZXRfd3JhcCh+cGVyaW9kKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKFwiQWxsIENoYW5nZSBDb25kaXRpb25zLCBBcXVhcml1bSBUZW1wZXJhdHVyZSwgRGF5L05pZ2h0IFBlcmlvZCBCb3hwbG90c1wiKVxuXG5wX2FsbGNoZ19mYWNldHdyYXAgXG5cblxuYGBgIn0= -->
+<pre class="r"><code>
+p_allchg_facetwrap &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;allchange&quot;, ])) + 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment) + 
+                                          stat_summary(fun=mean, geom=&quot;point&quot;, 
+                                                        size=2, color=&quot;red&quot;)  + 
+                                          geom_boxplot() +
+                                          facet_wrap(~period) +
+                                          ggtitle(&quot;All Change Conditions, Aquarium Temperature, Day/Night Period Boxplots&quot;)
+
+p_allchg_facetwrap 
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5wX2FsbGNoZ19mYWNldHdyYXBfdmlvIDwtIGdncGxvdChzdWJzZXQoQ2RtbFtDZG1sJHRyZWF0bWVudCA9PSBcImFsbGNoYW5nZVwiLCBdKSkgKyBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91cj10cmVhdG1lbnQpICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0X3N1bW1hcnkoZnVuPW1lYW4sIGdlb209XCJwb2ludFwiLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZT0yLCBjb2xvcj1cInJlZFwiKSAgKyBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21fdmlvbGluKCkgK1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmFjZXRfd3JhcCh+cGVyaW9kKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKFwiQWxsIENoYW5nZSBDb25kaXRpb25zLCBBcXVhcml1bSBUZW1wZXJhdHVyZSwgRGF5L05pZ2h0IFBlcmlvZCBWaW9saW4gUGxvdHNcIilcblxucF9hbGxjaGdfZmFjZXR3cmFwX3ZpbyBcblxuXG5gYGAifQ== -->
+<pre class="r"><code>
+p_allchg_facetwrap_vio &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;allchange&quot;, ])) + 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment) + 
+                                          stat_summary(fun=mean, geom=&quot;point&quot;, 
+                                                        size=2, color=&quot;red&quot;)  + 
+                                          geom_violin() +
+                                          facet_wrap(~period) +
+                                          ggtitle(&quot;All Change Conditions, Aquarium Temperature, Day/Night Period Violin Plots&quot;)
+
+p_allchg_facetwrap_vio 
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="aquarium-temperature-current-conditions-day-night" class="section level4">
+<h4>13.1.2 Aquarium Temperature, Current Conditions, Day &amp; Night</h4>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5wX2N1cl9mYWNldHdyYXBfYm94IDwtIGdncGxvdChzdWJzZXQoQ2RtbFtDZG1sJHRyZWF0bWVudCA9PSBcImN1cnJlbnRcIiwgXSkpICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD1tb2F0cywgeT1hVGVtcGVyYXR1cmUsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXI9dHJlYXRtZW50KSArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdF9zdW1tYXJ5KGZ1bj1tZWFuLCBnZW9tPVwicG9pbnRcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemU9MiwgY29sb3I9XCJyZWRcIikgICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX2JveHBsb3QoKSArXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmYWNldF93cmFwKH5wZXJpb2QpICtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdndGl0bGUoXCJDdXJyZW50IENvbmRpdGlvbnMsIEFxdWFyaXVtIFRlbXBlcmF0dXJlLCBEYXkvTmlnaHQgUGVyaW9kIEJveHBsb3RzXCIpXG5cbnBfY3VyX2ZhY2V0d3JhcF9ib3hcblxuYGBgIn0= -->
+<pre class="r"><code>
+p_cur_facetwrap_box &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;current&quot;, ])) + 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment) + 
+                                          stat_summary(fun=mean, geom=&quot;point&quot;, 
+                                                        size=2, color=&quot;red&quot;)  + 
+                                          geom_boxplot() +
+                                          facet_wrap(~period) +
+                                          ggtitle(&quot;Current Conditions, Aquarium Temperature, Day/Night Period Boxplots&quot;)
+
+p_cur_facetwrap_box
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5wX2FsbGNoZ19mYWNldHdyYXBfdmlvIDwtIGdncGxvdChzdWJzZXQoQ2RtbFtDZG1sJHRyZWF0bWVudCA9PSBcImN1cnJlbnRcIiwgXSkpICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD1tb2F0cywgeT1hVGVtcGVyYXR1cmUsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXI9dHJlYXRtZW50KSArIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdF9zdW1tYXJ5KGZ1bj1tZWFuLCBnZW9tPVwicG9pbnRcIiwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemU9MiwgY29sb3I9XCJyZWRcIikgICsgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX3Zpb2xpbigpICtcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZhY2V0X3dyYXAofnBlcmlvZCkgK1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZShcIkN1cnJlbnQgQ29uZGl0aW9ucywgQXF1YXJpdW0gVGVtcGVyYXR1cmUsIERheS9OaWdodCBQZXJpb2QgVmlvbGluIFBsb3RzXCIpXG5cbnBfYWxsY2hnX2ZhY2V0d3JhcF92aW8gXG5cbmBgYCJ9 -->
+<pre class="r"><code>
+p_allchg_facetwrap_vio &lt;- ggplot(subset(Cdml[Cdml$treatment == &quot;current&quot;, ])) + 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment) + 
+                                          stat_summary(fun=mean, geom=&quot;point&quot;, 
+                                                        size=2, color=&quot;red&quot;)  + 
+                                          geom_violin() +
+                                          facet_wrap(~period) +
+                                          ggtitle(&quot;Current Conditions, Aquarium Temperature, Day/Night Period Violin Plots&quot;)
+
+p_allchg_facetwrap_vio 
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>current to line 879</p>
 <p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
 <p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Cmd+Shift+Enter</em>.</p>
 <p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
@@ -2360,8 +2733,9 @@ simpleplot_cur_timeseries</code></pre>
 <!-- rnb-text-end -->
 </div>
 </div>
+</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIyMgQXV0aG9yOiBPQSBMYWIsIE5XRlNDCiMjIyBUaXRsZTogQXF1YXJpdW0gVGVtcGVyYXR1cmUgSW52ZXN0aWdhdGlvbjogVGVtcGVyYXR1cmUgU3ViU2VsZWN0U2NyaXB0LlIgCiMjIyBEYXRlOiBBcHJpbC1NYXkgMjAyMAoKIyBBcXVhcml1bSBUZW1wZXJhdHVyZSBJbnZlc3RpZ2F0aW9uClIgc2NyaXB0IGJlbG93IHdpbGwgc3Vic2VsZWN0IGFuZCBwbG90IHRlbXBlcmF0dXJlIGRhdGEgZm9yIE1PQVRzCk92ZXJhbGwgZ29hbCBpcyB0byBkZXRlcm1pbmUgaWYgTU9BVHMgKHBlciB0cmVhdG1lbnQpIGFyZSB0cnVlIHJlcGxpY2F0ZXMKCmBgYHtyfQojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCiMjTGlicmFyaWVzCiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogCmxpYnJhcnkoc2hpbnkpCmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KHN0cmluZ3IpCmxpYnJhcnkocmVhZHhsKQpsaWJyYXJ5KHJlYWRyKQpsaWJyYXJ5KHRpZHlyKQpsaWJyYXJ5KGRhdGEudGFibGUpCmxpYnJhcnkobHVicmlkYXRlKQpsaWJyYXJ5KHZpb2xpbm1wbG90KQpsaWJyYXJ5KHZpb3Bsb3QpCmxpYnJhcnkoeWFycnIpCmxpYnJhcnkoZGF0YXBhc3RhKQpsaWJyYXJ5KHJlcHJleCkKbGlicmFyeShtaW5pVUkpCmxpYnJhcnkoZ3JpZEV4dHJhKQoKYGBgCgoKIyMgT3V0bGluZSAKKEN1cnJlbnQgYXMgb2YgMjAyMC4wNi4yNSkKCiogMS4pIFdvcmtpbmcgRGlyZWN0b3J5CiogMi4pIFNwb2xsaW5nIERhdGEgaW50byBvbmUgQ1NWIAoqIDMuKSBDcmVhdGluZyB0aGUgRGF0YWZyYW1lICJkbWwiCiogNC4pIFNldHRpbmcgYSBuZXcgd29ya2luZyBkaXJlY3RvcnkKKiA0LikgQ3JlYXRpbmcgZGF0ZVRpbWUgb2JqZWN0cyAKKiA1LikgQ3JlYXRpbmcgVHJlYXRtZW50IFZhcmlhYmxlcwoqIDYuKSBDcmVhdGluZyBOaWdodCBhbmQgRGF5IFBlcmlvZHMKKiA3LikgSW5zaXR1IGRhdGEKKiA4LikgQ2xlYW5pbmcgdXAgZG1sICJDZG1sIgoqIDkuKSBGcmFtaW5nIGZpbHRlcnMgZm9yIENkbWwKKiAxMC4pIFRlbXBlcmF0dXJlICJKdW1wcyIKKiAxMS4pIENhbGN1bGF0aW5nIGF2ZXJhZ2VzIGJ5IHRyZWF0bWVudCAmIGRheS9uaWdodAoqIDEyLikgU3VtbWFyeSAmIEdyb3VwIGJ5IENkbWwKKiAxMy4pIFBsb3RzIEJveHBsb3RzICYgdGltZXNlcmllcwoqIDE0LikgRHVyYXRpb24gYmV0d2VlbiBjb25kaXRpb25zLSBIaXN0b2dyYW0gJiBDdW1tdWxhdGl2ZSBEaXN0cmlidHVpb24gUGxvdCAgc2VjdGlvbgoqIDE1LikgYVRlbXAgYmFuZHMgaW52ZXN0aWcuCiogMTYuKSBTaGFyZS1hYmxlIHRpYmJsZXMgJiByZXByZXggcmVhZGluZXNzICAKCgojMS4pIFdvcmtpbmcgRGlyZWN0b3J5CgpJbnNpZGUgdGhlIHdvcmtpbmcgZGlyZWN0b3J5IChmb2xkZXIpIGFyZSBDU1YgZmlsZXMgZ2VuZXJhdGVkIGFmdGVyIHVzaW5nIHRoZSBtb2F0cyBncmFwaCBhcHAKW0xpbmsgdG8gbW9hdHMuR3JhcGguYXBwXShodHRwOi8vZ2l0aHViLmNvbS9wbWNlbGhhbnkvbW9hdHNHcmFwaHMuZ2l0KQpNb3ZpbmcgYXZlcmFnZSB3aW5kb3cgKG5PYnMpIHNldCB0byA0LiBUaGlzIHJlc3VsdHMgaW4gdGhlIG9ic2VydmF0aW9ucyBiZWluZyBhdmVyYWdlZCBpbnRvIGEgMjRzZWNvbmQgdGltZWZyYW1lLiBDU1ZzIHdlcmUgY3JlYXRlZCBmb3IgZWFjaCBtb2F0czogTTAxLCBNMDIsIE0wMywgTTA0LCBNMDUsIE0wNiwgTTA3LCBNMDgsIE0wOSwgTTEwLCBNMTEsIE0xMiwgTTEzLiBGaWxlcyBhcmUgYWxzbyBhdmFpbGFibGUgb24gdGhlIE9BIEdvb2dsZSBkcml2ZS4gW09BIERyaXZlIGZvciBNT0FUUyBkYXRhXShodHRwczovL2RyaXZlLmdvb2dsZS5jb20vb3Blbj9pZD0xM2EyaGsxYTlJOWdSSWdmMlh5bDFkU1lEZjV2bnlZdnMpCgoKYGBge3J9CiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKIyMgMS4pIFNldCB3b3JraW5nIGRpcmVjdG9yeQojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqCmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKa25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXIgPSAiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfTU9BVHNfU01SMjAxOS9MYWJWaWV3TG9ncy5BbGxNT0FUUyIpCgojc2V0d2QoIi9Vc2Vycy9rYXRoZXJpbmVyb3ZpbnNraS9HSVQvTldGU0MuTVVLX01PQVRzX1NNUjIwMTkvTGFiVmlld0xvZ3MuQWxsTU9BVFMiKQoKYGBgCgoKCiMgMi4pIFNwb2xsaW5nIERhdGEgaW50byBvbmUgQ1NWIApDb21iaW5pbmcgbXVsdGlwbGUgQ1NWIGZpbGVzIGludG8gMSBkb2N1bWVudC4gT3JpZ2luYWwgaW5wdXQgZmlsZXMgZnJvbSBpbmRpdmlkdWFsIExWTSAobG9naWNhbCB2b2x1bW5lIG1hbmFnZW1lbnQpIGZpbGVzIG9mZiBlYWNoIE1PQVRzLgoyLjEgQ3JlYXRlIGEgbGlzdCBvZiBmaWxlcwpgYGB7cn0gCiMjIDIuMSBDcmVhdGUgYSBsaXN0IG9mIGZpbGVzIAojIEFsbCBmaWxlcyB0byBiZSBqb2luZWQgaGF2ZSBleHQuICJjc3YiIGNhbiB1c2UgdGhhdCBwYXR0ZXJuIHRvIGpvaW4gCmZpbGVzIDwtIGxpc3QuZmlsZXMocGF0dGVybiA9ICIuY3N2IikKcHJpbnQoZmlsZXMpCmBgYAoKMi4yIENyZWF0ZSBhIHRlbXBvcmFyeSBwbGFjZSBmb3IgZmlsZXMKYGBge3J9CiMjIDIuMiBDcmVhdGUgYSB0ZW1wb3JhcnkgcGxhY2UgZm9yIGZpbGVzIAp0ZW1wIDwtIGxhcHBseShmaWxlcywgZnJlYWQsIHNlcD0gIiwiKQpwcmludCh0ZW1wKQpgYGAKCjIuMyBDcmVhdGUgYSBuZXcgdmVjdG9yIGZvciBNb2F0cyBkYXRhIGxvZ3MKYGBge3J9CiMjIDIuMyBDcmVhdGUgYSBuZXcgdmVjdG9yIGZvciBNb2F0cyBkYXRhIGxvZ3MgCiMgIk0wMXRocnVNMTNNb2F0c2xvZ19kYXRhIiB2aWEgcmJpbmQKTTAxdGhydU0xM21vYXRzbG9nX2RhdGEgPC0gcmJpbmRsaXN0KHRlbXApCnByaW50KE0wMXRocnVNMTNtb2F0c2xvZ19kYXRhKQpgYGAKCjIuNCBTZXR0aW5nIG5ldyB3b3JraW5nIGRpcmVjdG9yeQpgYGB7cn0KIyMgMi40IFNldHRpbmcgbmV3IHdvcmtpbmcgZGlyZWN0b3J5IGZvciBvdXRwdXQgZmlsZSBvcmdhbml6YXRpb24KI0VmZm9ydCBJU08gYXZvaWRpbmcgZHVwbGljYXRlcwoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQprbml0cjo6b3B0c19rbml0JHNldChyb290LmRpciA9ICIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19LUkxfU01SMjAxOS8wNi4gTU9BVFMgcmVwbGljYXRpb24gdmVyaWZpY2F0aW9uIikKYGBgCgoyLjUgV3JpdGUgdGhlIG5ldyBjc3YgZG9jdW1lbnQKYGBge3J9CiMjIDIuNSBXcml0ZSB0aGUgbmV3IGNzdiBkb2N1bWVudCB8IAojICJNMDF0aHJ1TTEzbW9hdHNsb2ciIGNhbiB1bmNvbW1lbnQgdGhpcyBjb21tYW5kIGxpbmUgYXMgbmVlZGVkCiN3cml0ZS5jc3YoTTAxdGhydU0xM21vYXRzbG9nX2RhdGEsIGZpbGUgPSAiTTAxdGhydU0xM21vYXRzbG9nLmNzdiIsIHJvdy5uYW1lcyA9IEZBTFNFKQoKYGBgCgoKU2F2ZWQgb24gdGhlIE9BIEdvb2dsZSBEcml2ZQpbTTAxdGhydU0xM21vYXRzbG9nLmNzdl0oaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4/aWQ9MTVpQlhjdDliNEVqS0RxNzV2S25tNU5vYm93QndLM0ctKQoKCgojIDMuKSBDcmVhdGluZyB0aGUgRGF0YWZyYW1lICJkbWwiIAoKMy4xIFJlYWRpbmcgdGhlIENTVgpgYGB7cn0KIyMgMy4xIFJlYWRpbmcgdGhlIENTViB8ICAKIyMgZW5zdXJpbmcgY29sdW1uIG5hbWVzIGFuZCB0eXBlcwojIyBEYXRhIE1vYXRzIExvZyA9IGRtbApkbWwgPC0gcmVhZC5jc3YoIGZpbGUgPSAiTTAxdGhydU0xM21vYXRzbG9nLmNzdiIsIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRSkKZGltKGRtbCkKYGBgCgoKMy4xYSBEdXBsaWNhdGlvbiBDaGVjawpgYGB7cn0KIyMgMy4xYSBEdXBsaWNhdGlvbiBDaGVjawojIyBkdXBsaWNhdGVzIG9ic2VydmVkIGluICJkbWwiIG9uIDIwMjAuMDUuMDcgIApkdXAyIDwtIGRtbFtkdXBsaWNhdGVkKGRtbCksXQojaWYgbm8gZHVwcywgQ2RtbDIgaGFzIHNhbWUgbnVtYmVyIG9mIHJvd3MgYXMgQ2RtbApkbWwyIDwtIGRtbCAlPiUgZGlzdGluY3QoKSAKYGBgCgoKCjMuMWIgU3ViIHNhbXBsaW5nIGRhdGFmcmFtZSAiZG1sIgpgYGB7cn0KIyMgMy4xYiBTdWIgc2FtcGxpbmcgZGF0YWZyYW1lICJkbWwiICAKIyMgY3JlYXRpbmcgYSBzdWIgc2FtcGxlIG9mIHRoZSBkYXRhIG1vYXRzIGxvZyBkbWwgZGF0YWZyYW1lIHRvIGFsbG93IGZvciBxdWljayBncmFwaHMgCgoKI3N1YnNhbXBsZSBldmVyeSAxN3RoIHJvdyAoYmVjYXVzZSBwcmltZSBudW1iZXJzIGFyZSBpbmRlZWQgY29vbCkKZG1sIDwtIGRtbCAlPiUgYXJyYW5nZShtb2F0cywgZGF0ZVRpbWUpICU+JSBmaWx0ZXIocm93X251bWJlcigpICUlIDE3ID09IDApCgp3cml0ZS5jc3YoZG1sLCBmaWxlID0gIk0wMXRocnVNMTNtb2F0c2xvZ19uMTcuY3N2Iiwgcm93Lm5hbWVzID0gRkFMU0UpCmBgYAoKMy4yIENoZWNraW5nIHZhcmlhYmxlcwpgYGB7cn0KIyMgMy4yIENoZWNraW5nIHZhcmlhYmxlcyAgCiMjIExvb2tpbmcgdG8gZW5zdXJlIHRoZSBkaWZmZXJlbnQgdmFyaWFibGVzIGFyZSB0cmVhdGVkIGFzIHRoZSBjb3JyZWN0IHZhcmlhYmxlIHR5cGUKIyMgQ2hlY2tpbmcgdGhlIG5hbWVzIGluIHRoZSBkYXRhZnJhbWUKbmFtZXMoZG1sKQojIyBDaGVja2luZyB2YXJpYWJsZSB0eXBlL2NsYXNzIApjbGFzcyhkbWwkbW9hdHMpCmRtbCRtb2F0cyA8LSBhcy5mYWN0b3IoZG1sJG1vYXRzKQpgYGAKCgoKCjMuMyBDaGFuZ2luZyB2YXJpYWJsZXMKYGBge3J9CiMjIDMuMyBDaGFuZ2luZyB2YXJpYWJsZXMgfCAKIyMgQ2hhbmdpbmcgTU9BVHMgdG8gRmFjdG9ycyBmb3IgdGhlIDEzIGRpZmZlcmVudCBNT0FUcy0gdGhlc2Ugd2lsbCBiZSB0aGUgZGlzY3JldGUgdW5pdHMgZm9yIGZvbGxvdyBhbmFseXNpcwpkbWwkbW9hdHMgPC0gZmFjdG9yKGRtbCRtb2F0cykKIyBDaGVja2luZyB0aGUgbmFtZXMgb2YgdGhlIGRpZmZlcmVudCBsZXZlbHMKbGV2ZWxzKGRtbCRtb2F0cykKIyNjaGVja2luZyB0aGUgZGF0YXNldCwgZGltZW5zaW9ucwpkaW0oZG1sKQpgYGAKCgojNC4pIENyZWF0aW5nIGRhdGVUaW1lIG9iamVjdHMKCjQuMCBlc3RhYmxpc2ggdGhlIGRhdGVUaW1lIG9iamVjdHMKYGBge3J9CiMgNC4wIGVzdGFibGlzaCB0aGUgZGF0ZSB0aW1lIG9iamVjdCBvZiB0aGUgQ1NWIHwKZG1sJGRhdGVUaW1lIDwtIGFzLlBPU0lYY3QoZG1sJGRhdGVUaW1lLCBmb3JtYXQ9IiVZLSVtLSVkICVIOiVNOiVPUyIpClJlZmVyZW5jZVRpbWUgPC0gYXMuUE9TSVhjdCgiMjAxOS0wOS0yMCAyMzo1OTowMCIpCmNsYXNzKFJlZmVyZW5jZVRpbWUpCgojIFFBIGNoZWNrCmRpbShkbWwpCmBgYAoKCiMgNS4pIENyZWF0aW5nIFRyZWF0bWVudCBWYXJpYWJsZXMgIAoKIDUuMSBJZGVudGlmeWluZyBUcmVhdG1lbnRzIGJ5IE1PQVRTCmBgYHtyfQojIyA1LjEgSWRlbnRpZnlpbmcgdHJlYXRtZW50cyBieSBtb2F0cyAKIyMgZXN0YWJsaXNoaW5nIHRyZWF0bWVudHMKZG1sJHRyZWF0bWVudCA8LSAiIgpkbWwkdHJlYXRtZW50W2RtbCRtb2F0cyA9PSAiTTA3IiB8IGRtbCRtb2F0cz09ICJNMTAiIHwgZG1sJG1vYXRzPT0gIk0xMiJdIDwtICJjdXJyZW50IgpkbWwkdHJlYXRtZW50W2RtbCRtb2F0cyA9PSAiTTAxInwgZG1sJG1vYXRzPT0gIk0wNiJdIDwtICJoaWdodGVtcGVyYXR1cmUiCmRtbCR0cmVhdG1lbnRbZG1sJG1vYXRzID09ICJNMDIifCBkbWwkbW9hdHM9PSAiTTA4IiB8IGRtbCRtb2F0cz09ICJNMTMiXSA8LSAiYWxsY2hhbmdlIgpkbWwkdHJlYXRtZW50W2RtbCRtb2F0cyA9PSAiTTAzInwgZG1sJG1vYXRzID09ICJNMDQiIHwgZG1sJG1vYXRzID09ICJNMDUiIHwgZG1sJG1vYXRzPT0gIk0xMSJdIDwtICJicm9rZW5fYW5kX2FtYmllbnRicm9rZW4iCiN2ZXJpZnkgdGhhdCB0aGlzIG5ldyBjb2x1bW4gaGFzIGJlZW4gY3JlYXRlZApuYW1lcyhkbWwpCiNyZXN1bHRzIHNob3VsZCBpbmNsdWRlOgojWzFdICJtb2F0cyIgICAgICAgICJkYXRlVGltZSIgICAgICJhVGVtcGVyYXR1cmUiICJzVGVtcGVyYXR1cmUiICJwSCIgICAgICAgICAgCiNbNl0gIkRPIiAgICAgICAgICAgInNhbGluaXR5IiAgICAgInRyZWF0bWVudCIgIAoKIyBRQSBjaGVjawpkaW0oZG1sKQpgYGAKCgo1LjIgU2ltcGxlIGdncGxvdCB0byBzaG93IHRoZSBkaWZmZXJlbnQgTU9BVHMgd2l0aG91dCBwb2xpc2gKYGBge3J9CgpwbG90NS4yIDwtIGdncGxvdChkbWwsIGFlcyh4PWRhdGVUaW1lLCB5PWFUZW1wZXJhdHVyZSkpICsgCiAgZ2VvbV9wb2ludChhZXMoY29sb3VyPW1vYXRzLCBwb2ludD0pKSArIAogIGdndGl0bGUoIkFsbCBNT0FUcywgQWxsIFRyZWF0bWVudCBhVGVtcGVyYXR1cmUgVGltZSBTZXJpZXMiKSAKCnBsb3Q1LjIKCmBgYAoKCiFbUGxvdCA1LjIgRmlndXJlMV0oL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfS1JMX1NNUjIwMTkvMDYuIE1PQVRTIHJlcGxpY2F0aW9uIHZlcmlmaWNhdGlvbi9ScGxvdC50aW1lc2VyaWVzLmFUZW1wLnBsb3Q1LjIucG5nKQoKIyA2LikgQ3JlYXRpbmcgTmlnaHQgYW5kIERheSBQZXJpb2RzCgo2LjEgTmFycmF0aXZlIChPdmVyYWxsKQpDcmVhdGluZyBhIGRheSBhbmQgbmlnaHQgdmFyaWFibGVzIApEYXkgYW5kIG5pZ2h0IHBlcmlvZHMgZXhjbHVkZSB0aGUgYWNjbGltYXRpb24gcGVyaW9kIGJ5IHRoZWlyIGRlZmluaXRpb24uCkRheSBhbmQgbmlnaHQgY2hhbmdlZCBhdCBhYm91dCB+IDEyMzAgb24gMDVPQ1QxOSAKVHJlYXRtZW50IHN0YXJ0IGRhdGUgY29uc2lkZXJlZCB0byBiZWdpbiBNb25kYXkgMjNTRVAxOSBhdCAxMjAwcG0KCktyaWxsIE5pZ2h0IFN0YXJ0ZWQgMTIwMCAofjEyMzAqKSBhbmQgZW5kcyAyMTAwCktyaWxsIERheXMgU3RhcnRlZCAyMTAxIGFuZCBlbmRzIDExNTkgKH4xMjI5KikgCgojIyMjIEludGVydmFsIDEgc3RhcnQgMTIwMCAyM1NFUDE5LCBlbmQgMTIyOSAwNU9DVDE5CiMjIyMgSW50ZXJ2YWwgMiBzdGFydCAxMjMwIDA1T0NUMTksIGVuZCAyMTAwIDMwT0NUMTkKCiMgQ29uY2VwdCBEaWFncmFtIGdyYXBoaWMKIVtEYXkvTmlnaHQgRGVmaW5pdGlvbnMgQ29uY2VwdCBEaWFncmFtIEZpZ3VyZTJdKC9Vc2Vycy9rYXRoZXJpbmVyb3ZpbnNraS9HSVQvTldGU0MuTVVLX0tSTF9TTVIyMDE5LzA2LiBNT0FUUyByZXBsaWNhdGlvbiB2ZXJpZmljYXRpb24vMDJhLiBTY3JpcHRzLmNvbmNlcHRkaWFncmFtcy9EYXlfTmlnaHQgUGVyaW9kIExvb3AgZGlhZ3JhbS5wbmcpCgoKNi4yIE5ldyBDb2x1bW4sIE5ldyBWYXJpYWJsZQpgYGB7cn0KIyMgNi4yIE5ldyBDb2x1bW4sIE5ldyBWYXJpYWJsZSBpbiBkbWwKI2NyZWF0aW5nIGEgbmV3IGNvbHVtbiwgbmV3IHZhcmlhYmxlICJwZXJpb2QiCmRtbCRwZXJpb2QgPC0gIiIKYGBgCgoKNi4zIERpc2Fzc2VtYmxpbmcgZGF0ZVRpbWUgdG8gY3JlYXRlIDIgbmV3IHZhcmlhYmxlcwpgYGB7cn0KIyMgNi4zIERpc2Fzc2VtYmxpbmcgZGF0ZVRpbWUgdG8gY3JlYXRlIDIgbmV3IHZhcmlhYmxlcwojIENyZWF0ZSBuZXcgc3BsaXQgZGF0ZSBhbmQgdGltZSBjb2x1bW5zCmRtbCRPYnNlcnZhdGlvbkRhdGUgPC0gYXMuRGF0ZShkbWwkZGF0ZVRpbWUpCmRtbCRPYnNlcnZhdGlvblRpbWUgPC0gZm9ybWF0KGFzLlBPU0lYY3QoZG1sJGRhdGVUaW1lKSAsZm9ybWF0ID0gIiVIOiVNOiVTIikKYGBgCgoKIyMjIDYuNCBOYXJyYXRpdmUgYWJvdXQgSW50ZXJ2YWxzIAoKIyMjIEludGVydmFsIDEKICAqIEludGVydmFsIERhdGUgU3RhcnQgICIyMDE5LTA5LTIzIgogICogSW50ZXJ2YWwgRGF0ZSBFbmQgICAgIjIwMTktMTAtMDUiCiAgKiBEYXkgU3RhcnQgVGltZSAgICAgICAiMjE6MDE6MDAiCiAgKiBEYXkgRW5kIFRpbWUgICAgICAgICAiMTI6MDE6MDAiCiAgKiBOaWdodCBTdGFydCBUaW1lICAgICAiMTI6MDA6MDAiCiAgKiBOaWdodCBFbmQgVGltZSAgICAgICAiMjE6MDA6MDAiCiAgKiBPdGhlciBUaW1lCiAgCiMjIyBJbnRlcnZhbCAyCgogICogSW50ZXJ2YWwgRGF0ZSBTdGFydCAgIjIwMTktMTAtMDUiCiAgKiBJbnRlcnZhbCBEYXRlIEVuZCAgICAiMjAxOS0xMC0zMCIKICAqIERheSBTdGFydCBUaW1lICAgICAgICIyMTowMTowMCIKICAqIERheSBFbmQgVGltZSAgICAgICAgICIxMjoyOTowMCIKICAqIE5pZ2h0IFN0YXJ0IFRpbWUgICAgICIxMjozMDowMCIKICAqIE5pZ2h0IEVuZCBUaW1lICAgICAgICIyMTowMDowMCIKICAqIE90aGVyIFRpbWUKCgoKNi41IERheSAvIE5pZ2h0IEFzc2lnbm1lbnRzIApgYGB7cn0KIyMgNi41IERheSAvIE5pZ2h0IEFzc2lnbm1lbnRzIAojIFVzaW5nIHRoZSAiY2FzZV93aGVuIiBmdW5jdGlvbiBpbiB0aGUgdGlkeXZlcnNlIGluIHRoZSBwbGFjZSBvZiBhIGxvb3AKCmRtbCA8LSBkbWwgJT4lIG11dGF0ZShwZXJpb2Q9Y2FzZV93aGVuKAogICAgICAgICAgICAgICAgICAgICAgICAgIChPYnNlcnZhdGlvbkRhdGUgPj0gIjIwMTktMDktMjMiKSAKICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvbkRhdGUgPD0iMjAxOS0xMC0wNSIpIAogICAgICAgICAgICAgICAgICAgICAgICAgICYgKE9ic2VydmF0aW9uVGltZSA+PSAiMTI6MDA6MDAiKSAKICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvblRpbWUgPD0iMjE6MDA6MDAiKSB+Im5pZ2h0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAoT2JzZXJ2YXRpb25EYXRlID49ICIyMDE5LTEwLTA1IikKICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvbkRhdGUgPD0gIjIwMTktMTAtMzAiKQogICAgICAgICAgICAgICAgICAgICAgICAgICYgKE9ic2VydmF0aW9uVGltZSA+PSAiMTI6MzA6MDAiKSAKICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvblRpbWUgPD0iMjE6MDA6MDAiKSB+Im5pZ2h0IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAoT2JzZXJ2YXRpb25EYXRlID49ICIyMDE5LTA5LTIzIikgCiAgICAgICAgICAgICAgICAgICAgICAgICAgJiAoT2JzZXJ2YXRpb25EYXRlIDw9IjIwMTktMTAtMDUiKQogICAgICAgICAgICAgICAgICAgICAgICAgICYgKChPYnNlcnZhdGlvblRpbWUgPj0gIjIxOjAxOjAwIikgCiAgICAgICAgICAgICAgICAgICAgICAgICAgfCAoT2JzZXJ2YXRpb25UaW1lIDw9IjExOjU5OjAwIikpIH4iZGF5IiwKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAoT2JzZXJ2YXRpb25EYXRlID49ICIyMDE5LTEwLTA1IikKICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvbkRhdGUgPD0gIjIwMTktMTAtMzAiKQogICAgICAgICAgICAgICAgICAgICAgICAgICYgKChPYnNlcnZhdGlvblRpbWUgPj0gIjIxOjAxOjAwIikKICAgICAgICAgICAgICAgICAgICAgICAgICB8IChPYnNlcnZhdGlvblRpbWUgPD0gIjEyOjI5OjAwIikpIH4iZGF5IiwKICAgICAgICAgICAgICAgICAgICAgICAgICBUUlVFIH4ib3RoZXIiCiAgICAgICAgICAgICAgICAgICAgICAgICkKCiAgICAgICAgICAgICAgICAgICAgKSAKYGBgCgoKIyA3LikgSW5zaXR1IGRhdGEgIAoKCjcuMCBJbi1zaXR1IGRhdGEgZmlsZXMKVHdvIGZpbGVzIHJlcHJlc2VudCBtYW51YWwgY2hlY2tzIG9mIGFxdWFyaXVtIHNhbGluaXR5LgpFeHRyYWN0ZWQgZnJvbSB0aGlzIGFyZSBwb2ludCBtZWFzdXJlbWVudHMgb2YgYXF1YXJpbSB0ZW1wZXJhdHVyZQoKYGBge3J9CiMgIyMgNy4xIFJlYWQgaW4gZmlsZXMKIyAjIGNhcmVmdWxlIGFib3V0IG5hdmlnYXRpbmcgdG8gdGhlIHNlY29uZCB3b3JraW5nIGRpcmVjdG9yeQojIAojIAojIGtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKIyBrbml0cjo6b3B0c19rbml0JHNldChyb290LmRpciA9ICIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19LUkxfU01SMjAxOS8wNi4gTU9BVFMgcmVwbGljYXRpb24gdmVyaWZpY2F0aW9uLzAxLiBSYXcgRGF0YS9JblNpdHVTYW1wbGluZyIpCiMgCiMgCiMgZC5pbnNpdHUgPC0gcmVhZC5jc3YoZmlsZSA9ICJLUkwxOV9pbnNpdHVfc2FtcGxlX0RheS5jc3YiLCBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpCiMgbi5pbnNpdHUgPC0gcmVhZC5jc3YoZmlsZSA9ICJLUkwxOV9pbnNpdHVfc2FtcGxlX05pZ2h0LmNzdiIsIHN0cmluZ3NBc0ZhY3RvcnMgPSBGQUxTRSkKCmBgYAoKCiMgOC4pIENsZWFuaW5nIHVwIGRtbCAgCgpDcmVhdGluZyBhIG5ldyBkYXRhZnJhbWUgY2xlYW5lZCB3aXRoIHRoZSB2YXJpb3VzIGZpbHRlcnMgYmVsb3cKY2hlY2tpbmcgb24gdGhlIHZhcmlhYmxlcyBpbnNpZGUgZG1sCkNsZWFuZWQtVXAgZG1sID0gQ2RtbAoKCmBgYHtyfQojIyA4LjEgTm90aW5nIG5hbWVzIG9mIHRoZSBkaWZmZXJlbnQgdmFyaWFibGVzIGluIGRtbApuYW1lcyhkbWwpCmBgYAoKCiMgOC4yIE5hcnJhdGl2ZSBvbiBkZXNpcmVkIGNoYW5nZXMgdG8gY3JlYXRlIENkbWwKCjguMiBOYXJyYXRpdmUgb24gQ2RtbApUZW1wZXJhdHVyZXMgYmVsb3cgNUMgYW5kIGFib3ZlIDMwQyBhcmUgdGhvdWdodCB0byBiZSBsZXNzIHRoYW4gcHJvYmFibGUgCmBgYHtyfQojIENoYW5nZXMgdG8gYmUgbWFkZSB0aGUgZGF0YWZyYW1lIGJ5IHZhcmlhYmxlCiNbMV0gIm1vYXRzIiAiTTAzIiwgIk0wNCIsICJNMDUiLCAiTTA5IiwgIk0xMSIgdG8gYmUgZmlsdGVyZWQgb3V0LSBhbGwgdGhlc2UgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTU9BVHMgd2VyZSBkcm9wcGVkIGZyb20gdGhlIHN0dWR5CiNbMl0gImRhdGVUaW1lIiAtIG5vIGNoYW5nZXMKI1szXSAiYVRlbXBlcmF0dXJlIiAtIG5vIGNoYW5nZXMgCiNbNF0gInNUZW1wZXJhdHVyZSIgLSBubyBjaGFuZ2VzICAgIAojWzVdICJwSCIgLSBubyBjaGFuZ2VzCiNbNl0gIkRPIi0gbm8gY2hhbmdlcwojWzddICJzYWxpbml0eSIgLSBubyBjaGFuZ2VzIAojWzhdICJ0cmVhdG1lbnQiIC0gZHJvcHBpbmcgdGhlIGxpc3RlZCBNT0FUcyB3aWxsIGVsaW1pbmF0ZSB0aGUgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAiYnJva2VuX2FuZF9hbWJpZW50YnJva2VuIiB0cmVhdG1lbnQKI1s5XSAicGVyaW9kIiAtIGZpbHRlcmluZyBvdXQgIm90aGVyIgojWzEwXSAiT2JzZXJ2YXRpb25EYXRlIiAtIG5vIGNoYW5nZXMKI1sxMV0gIk9ic2VydmF0aW9uVGltZSIgLSBubyBjaGFuZ2VzLCBub3RlIHRoYXQgZWFjaCBvYnNlcnZhdGlvbiBjb3VsZCBiZSAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzcGFjZWQgNi44bWludXRlcyBhcGFydAogICAgICAgICAgCkNkbWwgPC0gZG1sICU+JSBmaWx0ZXIoIW1vYXRzICVpbiUgYygiTTAzIiwgIk0wNCIsICJNMDUiLCAiTTExIikpICU+JQogIGZpbHRlcihhVGVtcGVyYXR1cmU+PSA1ICYgYVRlbXBlcmF0dXJlPD0zMCkgJT4lCiAgZmlsdGVyKHRyZWF0bWVudCAlaW4lIGMoImN1cnJlbnQiLCAiYWxsY2hhbmdlIiwgImhpZ2h0ZW1wZXJhdHVyZSIpKSAlPiUKICBmaWx0ZXIocGVyaW9kICE9ICJvdGhlciIpCgpgYGAKCiMgOC4zIE9wdGlvbiB0byB3cml0ZSBhIENTViBvZiBDZG1sIHBhcmFtZXRlcnMKZHJvcGluZyB0aGUgbGV2ZWxzIG9mIHRoZSBtb2F0cyAKYGBge3J9CmxldmVscyhDZG1sJG1vYXRzKQpDZG1sJG1vYXRzIDwtIGRyb3BsZXZlbHMoQ2RtbCRtb2F0cykKYGBgCgoKCiMgOS4pIEZyYW1pbmcgZmlsdGVycyBmb3IgQ2RtbAoKOS4wIGNsZWFuaW5nIG5hbWVzIG9mIGxldmVscywgZmFjdG9ycwpgYGB7cn0KIyMgOS4wIFJlbW92aW5nIHRoZSBuYW1lcyBvZiBtb2F0cyAmIHRyZWF0bWVudHMgcmVtb3ZlZCBmcm9tIENkbWwgCiMgUmVtb3ZhbCBzaG91bGQgYWxsb3cgZm9yIGNsZWFuZXIgZ3JhcGhzIAojIERldGVybWluZWQgbW9hdHMgbGFiIG5ldmVyIGdvdCB1bmRlciA1QyBhbmQgd2FzIG5ldmVyIG92ZXIgMzBDIAogCmZpbHRlcmVkRnJhbWUgPSBmaWx0ZXIoQ2RtbCwKICAhbW9hdHMgJWluJSBjKCdNMDMnLCAiTTA0IiwgIk0wNSIsICJNMTEiKSAmIAogIChhVGVtcGVyYXR1cmU+PSA1ICYgYVRlbXBlcmF0dXJlPD0zMCkgJgogIHRyZWF0bWVudCAlaW4lIGMoImN1cnJlbnQiLCAiYWxsY2hhbmdlIiwgImhpZ2h0ZW1wZXJhdHVyZSIpICYKICBwZXJpb2QgIT0gIm90aGVyIikKYGBgCgpXaXRob3V0IGRyb3BwaW5nIGxldmVscyBhbmQgZmFjdG9ycyBub3QgbmFtZWQgbGFiZWwgbWF5IHN0aWxsIGNyb3dkIHBsb3RzCjkuMSBEcm9wcGluZyBuYW1lcyBhbmQgZmFjdG9ycwpgYGB7cn0KIyMgOS4xIERyb3BwaW5nIGxldmVscyBhbmQgZmFjdG9ycwpmaWx0ZXJlZEZyYW1lJG1vYXRzIDwtIGRyb3BsZXZlbHMoZmlsdGVyZWRGcmFtZSRtb2F0cykKZmlsdGVyZWRGcmFtZSR0cmVhdG1lbnQgPC0gZmFjdG9yKGZpbHRlcmVkRnJhbWUkdHJlYXRtZW50KQpgYGAKCjkuMiBCcm9hZC1nYWd1ZSB0ZXN0IG9mIHBsb3RzIGJ5IHRyZWF0bWVudAoKIyMjIyA5LjIuMSBBbGwgQ2hhbmdlIERheSBQZXJpb2QgQm94cGxvdAoKYGBge3J9CnNpbXBsZXBsb3RfYWxsY2hnX2RheSA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gImFsbGNoYW5nZSIsIF0sIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwZXJpb2QgJWluJSAoImRheSIpKSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRfc3VtbWFyeShmdW49bWVhbiwgZ2VvbT0icG9pbnQiLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplPTIsIGNvbG9yPSJyZWQiKSAgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9ib3hwbG90KCkgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKCJBbGwgQ2hhbmdlIERheSBQZXJpb2QgQm94cGxvdCIpCgoKc2ltcGxlcGxvdF9hbGxjaGdfZGF5CgoKYGBgCgoKIyMjIyA5LjIuMiBBbGwgQ2hhbmdlIE5pZ2h0IFBlcmlvZCBCb3hwbG90CmBgYHtyfQpzaW1wbGVwbG90X2FsbGNoZ19uaWdodCA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gImFsbGNoYW5nZSIsIF0sIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwZXJpb2QgJWluJSAoIm5pZ2h0IikpLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9bW9hdHMsIHk9YVRlbXBlcmF0dXJlLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXI9dHJlYXRtZW50KSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdF9zdW1tYXJ5KGZ1bj1tZWFuLCBnZW9tPSJwb2ludCIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemU9MiwgY29sb3I9InJlZCIpICArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX2JveHBsb3QoKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdndGl0bGUoIkFsbCBDaGFuZ2UgTmlnaHQgUGVyaW9kIEJveHBsb3QiKQoKc2ltcGxlcGxvdF9hbGxjaGdfbmlnaHQKCmBgYAoKIyMjIyA5LjIuMyBBbGwgQ2hhbmdlIFRpbWVzZXJpZXMKYGBge3J9CnNpbXBsZXBsb3RfYWxsY2hnX3RpbWVzZXJpZXMgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09ICJhbGxjaGFuZ2UiLCBdKSkrCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD1kYXRlVGltZSwgeT1hVGVtcGVyYXR1cmUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX3BvaW50KGFlcyhjb2xvdXI9bW9hdHMsIHBvaW50PSkpICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdndGl0bGUoIkFsbCBDaGFuZ2UgVHJlYXRtZW50IFRpbWVzZXJpZXMiKQoKc2ltcGxlcGxvdF9hbGxjaGdfdGltZXNlcmllcwpgYGAKCiAKIyMjIyA5LjIuNCBDdXJyZW50IERheSBQZXJpb2QgQm94cGxvdAoKYGBge3J9CnNpbXBsZXBsb3RfY3VyX2RheSA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gImN1cnJlbnQiLCBdLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVyaW9kICVpbiUgKCJkYXkiKSksIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD1tb2F0cywgeT1hVGVtcGVyYXR1cmUsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91cj10cmVhdG1lbnQpKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0X3N1bW1hcnkoZnVuPW1lYW4sIGdlb209InBvaW50IiwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZT0yLCBjb2xvcj0icmVkIikgICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21fYm94cGxvdCgpICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZSgiQ3VycmVudCBDb25kaXRpb25zIERheSBQZXJpb2QgQm94cGxvdCIpCgoKc2ltcGxlcGxvdF9jdXJfZGF5CgoKYGBgCgoKIAojIyMjIDkuMi41IEN1cnJlbnQgTmlnaHQgUGVyaW9kIEJveHBsb3QKCmBgYHtyfQpzaW1wbGVwbG90X2N1cl9uaWdodCA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gImN1cnJlbnQiLCBdLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVyaW9kICVpbiUgKCJuaWdodCIpKSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRfc3VtbWFyeShmdW49bWVhbiwgZ2VvbT0icG9pbnQiLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplPTIsIGNvbG9yPSJyZWQiKSAgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9ib3hwbG90KCkgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKCJDdXJyZW50IENvbmRpdGlvbnMgTmlnaHQgUGVyaW9kIEJveHBsb3QiKQoKCnNpbXBsZXBsb3RfY3VyX25pZ2h0CgoKYGBgCgoKCiMjIyMgOS4yLjYgQ3VycmVudCBDb25kaXRpb25zIFRpbWVzZXJpZXMKYGBge3J9CnNpbXBsZXBsb3RfY3VyX3RpbWVzZXJpZXMgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09ICJjdXJyZW50IiwgXSkpKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9ZGF0ZVRpbWUsIHk9YVRlbXBlcmF0dXJlKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9wb2ludChhZXMoY29sb3VyPW1vYXRzLCBwb2ludD0pKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKCJDdXJyZW50IENvbmRpdGlvbnMgVHJlYXRtZW50IFRpbWVzZXJpZXMiKQoKc2ltcGxlcGxvdF9jdXJfdGltZXNlcmllcwpgYGAKCgoKCgoKCgoKCgoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgpUcnkgZXhlY3V0aW5nIHRoaXMgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpSdW4qIGJ1dHRvbiB3aXRoaW4gdGhlIGNodW5rIG9yIGJ5IHBsYWNpbmcgeW91ciBjdXJzb3IgaW5zaWRlIGl0IGFuZCBwcmVzc2luZyAqQ21kK1NoaWZ0K0VudGVyKi4gCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKClRoaXMgaXMgYW4gW1IgTWFya2Rvd25dKGh0dHA6Ly9ybWFya2Rvd24ucnN0dWRpby5jb20pIE5vdGVib29rLiBXaGVuIHlvdSBleGVjdXRlIGNvZGUgd2l0aGluIHRoZSBub3RlYm9vaywgdGhlIHJlc3VsdHMgYXBwZWFyIGJlbmVhdGggdGhlIGNvZGUuIAoKVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkNtZCtTaGlmdCtFbnRlciouIAoKYGBge3J9CnBsb3QoY2FycykKYGBgCgpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ21kK09wdGlvbitJKi4KCldoZW4geW91IHNhdmUgdGhlIG5vdGVib29rLCBhbiBIVE1MIGZpbGUgY29udGFpbmluZyB0aGUgY29kZSBhbmQgb3V0cHV0IHdpbGwgYmUgc2F2ZWQgYWxvbmdzaWRlIGl0IChjbGljayB0aGUgKlByZXZpZXcqIGJ1dHRvbiBvciBwcmVzcyAqQ21kK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuIAoKVGhlIHByZXZpZXcgc2hvd3MgeW91IGEgcmVuZGVyZWQgSFRNTCBjb3B5IG9mIHRoZSBjb250ZW50cyBvZiB0aGUgZWRpdG9yLiBDb25zZXF1ZW50bHksIHVubGlrZSAqS25pdCosICpQcmV2aWV3KiBkb2VzIG5vdCBydW4gYW55IFIgY29kZSBjaHVua3MuIEluc3RlYWQsIHRoZSBvdXRwdXQgb2YgdGhlIGNodW5rIHdoZW4gaXQgd2FzIGxhc3QgcnVuIGluIHRoZSBlZGl0b3IgaXMgZGlzcGxheWVkLgoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKIyMgQXV0aG9yOiBPQSBMYWIsIE5XRlNDCiMjIyBUaXRsZTogQXF1YXJpdW0gVGVtcGVyYXR1cmUgSW52ZXN0aWdhdGlvbjogVGVtcGVyYXR1cmUgU3ViU2VsZWN0U2NyaXB0LlIgCiMjIyBEYXRlOiBBcHJpbC1NYXkgMjAyMAoKIyBBcXVhcml1bSBUZW1wZXJhdHVyZSBJbnZlc3RpZ2F0aW9uClIgc2NyaXB0IGJlbG93IHdpbGwgc3Vic2VsZWN0IGFuZCBwbG90IHRlbXBlcmF0dXJlIGRhdGEgZm9yIE1PQVRzCk92ZXJhbGwgZ29hbCBpcyB0byBkZXRlcm1pbmUgaWYgTU9BVHMgKHBlciB0cmVhdG1lbnQpIGFyZSB0cnVlIHJlcGxpY2F0ZXMKCmBgYHtyIExpYnJhcmllc30KIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgojI0xpYnJhcmllcwojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqIApsaWJyYXJ5KHNoaW55KQpsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShzdHJpbmdyKQpsaWJyYXJ5KHJlYWR4bCkKbGlicmFyeShyZWFkcikKbGlicmFyeSh0aWR5cikKbGlicmFyeShkYXRhLnRhYmxlKQpsaWJyYXJ5KGx1YnJpZGF0ZSkKbGlicmFyeSh2aW9saW5tcGxvdCkKbGlicmFyeSh2aW9wbG90KQpsaWJyYXJ5KHlhcnJyKQpsaWJyYXJ5KGRhdGFwYXN0YSkKbGlicmFyeShyZXByZXgpCmxpYnJhcnkobWluaVVJKQpsaWJyYXJ5KGdyaWRFeHRyYSkKCmBgYAoKCiMjIE91dGxpbmUgCihDdXJyZW50IGFzIG9mIDIwMjAuMDYuMjUpCgoqIDEuKSBXb3JraW5nIERpcmVjdG9yeQoqIDIuKSBTcG9sbGluZyBEYXRhIGludG8gb25lIENTViAKKiAzLikgQ3JlYXRpbmcgdGhlIERhdGFmcmFtZSAiZG1sIgoqIDQuKSBTZXR0aW5nIGEgbmV3IHdvcmtpbmcgZGlyZWN0b3J5CiogNC4pIENyZWF0aW5nIGRhdGVUaW1lIG9iamVjdHMgCiogNS4pIENyZWF0aW5nIFRyZWF0bWVudCBWYXJpYWJsZXMKKiA2LikgQ3JlYXRpbmcgTmlnaHQgYW5kIERheSBQZXJpb2RzCiogNy4pIEluc2l0dSBkYXRhCiogOC4pIENsZWFuaW5nIHVwIGRtbCAiQ2RtbCIKKiA5LikgRnJhbWluZyBmaWx0ZXJzIGZvciBDZG1sCiogMTAuKSBUZW1wZXJhdHVyZSAiSnVtcHMiCiogMTEuKSBDYWxjdWxhdGluZyBhdmVyYWdlcyBieSB0cmVhdG1lbnQgJiBkYXkvbmlnaHQKKiAxMi4pIFN1bW1hcnkgJiBHcm91cCBieSBDZG1sCiogMTMuKSBQbG90cyBCb3hwbG90cyAmIHRpbWVzZXJpZXMKKiAxNC4pIER1cmF0aW9uIGJldHdlZW4gY29uZGl0aW9ucy0gSGlzdG9ncmFtICYgQ3VtbXVsYXRpdmUgRGlzdHJpYnR1aW9uIFBsb3QgIHNlY3Rpb24KKiAxNS4pIGFUZW1wIGJhbmRzIGludmVzdGlnLgoqIDE2LikgU2hhcmUtYWJsZSB0aWJibGVzICYgcmVwcmV4IHJlYWRpbmVzcyAgCgoKIzEuKSBXb3JraW5nIERpcmVjdG9yeQoKSW5zaWRlIHRoZSB3b3JraW5nIGRpcmVjdG9yeSAoZm9sZGVyKSBhcmUgQ1NWIGZpbGVzIGdlbmVyYXRlZCBhZnRlciB1c2luZyB0aGUgbW9hdHMgZ3JhcGggYXBwCltMaW5rIHRvIG1vYXRzLkdyYXBoLmFwcF0oaHR0cDovL2dpdGh1Yi5jb20vcG1jZWxoYW55L21vYXRzR3JhcGhzLmdpdCkKTW92aW5nIGF2ZXJhZ2Ugd2luZG93IChuT2JzKSBzZXQgdG8gNC4gVGhpcyByZXN1bHRzIGluIHRoZSBvYnNlcnZhdGlvbnMgYmVpbmcgYXZlcmFnZWQgaW50byBhIDI0c2Vjb25kIHRpbWVmcmFtZS4gQ1NWcyB3ZXJlIGNyZWF0ZWQgZm9yIGVhY2ggbW9hdHM6IE0wMSwgTTAyLCBNMDMsIE0wNCwgTTA1LCBNMDYsIE0wNywgTTA4LCBNMDksIE0xMCwgTTExLCBNMTIsIE0xMy4gRmlsZXMgYXJlIGFsc28gYXZhaWxhYmxlIG9uIHRoZSBPQSBHb29nbGUgZHJpdmUuIFtPQSBEcml2ZSBmb3IgTU9BVFMgZGF0YV0oaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4/aWQ9MTNhMmhrMWE5STlnUklnZjJYeWwxZFNZRGY1dm55WXZzKQoKCmBgYHtyLCBzZXR1cCwgaW5jbHVkZT1GQUxTRX0KIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgojIyAxLikgU2V0IHdvcmtpbmcgZGlyZWN0b3J5CiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQoKa25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXIgPSAiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfS1JMX1NNUjIwMTkvMDYuIE1PQVRTIHJlcGxpY2F0aW9uIHZlcmlmaWNhdGlvbiIpCmBgYAoKCgojIDIuKSBTcG9sbGluZyBEYXRhIGludG8gb25lIENTViAKQ29tYmluaW5nIG11bHRpcGxlIENTViBmaWxlcyBpbnRvIDEgZG9jdW1lbnQuIE9yaWdpbmFsIGlucHV0IGZpbGVzIGZyb20gaW5kaXZpZHVhbCBMVk0gKGxvZ2ljYWwgdm9sdW1uZSBtYW5hZ2VtZW50KSBmaWxlcyBvZmYgZWFjaCBNT0FUcy4KMi4xIENyZWF0ZSBhIGxpc3Qgb2YgZmlsZXMKYGBge3IgMi4xIENyZWF0ZSBhIGxpc3Qgb2YgZmlsZXN9IAojIyAyLjEgQ3JlYXRlIGEgbGlzdCBvZiBmaWxlcyAKIyBBbGwgZmlsZXMgdG8gYmUgam9pbmVkIGhhdmUgZXh0LiAiY3N2IiBjYW4gdXNlIHRoYXQgcGF0dGVybiB0byBqb2luIApmaWxlcyA8LSBsaXN0LmZpbGVzKHBhdGg9ICIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19NT0FUc19TTVIyMDE5L0xhYlZpZXdMb2dzKENTVilSYmluZCIsIHBhdHRlcm4gPSAiLipcXC5jc3YiKQpwcmludChmaWxlcykKYGBgCgoyLjIgQ3JlYXRlIGEgdGVtcG9yYXJ5IHBsYWNlIGZvciBmaWxlcwpgYGB7ciAyLjIgQ3JlYXRlIGEgdGVtcG9yYXJ5IHBsYWNlIGZvciBmaWxlc30KIyMgMi4yIENyZWF0ZSBhIHRlbXBvcmFyeSBwbGFjZSBmb3IgZmlsZXMgCnRlbXAgPC0gbGFwcGx5KGZpbGVzLCBmcmVhZCwgc2VwPSAiLCIpCnByaW50KHRlbXApCmBgYAoKMi4zIENyZWF0ZSBhIG5ldyB2ZWN0b3IgZm9yIE1vYXRzIGRhdGEgbG9ncwpgYGB7ciAyLjMgQ3JlYXRlIGEgbmV3IHZlY3RvciBmb3IgTW9hdHMgZGF0YSBsb2dzfQojIyAyLjMgQ3JlYXRlIGEgbmV3IHZlY3RvciBmb3IgTW9hdHMgZGF0YSBsb2dzIAojICJNMDF0aHJ1TTEzTW9hdHNsb2dfZGF0YSIgdmlhIHJiaW5kCk0wMXRocnVNMTNtb2F0c2xvZ19kYXRhIDwtIHJiaW5kbGlzdCh0ZW1wKQpwcmludChNMDF0aHJ1TTEzbW9hdHNsb2dfZGF0YSkKYGBgCgoKCjIuNCBXcml0ZSB0aGUgbmV3IGNzdiBkb2N1bWVudApgYGB7ciAyLjUgV3JpdGUgdGhlIG5ldyBjc3YgZG9jdW1lbnR9CiMjIDIuNSBXcml0ZSB0aGUgbmV3IGNzdiBkb2N1bWVudCB8IAojICJNMDF0aHJ1TTEzbW9hdHNsb2ciIGNhbiB1bmNvbW1lbnQgdGhpcyBjb21tYW5kIGxpbmUgYXMgbmVlZGVkCiN3cml0ZS5jc3YoTTAxdGhydU0xM21vYXRzbG9nX2RhdGEsIGZpbGUgPSAiTTAxdGhydU0xM21vYXRzbG9nLmNzdiIsIHJvdy5uYW1lcyA9IEZBTFNFKQoKYGBgCgoKU2F2ZWQgb24gdGhlIE9BIEdvb2dsZSBEcml2ZQpbTTAxdGhydU0xM21vYXRzbG9nLmNzdl0oaHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL29wZW4/aWQ9MTVpQlhjdDliNEVqS0RxNzV2S25tNU5vYm93QndLM0ctKQoKCgojIDMuKSBDcmVhdGluZyB0aGUgRGF0YWZyYW1lICJkbWwiIAoKMy4xIFJlYWRpbmcgdGhlIENTVgpgYGB7ciAzLjEgUmVhZGluZyB0aGUgQ1NWfQojIyAzLjEgUmVhZGluZyB0aGUgQ1NWIHwgIAojIyBlbnN1cmluZyBjb2x1bW4gbmFtZXMgYW5kIHR5cGVzCiMjIERhdGEgTW9hdHMgTG9nID0gZG1sCmRtbCA8LSByZWFkLmNzdiggZmlsZSA9ICJNMDF0aHJ1TTEzbW9hdHNsb2cuY3N2Iiwgc3RyaW5nc0FzRmFjdG9ycyA9IEZBTFNFKQpkaW0oZG1sKQpgYGAKCgozLjFhIER1cGxpY2F0aW9uIENoZWNrCmBgYHtyIDMuMWEgRHVwbGljYXRpb24gQ2hlY2t9CiMjIDMuMWEgRHVwbGljYXRpb24gQ2hlY2sKIyMgZHVwbGljYXRlcyBvYnNlcnZlZCBpbiAiZG1sIiBvbiAyMDIwLjA1LjA3ICAKZHVwMiA8LSBkbWxbZHVwbGljYXRlZChkbWwpLF0KI2lmIG5vIGR1cHMsIENkbWwyIGhhcyBzYW1lIG51bWJlciBvZiByb3dzIGFzIENkbWwKZG1sMiA8LSBkbWwgJT4lIGRpc3RpbmN0KCkgCmBgYAoKCgozLjFiIFN1YiBzYW1wbGluZyBkYXRhZnJhbWUgImRtbCIKYGBge3IgMy4xYiBTdWIgc2FtcGxpbmcgZGF0YWZyYW1lICJkbWwifQojIyAzLjFiIFN1YiBzYW1wbGluZyBkYXRhZnJhbWUgImRtbCIgIAojIyBjcmVhdGluZyBhIHN1YiBzYW1wbGUgb2YgdGhlIGRhdGEgbW9hdHMgbG9nIGRtbCBkYXRhZnJhbWUgdG8gYWxsb3cgZm9yIHF1aWNrIGdyYXBocyAKCgojc3Vic2FtcGxlIGV2ZXJ5IDE3dGggcm93IChiZWNhdXNlIHByaW1lIG51bWJlcnMgYXJlIGluZGVlZCBjb29sKQpkbWwgPC0gZG1sICU+JSBhcnJhbmdlKG1vYXRzLCBkYXRlVGltZSkgJT4lIGZpbHRlcihyb3dfbnVtYmVyKCkgJSUgMTcgPT0gMCkKCiN3cml0ZS5jc3YoZG1sLCBmaWxlID0gIk0wMXRocnVNMTNtb2F0c2xvZ19uMTcuY3N2Iiwgcm93Lm5hbWVzID0gRkFMU0UpCmBgYAoKMy4yIENoZWNraW5nIHZhcmlhYmxlcwpgYGB7ciAzLjIgQ2hlY2tpbmcgdmFyaWFibGVzfQojIyAzLjIgQ2hlY2tpbmcgdmFyaWFibGVzICAKIyMgTG9va2luZyB0byBlbnN1cmUgdGhlIGRpZmZlcmVudCB2YXJpYWJsZXMgYXJlIHRyZWF0ZWQgYXMgdGhlIGNvcnJlY3QgdmFyaWFibGUgdHlwZQojIyBDaGVja2luZyB0aGUgbmFtZXMgaW4gdGhlIGRhdGFmcmFtZQpuYW1lcyhkbWwpCiMjIENoZWNraW5nIHZhcmlhYmxlIHR5cGUvY2xhc3MgCmNsYXNzKGRtbCRtb2F0cykKZG1sJG1vYXRzIDwtIGFzLmZhY3RvcihkbWwkbW9hdHMpCmBgYAoKCgoKMy4zIENoYW5naW5nIHZhcmlhYmxlcwpgYGB7ciAzLjMgQ2hhbmdpbmcgdmFyaWFibGVzfQojIyAzLjMgQ2hhbmdpbmcgdmFyaWFibGVzIHwgCiMjIENoYW5naW5nIE1PQVRzIHRvIEZhY3RvcnMgZm9yIHRoZSAxMyBkaWZmZXJlbnQgTU9BVHMtIHRoZXNlIHdpbGwgYmUgdGhlIGRpc2NyZXRlIHVuaXRzIGZvciBmb2xsb3cgYW5hbHlzaXMKZG1sJG1vYXRzIDwtIGZhY3RvcihkbWwkbW9hdHMpCiMgQ2hlY2tpbmcgdGhlIG5hbWVzIG9mIHRoZSBkaWZmZXJlbnQgbGV2ZWxzCmxldmVscyhkbWwkbW9hdHMpCiMjY2hlY2tpbmcgdGhlIGRhdGFzZXQsIGRpbWVuc2lvbnMKZGltKGRtbCkKYGBgCgoKIzQuKSBDcmVhdGluZyBkYXRlVGltZSBvYmplY3RzCgo0LjAgRXN0YWJsaXNoIHRoZSBkYXRlVGltZSBvYmplY3RzCmBgYHtyIEVzdGFibGlzaCB0aGUgZGF0ZSB0aW1lIG9iamVjdH0KIyA0LjAgZXN0YWJsaXNoIHRoZSBkYXRlIHRpbWUgb2JqZWN0IG9mIHRoZSBDU1YgfApkbWwkZGF0ZVRpbWUgPC0gYXMuUE9TSVhjdChkbWwkZGF0ZVRpbWUsIGZvcm1hdD0iJVktJW0tJWQgJUg6JU06JU9TIikKUmVmZXJlbmNlVGltZSA8LSBhcy5QT1NJWGN0KCIyMDE5LTA5LTIwIDIzOjU5OjAwIikKY2xhc3MoUmVmZXJlbmNlVGltZSkKCiMgUUEgY2hlY2sKZGltKGRtbCkKYGBgCgoKIyA1LikgQ3JlYXRpbmcgVHJlYXRtZW50IFZhcmlhYmxlcyAgCgogNS4xIElkZW50aWZ5aW5nIFRyZWF0bWVudHMgYnkgTU9BVFMKYGBge3IgNS4xIElkZW50aWZ5aW5nIHRyZWF0bWVudHMgYnkgbW9hdHN9CiMjIDUuMSBJZGVudGlmeWluZyB0cmVhdG1lbnRzIGJ5IG1vYXRzIAojIyBlc3RhYmxpc2hpbmcgdHJlYXRtZW50cwpkbWwkdHJlYXRtZW50IDwtICIiCmRtbCR0cmVhdG1lbnRbZG1sJG1vYXRzID09ICJNMDciIHwgZG1sJG1vYXRzPT0gIk0xMCIgfCBkbWwkbW9hdHM9PSAiTTEyIl0gPC0gImN1cnJlbnQiCmRtbCR0cmVhdG1lbnRbZG1sJG1vYXRzID09ICJNMDEifCBkbWwkbW9hdHM9PSAiTTA2Il0gPC0gImhpZ2h0ZW1wZXJhdHVyZSIKZG1sJHRyZWF0bWVudFtkbWwkbW9hdHMgPT0gIk0wMiJ8IGRtbCRtb2F0cz09ICJNMDgiIHwgZG1sJG1vYXRzPT0gIk0xMyJdIDwtICJhbGxjaGFuZ2UiCmRtbCR0cmVhdG1lbnRbZG1sJG1vYXRzID09ICJNMDMifCBkbWwkbW9hdHMgPT0gIk0wNCIgfCBkbWwkbW9hdHMgPT0gIk0wNSIgfCBkbWwkbW9hdHM9PSAiTTExIl0gPC0gImJyb2tlbl9hbmRfYW1iaWVudGJyb2tlbiIKI3ZlcmlmeSB0aGF0IHRoaXMgbmV3IGNvbHVtbiBoYXMgYmVlbiBjcmVhdGVkCm5hbWVzKGRtbCkKI3Jlc3VsdHMgc2hvdWxkIGluY2x1ZGU6CiNbMV0gIm1vYXRzIiAgICAgICAgImRhdGVUaW1lIiAgICAgImFUZW1wZXJhdHVyZSIgInNUZW1wZXJhdHVyZSIgInBIIiAgICAgICAgICAKI1s2XSAiRE8iICAgICAgICAgICAic2FsaW5pdHkiICAgICAidHJlYXRtZW50IiAgCgojIFFBIGNoZWNrCmRpbShkbWwpCmBgYAoKCjUuMiBTaW1wbGUgZ2dwbG90IHRvIHNob3cgdGhlIGRpZmZlcmVudCBNT0FUcyB3aXRob3V0IHBvbGlzaApgYGB7ciBTaW1wbGUgZ2dwbG90IGFsbCBtb2F0cywgYWxsIHRyZWF0bWVudHN9CgpwbG90NS4yIDwtIGdncGxvdChkbWwsIGFlcyh4PWRhdGVUaW1lLCB5PWFUZW1wZXJhdHVyZSkpICsgCiAgZ2VvbV9wb2ludChhZXMoY29sb3VyPW1vYXRzLCBwb2ludD0pKSArIAogIGdndGl0bGUoIkFsbCBNT0FUcywgQWxsIFRyZWF0bWVudCBhVGVtcGVyYXR1cmUgVGltZSBTZXJpZXMiKSAKCnBsb3Q1LjIKCmBgYAoKCiFbUGxvdCA1LjIgRmlndXJlMV0oL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfS1JMX1NNUjIwMTkvMDYuIE1PQVRTIHJlcGxpY2F0aW9uIHZlcmlmaWNhdGlvbi9ScGxvdC50aW1lc2VyaWVzLmFUZW1wLnBsb3Q1LjIucG5nKQoKIyA2LikgQ3JlYXRpbmcgTmlnaHQgYW5kIERheSBQZXJpb2RzCgo2LjEgTmFycmF0aXZlIChPdmVyYWxsKQpDcmVhdGluZyBhIGRheSBhbmQgbmlnaHQgdmFyaWFibGVzIApEYXkgYW5kIG5pZ2h0IHBlcmlvZHMgZXhjbHVkZSB0aGUgYWNjbGltYXRpb24gcGVyaW9kIGJ5IHRoZWlyIGRlZmluaXRpb24uCkRheSBhbmQgbmlnaHQgY2hhbmdlZCBhdCBhYm91dCB+IDEyMzAgb24gMDVPQ1QxOSAKVHJlYXRtZW50IHN0YXJ0IGRhdGUgY29uc2lkZXJlZCB0byBiZWdpbiBNb25kYXkgMjNTRVAxOSBhdCAxMjAwcG0KCktyaWxsIE5pZ2h0IFN0YXJ0ZWQgMTIwMCAofjEyMzAqKSBhbmQgZW5kcyAyMTAwCktyaWxsIERheXMgU3RhcnRlZCAyMTAxIGFuZCBlbmRzIDExNTkgKH4xMjI5KikgCgojIyMjIEludGVydmFsIDEgc3RhcnQgMTIwMCAyM1NFUDE5LCBlbmQgMTIyOSAwNU9DVDE5CiMjIyMgSW50ZXJ2YWwgMiBzdGFydCAxMjMwIDA1T0NUMTksIGVuZCAyMTAwIDMwT0NUMTkKCiMgQ29uY2VwdCBEaWFncmFtIGdyYXBoaWMKIVtEYXkvTmlnaHQgRGVmaW5pdGlvbnMgQ29uY2VwdCBEaWFncmFtIEZpZ3VyZTJdKC9Vc2Vycy9rYXRoZXJpbmVyb3ZpbnNraS9HSVQvTldGU0MuTVVLX0tSTF9TTVIyMDE5LzA2LiBNT0FUUyByZXBsaWNhdGlvbiB2ZXJpZmljYXRpb24vMDJhLiBTY3JpcHRzLmNvbmNlcHRkaWFncmFtcy9EYXlfTmlnaHQgUGVyaW9kIExvb3AgZGlhZ3JhbS5wbmcpCgoKNi4yIE5ldyBDb2x1bW4sIE5ldyBWYXJpYWJsZQpgYGB7ciA2LjIgTmV3IENvbHVtbiwgTmV3IFZhcmlhYmxlIGluIGRtbCwgUGVyaW9kfQojIyA2LjIgTmV3IENvbHVtbiwgTmV3IFZhcmlhYmxlIGluIGRtbAojY3JlYXRpbmcgYSBuZXcgY29sdW1uLCBuZXcgdmFyaWFibGUgInBlcmlvZCIKZG1sJHBlcmlvZCA8LSAiIgpgYGAKCgo2LjMgRGlzYXNzZW1ibGluZyBkYXRlVGltZSB0byBjcmVhdGUgMiBuZXcgdmFyaWFibGVzCmBgYHtyIDYuMyBEaXNhc3NlbWJsaW5nIGRhdGVUaW1lLCAyIG5ldyB2YXJpYWJsZXN9CiMjIDYuMyBEaXNhc3NlbWJsaW5nIGRhdGVUaW1lIHRvIGNyZWF0ZSAyIG5ldyB2YXJpYWJsZXMKIyBDcmVhdGUgbmV3IHNwbGl0IGRhdGUgYW5kIHRpbWUgY29sdW1ucwpkbWwkT2JzZXJ2YXRpb25EYXRlIDwtIGFzLkRhdGUoZG1sJGRhdGVUaW1lKQpkbWwkT2JzZXJ2YXRpb25UaW1lIDwtIGZvcm1hdChhcy5QT1NJWGN0KGRtbCRkYXRlVGltZSkgLGZvcm1hdCA9ICIlSDolTTolUyIpCmBgYAoKCiMjIyA2LjQgTmFycmF0aXZlIGFib3V0IEludGVydmFscyAKCiMjIyBJbnRlcnZhbCAxCiAgKiBJbnRlcnZhbCBEYXRlIFN0YXJ0ICAiMjAxOS0wOS0yMyIKICAqIEludGVydmFsIERhdGUgRW5kICAgICIyMDE5LTEwLTA1IgogICogRGF5IFN0YXJ0IFRpbWUgICAgICAgIjIxOjAxOjAwIgogICogRGF5IEVuZCBUaW1lICAgICAgICAgIjEyOjAxOjAwIgogICogTmlnaHQgU3RhcnQgVGltZSAgICAgIjEyOjAwOjAwIgogICogTmlnaHQgRW5kIFRpbWUgICAgICAgIjIxOjAwOjAwIgogICogT3RoZXIgVGltZQogIAojIyMgSW50ZXJ2YWwgMgoKICAqIEludGVydmFsIERhdGUgU3RhcnQgICIyMDE5LTEwLTA1IgogICogSW50ZXJ2YWwgRGF0ZSBFbmQgICAgIjIwMTktMTAtMzAiCiAgKiBEYXkgU3RhcnQgVGltZSAgICAgICAiMjE6MDE6MDAiCiAgKiBEYXkgRW5kIFRpbWUgICAgICAgICAiMTI6Mjk6MDAiCiAgKiBOaWdodCBTdGFydCBUaW1lICAgICAiMTI6MzA6MDAiCiAgKiBOaWdodCBFbmQgVGltZSAgICAgICAiMjE6MDA6MDAiCiAgKiBPdGhlciBUaW1lCgoKCjYuNSBEYXkgLyBOaWdodCBBc3NpZ25tZW50cyAKYGBge3J9CiMjIDYuNSBEYXkgLyBOaWdodCBBc3NpZ25tZW50cyAKIyBVc2luZyB0aGUgImNhc2Vfd2hlbiIgZnVuY3Rpb24gaW4gdGhlIHRpZHl2ZXJzZSBpbiB0aGUgcGxhY2Ugb2YgYSBsb29wCgpkbWwgPC0gZG1sICU+JSBtdXRhdGUocGVyaW9kPWNhc2Vfd2hlbigKICAgICAgICAgICAgICAgICAgICAgICAgICAoT2JzZXJ2YXRpb25EYXRlID49ICIyMDE5LTA5LTIzIikgCiAgICAgICAgICAgICAgICAgICAgICAgICAgJiAoT2JzZXJ2YXRpb25EYXRlIDw9IjIwMTktMTAtMDUiKSAKICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvblRpbWUgPj0gIjEyOjAwOjAwIikgCiAgICAgICAgICAgICAgICAgICAgICAgICAgJiAoT2JzZXJ2YXRpb25UaW1lIDw9IjIxOjAwOjAwIikgfiJuaWdodCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgKE9ic2VydmF0aW9uRGF0ZSA+PSAiMjAxOS0xMC0wNSIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgJiAoT2JzZXJ2YXRpb25EYXRlIDw9ICIyMDE5LTEwLTMwIikKICAgICAgICAgICAgICAgICAgICAgICAgICAmIChPYnNlcnZhdGlvblRpbWUgPj0gIjEyOjMwOjAwIikgCiAgICAgICAgICAgICAgICAgICAgICAgICAgJiAoT2JzZXJ2YXRpb25UaW1lIDw9IjIxOjAwOjAwIikgfiJuaWdodCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgKE9ic2VydmF0aW9uRGF0ZSA+PSAiMjAxOS0wOS0yMyIpIAogICAgICAgICAgICAgICAgICAgICAgICAgICYgKE9ic2VydmF0aW9uRGF0ZSA8PSIyMDE5LTEwLTA1IikKICAgICAgICAgICAgICAgICAgICAgICAgICAmICgoT2JzZXJ2YXRpb25UaW1lID49ICIyMTowMTowMCIpIAogICAgICAgICAgICAgICAgICAgICAgICAgIHwgKE9ic2VydmF0aW9uVGltZSA8PSIxMTo1OTowMCIpKSB+ImRheSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgKE9ic2VydmF0aW9uRGF0ZSA+PSAiMjAxOS0xMC0wNSIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgJiAoT2JzZXJ2YXRpb25EYXRlIDw9ICIyMDE5LTEwLTMwIikKICAgICAgICAgICAgICAgICAgICAgICAgICAmICgoT2JzZXJ2YXRpb25UaW1lID49ICIyMTowMTowMCIpCiAgICAgICAgICAgICAgICAgICAgICAgICAgfCAoT2JzZXJ2YXRpb25UaW1lIDw9ICIxMjoyOTowMCIpKSB+ImRheSIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgVFJVRSB+Im90aGVyIgogICAgICAgICAgICAgICAgICAgICAgICApCgogICAgICAgICAgICAgICAgICAgICkgCmBgYAoKCiMgNy4pIEluc2l0dSBkYXRhICAKCgo3LjAgSW4tc2l0dSBkYXRhIGZpbGVzClR3byBmaWxlcyByZXByZXNlbnQgbWFudWFsIGNoZWNrcyBvZiBhcXVhcml1bSBzYWxpbml0eS4KRXh0cmFjdGVkIGZyb20gdGhpcyBhcmUgcG9pbnQgbWVhc3VyZW1lbnRzIG9mIGFxdWFyaW0gdGVtcGVyYXR1cmUKCmBgYHtyfQojICMjIDcuMSBSZWFkIGluIGZpbGVzCiMgIyBjYXJlZnVsZSBhYm91dCBuYXZpZ2F0aW5nIHRvIHRoZSBzZWNvbmQgd29ya2luZyBkaXJlY3RvcnkKIyAKIyAKIyBrbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCiMga25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXIgPSAiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfS1JMX1NNUjIwMTkvMDYuIE1PQVRTIHJlcGxpY2F0aW9uIHZlcmlmaWNhdGlvbi8wMS4gUmF3IERhdGEvSW5TaXR1U2FtcGxpbmciKQojIAojIAojIGQuaW5zaXR1IDwtIHJlYWQuY3N2KGZpbGUgPSAiS1JMMTlfaW5zaXR1X3NhbXBsZV9EYXkuY3N2Iiwgc3RyaW5nc0FzRmFjdG9ycyA9IEZBTFNFKQojIG4uaW5zaXR1IDwtIHJlYWQuY3N2KGZpbGUgPSAiS1JMMTlfaW5zaXR1X3NhbXBsZV9OaWdodC5jc3YiLCBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpCgpgYGAKCgojIDguKSBDbGVhbmluZyB1cCBkbWwgIAoKQ3JlYXRpbmcgYSBuZXcgZGF0YWZyYW1lIGNsZWFuZWQgd2l0aCB0aGUgdmFyaW91cyBmaWx0ZXJzIGJlbG93CmNoZWNraW5nIG9uIHRoZSB2YXJpYWJsZXMgaW5zaWRlIGRtbApDbGVhbmVkLVVwIGRtbCA9IENkbWwKCgpgYGB7ciA4LjEgTm90aW5nIG5hbWVzIG9mIHRoZSBkaWZmZXJlbnQgdmFyaWFibGVzLCBjbGVhbiB1cH0KIyMgOC4xIE5vdGluZyBuYW1lcyBvZiB0aGUgZGlmZmVyZW50IHZhcmlhYmxlcyBpbiBkbWwKbmFtZXMoZG1sKQpgYGAKCgojIDguMiBOYXJyYXRpdmUgb24gZGVzaXJlZCBjaGFuZ2VzIHRvIGNyZWF0ZSBDZG1sCgo4LjIgTmFycmF0aXZlIG9uIENkbWwKVGVtcGVyYXR1cmVzIGJlbG93IDVDIGFuZCBhYm92ZSAzMEMgYXJlIHRob3VnaHQgdG8gYmUgbGVzcyB0aGFuIHByb2JhYmxlIApgYGB7ciA4LjIgQ2hhbmdlcyB0byBiZSBtYWRlIHRoZSBkYXRhZnJhbWUgYnkgdmFyaWFibGV9CiMgQ2hhbmdlcyB0byBiZSBtYWRlIHRoZSBkYXRhZnJhbWUgYnkgdmFyaWFibGUKI1sxXSAibW9hdHMiICJNMDMiLCAiTTA0IiwgIk0wNSIsICJNMDkiLCAiTTExIiB0byBiZSBmaWx0ZXJlZCBvdXQtIGFsbCB0aGVzZSAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBNT0FUcyB3ZXJlIGRyb3BwZWQgZnJvbSB0aGUgc3R1ZHkKI1syXSAiZGF0ZVRpbWUiIC0gbm8gY2hhbmdlcwojWzNdICJhVGVtcGVyYXR1cmUiIC0gbm8gY2hhbmdlcyAKI1s0XSAic1RlbXBlcmF0dXJlIiAtIG5vIGNoYW5nZXMgICAgCiNbNV0gInBIIiAtIG5vIGNoYW5nZXMKI1s2XSAiRE8iLSBubyBjaGFuZ2VzCiNbN10gInNhbGluaXR5IiAtIG5vIGNoYW5nZXMgCiNbOF0gInRyZWF0bWVudCIgLSBkcm9wcGluZyB0aGUgbGlzdGVkIE1PQVRzIHdpbGwgZWxpbWluYXRlIHRoZSAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICJicm9rZW5fYW5kX2FtYmllbnRicm9rZW4iIHRyZWF0bWVudAojWzldICJwZXJpb2QiIC0gZmlsdGVyaW5nIG91dCAib3RoZXIiCiNbMTBdICJPYnNlcnZhdGlvbkRhdGUiIC0gbm8gY2hhbmdlcwojWzExXSAiT2JzZXJ2YXRpb25UaW1lIiAtIG5vIGNoYW5nZXMsIG5vdGUgdGhhdCBlYWNoIG9ic2VydmF0aW9uIGNvdWxkIGJlIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNwYWNlZCA2LjhtaW51dGVzIGFwYXJ0CiAgICAgICAgICAKQ2RtbCA8LSBkbWwgJT4lIGZpbHRlcighbW9hdHMgJWluJSBjKCJNMDMiLCAiTTA0IiwgIk0wNSIsICJNMTEiKSkgJT4lCiAgZmlsdGVyKGFUZW1wZXJhdHVyZT49IDUgJiBhVGVtcGVyYXR1cmU8PTMwKSAlPiUKICBmaWx0ZXIodHJlYXRtZW50ICVpbiUgYygiY3VycmVudCIsICJhbGxjaGFuZ2UiLCAiaGlnaHRlbXBlcmF0dXJlIikpICU+JQogIGZpbHRlcihwZXJpb2QgIT0gIm90aGVyIikKCmBgYAoKIyA4LjMgT3B0aW9uIHRvIHdyaXRlIGEgQ1NWIG9mIENkbWwgcGFyYW1ldGVycwpkcm9waW5nIHRoZSBsZXZlbHMgb2YgdGhlIG1vYXRzIApgYGB7ciA4LjMgRHJvcHBpbmcgbGV2ZWxzfQpsZXZlbHMoQ2RtbCRtb2F0cykKQ2RtbCRtb2F0cyA8LSBkcm9wbGV2ZWxzKENkbWwkbW9hdHMpCmBgYAoKCgojIDkuKSBGcmFtaW5nIGZpbHRlcnMgZm9yIENkbWwKCjkuMCBjbGVhbmluZyBuYW1lcyBvZiBsZXZlbHMsIGZhY3RvcnMKYGBge3IgOS4wIFJlbW92aW5nIHRoZSBuYW1lcyBvZiBtb2F0cyAmIHRyZWF0bWVudHN9CiMjIDkuMCBSZW1vdmluZyB0aGUgbmFtZXMgb2YgbW9hdHMgJiB0cmVhdG1lbnRzIHJlbW92ZWQgZnJvbSBDZG1sIAojIFJlbW92YWwgc2hvdWxkIGFsbG93IGZvciBjbGVhbmVyIGdyYXBocyAKIyBEZXRlcm1pbmVkIG1vYXRzIGxhYiBuZXZlciBnb3QgdW5kZXIgNUMgYW5kIHdhcyBuZXZlciBvdmVyIDMwQyAKIApmaWx0ZXJlZEZyYW1lID0gZmlsdGVyKENkbWwsCiAgIW1vYXRzICVpbiUgYygnTTAzJywgIk0wNCIsICJNMDUiLCAiTTExIikgJiAKICAoYVRlbXBlcmF0dXJlPj0gNSAmIGFUZW1wZXJhdHVyZTw9MzApICYKICB0cmVhdG1lbnQgJWluJSBjKCJjdXJyZW50IiwgImFsbGNoYW5nZSIsICJoaWdodGVtcGVyYXR1cmUiKSAmCiAgcGVyaW9kICE9ICJvdGhlciIpCmBgYAoKV2l0aG91dCBkcm9wcGluZyBsZXZlbHMgYW5kIGZhY3RvcnMgbm90IG5hbWVkIGxhYmVsIG1heSBzdGlsbCBjcm93ZCBwbG90cwo5LjEgRHJvcHBpbmcgbmFtZXMgYW5kIGZhY3RvcnMKYGBge3IgOS4xIERyb3BwaW5nIGxldmVscyBhbmQgZmFjdG9yc30KIyMgOS4xIERyb3BwaW5nIGxldmVscyBhbmQgZmFjdG9ycwpmaWx0ZXJlZEZyYW1lJG1vYXRzIDwtIGRyb3BsZXZlbHMoZmlsdGVyZWRGcmFtZSRtb2F0cykKZmlsdGVyZWRGcmFtZSR0cmVhdG1lbnQgPC0gZmFjdG9yKGZpbHRlcmVkRnJhbWUkdHJlYXRtZW50KQpgYGAKCjkuMiBCcm9hZC1nYWd1ZSB0ZXN0IG9mIHBsb3RzIGJ5IHRyZWF0bWVudAoKIyMjIyA5LjIuMSBBbGwgQ2hhbmdlIERheSBQZXJpb2QgQm94cGxvdAoKYGBge3IgOS4yLjEgQWxsIENoYW5nZSBEYXkgUGVyaW9kIEJveHBsb3R9CnNpbXBsZXBsb3RfYWxsY2hnX2RheSA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gImFsbGNoYW5nZSIsIF0sIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwZXJpb2QgJWluJSAoImRheSIpKSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRfc3VtbWFyeShmdW49bWVhbiwgZ2VvbT0icG9pbnQiLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplPTIsIGNvbG9yPSJyZWQiKSAgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9ib3hwbG90KCkgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKCJBbGwgQ2hhbmdlIFRyZWF0bWVudCwgQXF1YXJpdW0gVGVtcGVyYXR1cmUsRGF5IFBlcmlvZCBCb3hwbG90IikKCgpzaW1wbGVwbG90X2FsbGNoZ19kYXkKCgpgYGAKCgojIyMjIDkuMi4yIEFsbCBDaGFuZ2UgTmlnaHQgUGVyaW9kIEJveHBsb3QKYGBge3IgOS4yLjIgQWxsIENoYW5nZSBOaWdodCBQZXJpb2QgQm94cGxvdH0Kc2ltcGxlcGxvdF9hbGxjaGdfbmlnaHQgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09ICJhbGxjaGFuZ2UiLCBdLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVyaW9kICVpbiUgKCJuaWdodCIpKSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRfc3VtbWFyeShmdW49bWVhbiwgZ2VvbT0icG9pbnQiLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplPTIsIGNvbG9yPSJyZWQiKSAgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9ib3hwbG90KCkgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKCJBbGwgQ2hhbmdlIFRyZWF0bWVudCwgQXF1YXJpdW0gVGVtcGVyYXR1cmUsIE5pZ2h0IFBlcmlvZCBCb3hwbG90IikKCnNpbXBsZXBsb3RfYWxsY2hnX25pZ2h0CgpgYGAKCiMjIyMgOS4yLjMgQWxsIENoYW5nZSBUaW1lc2VyaWVzCmBgYHtyIDkuMi4zIEFsbCBDaGFuZ2UgVGltZXNlcmllc30Kc2ltcGxlcGxvdF9hbGxjaGdfdGltZXNlcmllcyA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gImFsbGNoYW5nZSIsIF0pKSsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PWRhdGVUaW1lLCB5PWFUZW1wZXJhdHVyZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21fcG9pbnQoYWVzKGNvbG91cj1tb2F0cywgcG9pbnQ9KSkgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZSgiQWxsIENoYW5nZSBUcmVhdG1lbnQsIEFxdWFyaXVtIFRlbXBlcmF0dXJlLCBUaW1lc2VyaWVzIikKCnNpbXBsZXBsb3RfYWxsY2hnX3RpbWVzZXJpZXMKYGBgCgogCiMjIyMgOS4yLjQgQ3VycmVudCBEYXkgUGVyaW9kIEJveHBsb3QKCmBgYHtyIDkuMi40IEN1cnJlbnQgRGF5IFBlcmlvZCBCb3hwbG90fQpzaW1wbGVwbG90X2N1cl9kYXkgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09ICJjdXJyZW50IiwgXSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlcmlvZCAlaW4lICgiZGF5IikpLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9bW9hdHMsIHk9YVRlbXBlcmF0dXJlLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXI9dHJlYXRtZW50KSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdF9zdW1tYXJ5KGZ1bj1tZWFuLCBnZW9tPSJwb2ludCIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemU9MiwgY29sb3I9InJlZCIpICArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX2JveHBsb3QoKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdndGl0bGUoIkN1cnJlbnQgQ29uZGl0aW9ucyBUcmVhdG1lbnQsIEFxdWFyaXVtIFRlbXBlcmF0dXJlLCBEYXkgUGVyaW9kIEJveHBsb3QiKQoKCnNpbXBsZXBsb3RfY3VyX2RheQoKCmBgYAoKCiAKIyMjIyA5LjIuNSBDdXJyZW50IE5pZ2h0IFBlcmlvZCBCb3hwbG90CgpgYGB7ciA5LjIuNSBDdXJyZW50IE5pZ2h0IFBlcmlvZCBCb3hwbG90fQpzaW1wbGVwbG90X2N1cl9uaWdodCA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gImN1cnJlbnQiLCBdLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcGVyaW9kICVpbiUgKCJuaWdodCIpKSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRfc3VtbWFyeShmdW49bWVhbiwgZ2VvbT0icG9pbnQiLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplPTIsIGNvbG9yPSJyZWQiKSAgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9ib3hwbG90KCkgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKCJDdXJyZW50IENvbmRpdGlvbnMgVHJlYXRtZW50LCBBcXVhcml1bSBUZW1wZXJhdHVyZSwgTmlnaHQgUGVyaW9kIEJveHBsb3QiKQoKCnNpbXBsZXBsb3RfY3VyX25pZ2h0CgoKYGBgCgoKCiMjIyMgOS4yLjYgQ3VycmVudCBDb25kaXRpb25zIFRpbWVzZXJpZXMKYGBge3IgOS4yLjYgQ3VycmVudCBDb25kaXRpb25zIFRpbWVzZXJpZXN9CnNpbXBsZXBsb3RfY3VyX3RpbWVzZXJpZXMgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09ICJjdXJyZW50IiwgXSkpKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9ZGF0ZVRpbWUsIHk9YVRlbXBlcmF0dXJlKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9wb2ludChhZXMoY29sb3VyPW1vYXRzLCBwb2ludD0pKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKCJDdXJyZW50IENvbmRpdGlvbnMgVHJlYXRtZW50LCBBcXVhcml1bSBUZW1wZXJhdHVyZSwgVGltZXNlcmllcyIpCgpzaW1wbGVwbG90X2N1cl90aW1lc2VyaWVzCmBgYAoKCiMjIyMgOS4yLjcgSGlnaCBUZW1wZXJhdHVyZSBEYXkgUGVyaW9kIEJveHBsb3QKYGBge3IgOS4yLjcgSGlnaCBUZW1wZXJhdHVyZSBEYXkgUGVyaW9kIEJveHBsb3R9CnNpbXBsZXBsb3RfaGl0ZW1wX2RheSA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gImhpZ2h0ZW1wZXJhdHVyZSIsIF0sIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwZXJpb2QgJWluJSAoImRheSIpKSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXRfc3VtbWFyeShmdW49bWVhbiwgZ2VvbT0icG9pbnQiLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplPTIsIGNvbG9yPSJyZWQiKSAgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9ib3hwbG90KCkgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKCJIaWdoIFRlbXBlcmF0dXJlLCBBcXVhcml1bSBUZW1wZXJhdHVyZSwgQ29uZGl0aW9ucyBEYXkgUGVyaW9kIEJveHBsb3QiKQoKCnNpbXBsZXBsb3RfaGl0ZW1wX2RheQpgYGAKCgoKIyMjIyA5LjIuOCBIaWdoIFRlbXBlcmF0dXJlIE5pZ2h0IFBlcmlvZCBCb3hwbG90CmBgYHtyIDkuMi44IEhpZ2ggVGVtcGVyYXR1cmUgTmlnaHQgUGVyaW9kIEJveHBsb3R9CnNpbXBsZXBsb3RfaGl0ZW1wX25pZ2h0IDwtIGdncGxvdChzdWJzZXQoQ2RtbFtDZG1sJHRyZWF0bWVudCA9PSAiaGlnaHRlbXBlcmF0dXJlIiwgXSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBlcmlvZCAlaW4lICgibmlnaHQiKSksIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD1tb2F0cywgeT1hVGVtcGVyYXR1cmUsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91cj10cmVhdG1lbnQpKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0X3N1bW1hcnkoZnVuPW1lYW4sIGdlb209InBvaW50IiwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZT0yLCBjb2xvcj0icmVkIikgICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21fYm94cGxvdCgpICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZSgiSGlnaCBUZW1wZXJhdHVyZSBDb25kaXRpb25zLCBBcXVhcml1bSBUZW1wZXJhdHVyZSwgTmlnaHQgUGVyaW9kIEJveHBsb3QiKQoKCnNpbXBsZXBsb3RfaGl0ZW1wX25pZ2h0CgoKCmBgYAoKCgojIyMjIDkuMi45IEhpZ2ggVGVtcGVyYXR1cmUgVGltZXNlcmllcwpgYGB7ciA5LjIuOSBIaWdoIFRlbXBlcmF0dXJlIFRpbWVzZXJpZXN9CnNpbXBsZXBsb3RfY3VyX3RpbWVzZXJpZXMgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09ICJjdXJyZW50IiwgXSkpKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9ZGF0ZVRpbWUsIHk9YVRlbXBlcmF0dXJlKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbV9wb2ludChhZXMoY29sb3VyPW1vYXRzLCBwb2ludD0pKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKCJDdXJyZW50IENvbmRpdGlvbnMgQXF1YXJpdW0gVGVtcGVyYXR1cmUgVHJlYXRtZW50IFRpbWVzZXJpZXMiKQoKc2ltcGxlcGxvdF9jdXJfdGltZXNlcmllcwpgYGAKCgoKIyMgMTAuKSBUZW1wZXJhdHVyZSBKdW1wcwoKIyMjIyAxMC4wIENyZWF0aW5nIG5ldyBjb2x1bW4KYGBge3IgMTAuMCBDcmVhdGluZyBuZXcgY29sdW1ufQojIyAxMC4wIENyZWF0aW5nIG5ldyBjb2x1bW4gLSBzaG93aW5nIHRoZSBkaWZmZXJlbnQgYmV0d2VlbiAyIGFkamFjZW50IHRpbWVzCiMgZmlyc3Qgc29ydCB0aGUgZGF0YSBzbyB5b3UgYXJlIGNvbXBhcmluZyBhZGphY2VudCB0aW1lcwojIHRoZW4gYWRkIG5ldyBjb2x1bW4KIyB0aGUgZGlmZigpIGZ1bmN0aW9uIGNvbXB1dGVzIHhbaStsYWddIC0geFtpXSwgdGhlIGRlZmF1bHQgdmFsdWUgaXMgbGFnID0gMQpgYGAKCiMjIyMgMTAuMSBkaWZmKClmdW5jdGlvbiAgJiBkZWx0YVRlbXBMYWcxIE5hcnJhdGl2ZQpgYGB7ciAxMC4xIGRpZmYoKWZ1bmN0aW9uICAmIGRlbHRhVGVtcExhZzEgTmFycmF0aXZlfQojIyAxMC4xIGRpZmYoKWZ1bmN0aW9uICAmIGRlbHRhVGVtcExhZzEgTmFycmF0aXZlCiN0aGUgcmVzdWx0IG9mIHRoZSBkaWZmKCkgZnVuY3Rpb24gaGFzIGEgbGVuZ3RoIHRoYXQgaXMgdGhlIGxlbmd0aCBvZiAKIyB0aGUgb3JpZ2luYWwgdmVjdG9yIC0gbGFnCgojdGhlcmVmb3JlIG5lZWQgdG8gZmlsbCB0aGUgbmV3IHZhcmlhYmxlLCBkZWx0YVRlbXBMYWcxLAojIHdpdGggYygwLGFicyhkaWZmKGFUZW1wZXJhdHVyZSkpKSBpdCBpcyByaWdodCBsZW5ndGggYW5kIGZpcnN0IHZhbHVlIAojICh3aXRoIG5vIHZhbGlkIGRpZmYpIGlzIHplcm8KCiMgY3JlYXRpbmcgYSBuZXcgb2JqZWN0IHRvIGJlIGEgdmFsaWRhdGlvbiBmbGFnIHVuZGVyIG5hbWUgZGVsdGFUZW1wTGFnMQoKIyB3aWxsIGNyZWF0ZSBhIG51bWVyaWNhbCB2YWx1ZSB0aGF0IHdpbGwgcmVwcmVzZW50IHRob3NlIG9ic2VydmF0aW9ucyAKIyB0byBiZSBmaWx0ZXJlZCBvdXQKYGBgCiAKIyMjIyAxMC4yIENyZWF0aW5nIGRlbHRhVGVtcExhZzEgCmBgYHtyIDEwLjIgQ3JlYXRpbmcgZGVsdGFUZW1wTGFnMX0KIyMgMTAuMiBDcmVhdGluZyBkZWx0YVRlbXBMYWcxCkNkbWwgPC0gZmlsdGVyZWRGcmFtZSAlPiUgYXJyYW5nZShtb2F0cywgZGF0ZVRpbWUpJT4lIAogIG11dGF0ZShkZWx0YVRlbXBMYWcxID0gYygwLGFicyhkaWZmKGFUZW1wZXJhdHVyZSkpKSkKI3RoZSBkaWZmIHZhbHVlIGNvbXBhcmluZyB0aGUgbGFzdCB0aW1lIGluIE0wMSB0byB0aGUgZmlyc3QgdGltZSBpbiBNMDIgKGV0Yy4pIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpcyBub3QgdmFsaWQsIAojIFNldCB0aG9zZSB0byB6ZXJvCkNkbWwkZGVsdGFUZW1wTGFnMVtsYWcoQ2RtbCRtb2F0cykgIT0gQ2RtbCRtb2F0c10gPC0gMAoKI3RoaXMgc2hvd3MgYWxsIHRoZSByb3dzIHRoYXQganVtcCBtb3JlIHRoYXQgMSBkZWdyZWUgZnJvbSBwcmV2aW91cyByb3cgCiMgICAgICAgICAgICAgICAgICAgICAoaW5nb3Jpbmcgcm93cyB0aGF0IGFyZSB0cmFuc2l0aW9uIGZyb20gb25lIG1vYXRzIHRvIGFub3RoZXIpCkNkbWwgJT4lIGZpbHRlcihkZWx0YVRlbXBMYWcxID4xKQpgYGAKIAojIyMjIDEwLjMgQ3JlYXRpbmcgdERlbHRhVGhyZXNob2xkCmBgYHtyMTAuMyBDcmVhdGluZyB0RGVsdGFUaHJlc2hvbGR9CgojIyAxMC4zIENyZWF0aW5nIHREZWx0YVRocmVzaG9sZAojQ3JlYXRpbmcgYW5vdGhlciBjb2x1bW4gb2YgdmFyaWFibGVzIHRvIGJlIGFibGUgdG8gZ3JhcGggdGhlIHRlbXBlcmF0dXJlIGp1bXBzIApDZG1sIDwtIENkbWwgJT4lIG11dGF0ZSh0RGVsdGFUaHJlc2hvbGQgPSBpZl9lbHNlKGRlbHRhVGVtcExhZzEgPiAwLjUsIFRSVUUsIEZBTFNFKSkKYGBgCgoKIyMgMTEuKSBDYWxjdWxhdGluZyBBdmVyYWdlcyBieSBUcmVhdG1lbnQgJiBEYXkvTmlnaHQKYGBge3IgMTEuMCBJbnRlcmNlcHQgTmFycmF0aXZlfQojIyAxMS4wIEludGVyY2VwdCBOYXJyYXRpdmUKIyBUaGVzZSBhdmVyYWdlcyB3aWxsIGJlIHRoZSB5aW50ZXJjZXB0cyBpbiBwbG90cwojIGV4YW1wbGUgb2Ygd2hhdCB0byBwdXQgaW50byB3aXRoIGdncGxvdCAiICAKIyAgICBnZW9tX2hsaW5lKHlpbnRlcmNlcHQgPSBkdGVtcGVyYXR1ciRgbWVhbihhVGVtcGVyYXR1cmUpYCkgIApgYGAKCiMjIyMgMTEuMSBBbGwgVHJlYXRtZW50cyAoRGF5ICYgTmlnaHQpCmBgYHtyIDExLjEgQWxsIFRyZWF0bWVudHMgKERheSAmIE5pZ2h0KX0KIyMgMTEuMSBBbGwgVHJlYXRtZW50cyAoRGF5ICYgTmlnaHQpCiMgTmlnaHQgUGVyaW9kCnN1YnNldE5pZ2h0YVRlbXAgPC0gc3Vic2V0KGZpbHRlcmVkRnJhbWUsIHBlcmlvZCA9PSAibmlnaHQiICYgYVRlbXBlcmF0dXJlID4wLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ID0gYyggbW9hdHMsIGRhdGVUaW1lLCB0cmVhdG1lbnQsIGFUZW1wZXJhdHVyZSApKQoKIyBEYXkgUGVyaW9kCnN1YnNldERheWFUZW1wIDwtIHN1YnNldChmaWx0ZXJlZEZyYW1lLCBwZXJpb2QgPT0gImRheSIgJiBhVGVtcGVyYXR1cmUgPjAsCiAgICAgICAgICAgICAgICAgICAgICAgICAgIHNlbGVjdCA9IGMoIG1vYXRzLCBkYXRlVGltZSwgdHJlYXRtZW50LCBhVGVtcGVyYXR1cmUgKSkKYGBgCgojIyMjIDExLjIgQ3VycmVudCBUcmVhdG1lbnQgRGF5L05pZ2h0IEF2ZXJhZ2VzCmBgYHtyIDExLjIgQ3VycmVudCBUcmVhdG1lbnQgRGF5L05pZ2h0IEF2ZXJhZ2VzfQojIyAxMS4yIEN1cnJlbnQgVHJlYXRtZW50CiMgQ3VycmVudCBOaWdodApjdXJOaWdodGFUZW1wIDwtIHN1YnNldChDZG1sLCBwZXJpb2QgPT0gIm5pZ2h0IiAmIHRyZWF0bWVudCA9PSAiY3VycmVudCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgIHNlbGVjdCA9IGMoZGF0ZVRpbWUsIGFUZW1wZXJhdHVyZSApKQphdmdfY3VyTmlnaHRhVGVtcCA8LSBtZWFuKGN1ck5pZ2h0YVRlbXAkYVRlbXBlcmF0dXJlKQpwcmludChhdmdfY3VyTmlnaHRhVGVtcCkKIyBbMV0gMTEuOTUxMjIKCgojIEN1cnJlbnQgRGF5CmN1ckRheWFUZW1wIDwtIHN1YnNldChDZG1sLCBwZXJpb2QgPT0gImRheSIgJiB0cmVhdG1lbnQgPT0gImN1cnJlbnQiLAogICAgICAgICAgICAgICAgICAgICAgICBzZWxlY3QgPSBjKGRhdGVUaW1lLCBhVGVtcGVyYXR1cmUgKSkKYXZnX2N1ckRheWFUZW1wIDwtIG1lYW4oY3VyRGF5YVRlbXAkYVRlbXBlcmF0dXJlKQpwcmludChhdmdfY3VyRGF5YVRlbXApCiMgWzFdIDExLjA5OTgzCmBgYAoKIyMjIyAxMS4zIEFsbCBDaGFuZ2UgVHJlYXRtZW50IERheS9OaWdodCBBdmVyYWdlcwpgYGB7ciAxMS4zIEFsbCBDaGFuZ2UgVHJlYXRtZW50fQojIyAxMS4zIEFsbCBDaGFuZ2UgVHJlYXRtZW50CiMgQWxsIENoYW5nZSBOaWdodAphbGxjaGdOaWdodGFUZW1wIDwtIHN1YnNldChDZG1sLCBwZXJpb2QgPT0gIm5pZ2h0IiAmIHRyZWF0bWVudCA9PSAiYWxsY2hhbmdlIiwKICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ID0gYyhkYXRlVGltZSwgYVRlbXBlcmF0dXJlICkpCmF2Z19hbGxjaGdOaWdodGFUZW1wIDwtIG1lYW4oYWxsY2hnTmlnaHRhVGVtcCRhVGVtcGVyYXR1cmUpCnByaW50KGF2Z19hbGxjaGdOaWdodGFUZW1wKQojIFsxXSAxMy44OTg0NwoKIyBBbGwgQ2hhbmdlIERheQphbGxjaGdEYXlhVGVtcCA8LSBzdWJzZXQoQ2RtbCwgcGVyaW9kID09ICJkYXkiICYgdHJlYXRtZW50ID09ICJhbGxjaGFuZ2UiLAogICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ID0gYyhkYXRlVGltZSwgYVRlbXBlcmF0dXJlICkpCmF2Z19hbGxjaGdEYXlhVGVtcCA8LSBtZWFuKGFsbGNoZ0RheWFUZW1wJGFUZW1wZXJhdHVyZSkKcHJpbnQoYXZnX2FsbGNoZ0RheWFUZW1wKQojIFsxXSAxMi45NzQ2NgpgYGAKCiMjIyMgMTEuNCBIaWdoIFRlbXBlcmF0dXJlIFRyZWF0bWVudApgYGB7ciAxMS40IEhpZ2ggVGVtcGVyYXR1cmUgVHJlYXRtZW50IERheS9OaWdodCBBdmVyYWdlc30KIyBIaWdoIFRlbXBlcmF0dXJlIENvbmRpdGlvbnMKIyBIaWdoIFRlbXBlcmF0dXJlIE5pZ2h0CmhpdGVtcE5pZ2h0YVRlbXAgPC0gc3Vic2V0KENkbWwsIHBlcmlvZCA9PSAibmlnaHQiICYgdHJlYXRtZW50ID09ICJoaWdodGVtcGVyYXR1cmUiLAogICAgICAgICAgICAgICAgICAgICAgICAgICBzZWxlY3QgPSBjKGRhdGVUaW1lLCBhVGVtcGVyYXR1cmUgKSkKYXZnX2hpdGVtcE5pZ2h0YVRlbXAgPC0gbWVhbihoaXRlbXBOaWdodGFUZW1wJGFUZW1wZXJhdHVyZSkKcHJpbnQoYXZnX2hpdGVtcE5pZ2h0YVRlbXApCiNbMV0gMTMuODAzOTcKCiMgSGlnaCBUZW1wZXJhdHVyZSBEYXkKaGl0ZW1wRGF5YVRlbXAgPC0gc3Vic2V0KENkbWwsIHBlcmlvZCA9PSAiZGF5IiAmIHRyZWF0bWVudCA9PSAiaGlnaHRlbXBlcmF0dXJlIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgc2VsZWN0ID0gYyhkYXRlVGltZSwgYVRlbXBlcmF0dXJlICkpCmF2Z19oaXRlbXBEYXlhVGVtcCA8LSBtZWFuKGhpdGVtcERheWFUZW1wJGFUZW1wZXJhdHVyZSkKcHJpbnQoYXZnX2hpdGVtcERheWFUZW1wKQojWzFdIDEyLjkyMTQ4CmBgYAoKCgojIyMjIDExLjUgUmV2aWV3IG9mIGFsbCBUcmVhdG1lbnRzCmBgYHtyfQojIyAxMS41IFJldmlldyBvZiBhbGwgVHJlYXRtZW50cwojIFJldmlldyBvZiA2IG5ldyB2YXJpYWJsZXMgCmF2Z19hbGxjaGdEYXlhVGVtcAphdmdfYWxsY2hnTmlnaHRhVGVtcAphdmdfY3VyRGF5YVRlbXAKYXZnX2N1ck5pZ2h0YVRlbXAKYXZnX2hpdGVtcERheWFUZW1wCmF2Z19oaXRlbXBOaWdodGFUZW1wCmBgYAoKIyMjIyAxMS42IFRhYmxlIG9mIEF2ZXJhZ2VzCmBgYHtyIDExLjYgVGFibGUgb2YgQXZlcmFnZXN9CiMjIDExLjYgVGFibGUgb2YgQXZlcmFnZXMKbWVhbkNkbWxkYXRlbXAgPC0gZmlsdGVyZWRGcmFtZSAlPiUgZ3JvdXBfYnkodHJlYXRtZW50LCBwZXJpb2QpICU+JSAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3VtbWFyaXNlKG1lYW4oYVRlbXBlcmF0dXJlKSkKIyBHcm91cHM6ICAgdHJlYXRtZW50IFszXQojdHJlYXRtZW50ICAgICAgIHBlcmlvZCBgbWVhbihhVGVtcGVyYXR1cmUpYAojPGNocj4gICAgICAgICAgIDxjaHI+ICAgICAgICAgICAgICAgICA8ZGJsPgojIDEgYWxsY2hhbmdlICAgICAgIGRheSAgICAgICAgICAgICAgICAgICAgMTMuMAojIDIgYWxsY2hhbmdlICAgICAgIG5pZ2h0ICAgICAgICAgICAgICAgICAgMTMuOQojIDMgY3VycmVudCAgICAgICAgIGRheSAgICAgICAgICAgICAgICAgICAgMTEuMQojIDQgY3VycmVudCAgICAgICAgIG5pZ2h0ICAgICAgICAgICAgICAgICAgMTIuMAojIDUgaGlnaHRlbXBlcmF0dXJlIGRheSAgICAgICAgICAgICAgICAgICAgMTIuOQojIDYgaGlnaHRlbXBlcmF0dXJlIG5pZ2h0ICAgICAgICAgICAgICAgICAgMTMuOApwcmludChtZWFuQ2RtbGRhdGVtcCkKYGBgCgoKIyMgMTIuKSBTdW1tYXJ5ICYgR3JvdXAgYnkgQ2RtbApgYGB7ciAxMi4wIENkbWwgRGF5IFN1bW1hcnl9CiMgMTIuMCBDZG1sIERheSBTdW1tYXJ5LCBncm91cCBieSwgbXV0YXRlCgpDZG1sLmRheW5pZ2h0LnN1bW1hcnkgPC0gQ2RtbCAlPiUgZ3JvdXBfYnkodHJlYXRtZW50LCBwZXJpb2QpICU+JQogIHN1bW1hcml6ZShzZCA9IHNkKGFUZW1wZXJhdHVyZSwgbmEucm0gPSBUUlVFKSwgCiAgICAgICAgICAgIG1lYW4gPSBtZWFuKGFUZW1wZXJhdHVyZSwgbmEucm0gPSBUUlVFKSwgCiAgICAgICAgICAgIG1lZGlhbiA9IG1lZGlhbihhVGVtcGVyYXR1cmUsIG5hLnJtID0gVFJVRSksCiAgICAgICAgICAgIElRUiA9IElRUihhVGVtcGVyYXR1cmUsIG5hLnJtID0gVFJVRSksCiAgICAgICAgICAgIG4gPSBuKCkpICU+JQogIG11dGF0ZShzZSA9IHNkL3NxcnQobikpICU+JQogIG11dGF0ZShjaSA9IHNlKjEuOTYpCgoKd3JpdGUuY3N2KENkbWwuZGF5bmlnaHQuc3VtbWFyeSwgIjIwMjAuMDcuMDhfQ2RtbF9kYXluaWdodF9zdW1tYXJ5LmNzdiIpCmBgYAoKIyMjIyAxMi4xIFRyaWJibGUgb2YgRGF5L05pZ2h0IFN1bW1hcnkgIApgYGB7ciB0cmliYmxlIG9mIGRheS9uaWdodCBzdW1tYXJ5fQp0aWJibGU6OnRyaWJibGUoCiAgICAgICAgIH50cmVhdG1lbnQsIH5wZXJpb2QsICAgICAgICAgfnNkLCAgICAgICB+bWVhbiwgICAgIH5tZWRpYW4sICAgICAgICB+SVFSLCAgICB+biwgICAgICAgICB+c2UsICAgICAgICAgfmNpLAogICAgICAgICJhbGxjaGFuZ2UiLCAgICJkYXkiLCAwLjM3MjUwNjg1NSwgMTIuOTczMzA4NDEsICAgMTIuODk2NjExLCAgMC4yNDc4MDIyNSwgNDk1NkwsIDAuMDA1MjkxMzc2LCAwLjAxMDM3MTA5NywKICAgICAgICAiYWxsY2hhbmdlIiwgIm5pZ2h0IiwgMC4yNDc1ODg4OTksIDEzLjg5ODU4Mzc2LCAxMy45MjMyMDUyNSwgMC4xOTM2MjI4NzUsIDI4NDNMLCAwLjAwNDY0MzQ3MSwgMC4wMDkxMDEyMDMsCiAgICAgICAgICAiY3VycmVudCIsICAgImRheSIsIDAuMzQ4MjA2MDMxLCAxMS4wOTc4MjU3NSwgMTEuMDc2NjAwNzUsIDAuMjA3NjkwNTYzLCAzOTc0TCwgMC4wMDU1MjM2MDIsIDAuMDEwODI2MjU5LAogICAgICAgICAgImN1cnJlbnQiLCAibmlnaHQiLCAwLjMwMjUyNjM2OSwgMTEuOTUwMzg4MzcsICAxMi4wNTI5OTM1LCAwLjEyMjI2MzA2MywgMjI5MEwsIDAuMDA2MzIxODY5LCAwLjAxMjM5MDg2MywKICAiaGlnaHRlbXBlcmF0dXJlIiwgICAiZGF5IiwgMC4zNjI5MTMzODYsIDEyLjkyMjU5MDE1LCAgMTIuOTEwMTk3NSwgMC4yODg0NzQ4NzUsIDI2ODdMLCAwLjAwNzAwMTE0NiwgMC4wMTM3MjIyNDcsCiAgImhpZ2h0ZW1wZXJhdHVyZSIsICJuaWdodCIsIDAuMzEzNDMzOTk1LCAxMy44MDQzNTAxNiwgMTMuODc5NTQ3MzgsIDAuMTg4NTA3ODc1LCAxNTA0TCwgMC4wMDgwODIwNjIsIDAuMDE1ODQwODQyCiAgKQoKYGBgCgoKIyMgMTMuKSBQbG90cwoKYGBge3IgMTMuMSBBbGwgVHJlYXRtZW50cywgRGF5L05pZ2h0IFBlcmlvZCBBcXVhcml1bSBUZW1wZXJhdHVyZSBDb21wYXJpc29ufQojIyAxMy4xIEJveHBsb3QgYVRlbXAgYnkgbW9hdHMKI2JveHBsb3QoYVRlbXBlcmF0dXJlfm1vYXRzLCBDZG1sKQoKZ2dwbG90KENkbWwsIGFlcyh0cmVhdG1lbnQsIGFUZW1wZXJhdHVyZSkpICsKICAgICAgICAgICAgZ2VvbV9qaXR0ZXIoY29sb3IgPSAiZ3JleSIpICsKICAgICAgICAgICAgZ2VvbV9ib3hwbG90KG5vdGNoID0gVFJVRSwgb3V0bGllci5zaGFwZSA9IE5BLCBjb2xvdXIgPSAiZ3JlZW4iKSArCiAgICAgICAgICAgIGdlb21fcG9pbnQoZGF0YSA9IENkbWwuZGF5bmlnaHQuc3VtbWFyeSwgYWVzKHg9dHJlYXRtZW50LCB5PW1lYW4pLCBzaXplPTUsIGNvbG9yID0gInB1cnBsZSIpICsgCiAgICAgICAgICAgIGdlb21fZXJyb3JiYXIoZGF0YSA9IENkbWwuZGF5bmlnaHQuc3VtbWFyeSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9dHJlYXRtZW50LCB5PW1lYW4sIHltaW4gPSBtZWFuLXNkLCB5bWF4ID0gbWVhbitzZCksIAogICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG9yID0gImJsdWUiKSArCiAgICAgICAgICAgIGdlb21fZXJyb3JiYXIoZGF0YSA9IENkbWwuZGF5bmlnaHQuc3VtbWFyeSwKICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMoeD10cmVhdG1lbnQsIHk9bWVhbiwgeW1pbiA9IG1lYW4tY2ksIHltYXggPSBtZWFuK2NpKSwKICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAicmVkIikgKwogICAgICAgICAgICBmYWNldF93cmFwKH5wZXJpb2QpICsKICAgICAgICAgICAgZ2d0aXRsZSgiQWxsIFRyZWF0bWVudHMsIERheS9OaWdodCBQZXJpb2QgQXF1YXJpdW0gVGVtcGVyYXR1cmUgQ29tcGFyaXNvbiIpICsKICAgICAgICAgICAgdGhlbWVfYncoKSAKYGBgCgoKCmBgYHtyfQojIyAxMy4xYSBCb3hwbG90IGFUZW1wIGJ5IG1vYXRzCiNib3hwbG90KGFUZW1wZXJhdHVyZX5tb2F0cywgQ2RtbCkKCmdncGxvdChDZG1sLCBhZXModHJlYXRtZW50LCBhVGVtcGVyYXR1cmUpKSArCiAgICAgICAgICAgIGdlb21faml0dGVyKGNvbG9yID0gImdyZXkiKSArCiAgICAgICAgICAgIGdlb21fYm94cGxvdChub3RjaCA9IFRSVUUsIG91dGxpZXIuc2hhcGUgPSBOQSwgY29sb3VyID0gImdyZWVuIikgKwogICAgICAgICAgICBnZW9tX3BvaW50KGRhdGEgPSBDZG1sLmRheW5pZ2h0LnN1bW1hcnksIGFlcyh4PXRyZWF0bWVudCwgeT1tZWFuKSwgc2l6ZT01LCBjb2xvciA9ICJwdXJwbGUiKSArIAogICAgICAgICAgICBnZW9tX2ppdHRlcihhZXMoY29sb3VyID0gdERlbHRhVGhyZXNob2xkKSkgKwogICAgICAgICAgICBnZW9tX2Vycm9yYmFyKGRhdGEgPSBDZG1sLmRheW5pZ2h0LnN1bW1hcnksIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PXRyZWF0bWVudCwgeT1tZWFuLCB5bWluID0gbWVhbi1zZCwgeW1heCA9IG1lYW4rc2QpLCAKICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvciA9ICJibHVlIikgKwogICAgICAgICAgICBnZW9tX2Vycm9yYmFyKGRhdGEgPSBDZG1sLmRheW5pZ2h0LnN1bW1hcnksCiAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9dHJlYXRtZW50LCB5PW1lYW4sIHltaW4gPSBtZWFuLWNpLCB5bWF4ID0gbWVhbitjaSksCiAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gInJlZCIpICsKICAgICAgICAgICAgZmFjZXRfd3JhcCh+cGVyaW9kKSArCiAgICAgICAgICAgIGdndGl0bGUoIkFsbCBUcmVhdG1lbnRzLCBheS9OaWdodCBQZXJpb2QgQXF1YXJpdW0gVGVtcGVyYXR1cmUgQ29tcGFyaXNvbiwgVGVtcGVyYXR1cmUgSnVtcHMgYXQgLjVDIikgKwogICAgICAgICAgICB0aGVtZV9idygpIApgYGAKCgojIyMjIDEzLjEuMSBBcXVhcml1bSBUZW1wZXJhdHVyZSwgQWxsIENoYW5nZSBDb25kaXRpb25zLCBEYXkgJiBOaWdodAoKYGBge3IgMTMuMS4xIEFsbCBDaGFuZ2UgQ29uZGl0aW9ucywgQXF1YXJpdW0gVGVtcGVyYXR1cmUsIERheS9OaWdodCBQZXJpb2R9CgpwX2FsbGNoZ19mYWNldHdyYXAgPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09ICJhbGxjaGFuZ2UiLCBdKSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9bW9hdHMsIHk9YVRlbXBlcmF0dXJlLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXI9dHJlYXRtZW50KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0X3N1bW1hcnkoZnVuPW1lYW4sIGdlb209InBvaW50IiwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZT0yLCBjb2xvcj0icmVkIikgICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21fYm94cGxvdCgpICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmFjZXRfd3JhcCh+cGVyaW9kKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdndGl0bGUoIkFsbCBDaGFuZ2UgQ29uZGl0aW9ucywgQXF1YXJpdW0gVGVtcGVyYXR1cmUsIERheS9OaWdodCBQZXJpb2QgQm94cGxvdHMiKQoKcF9hbGxjaGdfZmFjZXR3cmFwIAoKCmBgYAoKCmBgYHtyIDEzLjEuMiBBbGwgQ2hhbmdlIENvbmRpdGlvbnMsIEFxdWFyaXVtIFRlbXBlcmF0dXJlLCBEYXkvTmlnaHQgUGVyaW9kIFZpb2xsaW4gcGxvdH0KCnBfYWxsY2hnX2ZhY2V0d3JhcF92aW8gPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09ICJhbGxjaGFuZ2UiLCBdKSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9bW9hdHMsIHk9YVRlbXBlcmF0dXJlLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXI9dHJlYXRtZW50KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0X3N1bW1hcnkoZnVuPW1lYW4sIGdlb209InBvaW50IiwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZT0yLCBjb2xvcj0icmVkIikgICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21fdmlvbGluKCkgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmYWNldF93cmFwKH5wZXJpb2QpICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZSgiQWxsIENoYW5nZSBDb25kaXRpb25zLCBBcXVhcml1bSBUZW1wZXJhdHVyZSwgRGF5L05pZ2h0IFBlcmlvZCBWaW9saW4gUGxvdHMiKQoKcF9hbGxjaGdfZmFjZXR3cmFwX3ZpbyAKCgpgYGAKCiMjIyMgMTMuMS4yIEFxdWFyaXVtIFRlbXBlcmF0dXJlLCBDdXJyZW50IENvbmRpdGlvbnMsIERheSAmIE5pZ2h0CmBgYHtyIDEzLjEuMiBBcXVhcml1bSBUZW1wZXJhdHVyZSwgQ3VycmVudCBDb25kaXRpb25zLCBEYXkgJiBOaWdodH0KCnBfY3VyX2ZhY2V0d3JhcF9ib3ggPC0gZ2dwbG90KHN1YnNldChDZG1sW0NkbWwkdHJlYXRtZW50ID09ICJjdXJyZW50IiwgXSkpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFlcyh4PW1vYXRzLCB5PWFUZW1wZXJhdHVyZSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyPXRyZWF0bWVudCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdF9zdW1tYXJ5KGZ1bj1tZWFuLCBnZW9tPSJwb2ludCIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemU9MiwgY29sb3I9InJlZCIpICArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZW9tX2JveHBsb3QoKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZhY2V0X3dyYXAofnBlcmlvZCkgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnZ3RpdGxlKCJDdXJyZW50IENvbmRpdGlvbnMsIEFxdWFyaXVtIFRlbXBlcmF0dXJlLCBEYXkvTmlnaHQgUGVyaW9kIEJveHBsb3RzIikKCnBfY3VyX2ZhY2V0d3JhcF9ib3gKCmBgYAoKCmBgYHtyfQoKcF9hbGxjaGdfZmFjZXR3cmFwX3ZpbyA8LSBnZ3Bsb3Qoc3Vic2V0KENkbWxbQ2RtbCR0cmVhdG1lbnQgPT0gImN1cnJlbnQiLCBdKSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYWVzKHg9bW9hdHMsIHk9YVRlbXBlcmF0dXJlLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXI9dHJlYXRtZW50KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0X3N1bW1hcnkoZnVuPW1lYW4sIGdlb209InBvaW50IiwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZT0yLCBjb2xvcj0icmVkIikgICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21fdmlvbGluKCkgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmYWNldF93cmFwKH5wZXJpb2QpICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2d0aXRsZSgiQ3VycmVudCBDb25kaXRpb25zLCBBcXVhcml1bSBUZW1wZXJhdHVyZSwgRGF5L05pZ2h0IFBlcmlvZCBWaW9saW4gUGxvdHMiKQoKcF9hbGxjaGdfZmFjZXR3cmFwX3ZpbyAKCmBgYAoKCgoKCgoKCgpjdXJyZW50IHRvIGxpbmUgODc5CgoKCgpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiAKClRyeSBleGVjdXRpbmcgdGhpcyBjaHVuayBieSBjbGlja2luZyB0aGUgKlJ1biogYnV0dG9uIHdpdGhpbiB0aGUgY2h1bmsgb3IgYnkgcGxhY2luZyB5b3VyIGN1cnNvciBpbnNpZGUgaXQgYW5kIHByZXNzaW5nICpDbWQrU2hpZnQrRW50ZXIqLiAKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gCgpUcnkgZXhlY3V0aW5nIHRoaXMgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpSdW4qIGJ1dHRvbiB3aXRoaW4gdGhlIGNodW5rIG9yIGJ5IHBsYWNpbmcgeW91ciBjdXJzb3IgaW5zaWRlIGl0IGFuZCBwcmVzc2luZyAqQ21kK1NoaWZ0K0VudGVyKi4gCgpgYGB7cn0KcGxvdChjYXJzKQpgYGAKCkFkZCBhIG5ldyBjaHVuayBieSBjbGlja2luZyB0aGUgKkluc2VydCBDaHVuayogYnV0dG9uIG9uIHRoZSB0b29sYmFyIG9yIGJ5IHByZXNzaW5nICpDbWQrT3B0aW9uK0kqLgoKV2hlbiB5b3Ugc2F2ZSB0aGUgbm90ZWJvb2ssIGFuIEhUTUwgZmlsZSBjb250YWluaW5nIHRoZSBjb2RlIGFuZCBvdXRwdXQgd2lsbCBiZSBzYXZlZCBhbG9uZ3NpZGUgaXQgKGNsaWNrIHRoZSAqUHJldmlldyogYnV0dG9uIG9yIHByZXNzICpDbWQrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4gCgpUaGUgcHJldmlldyBzaG93cyB5b3UgYSByZW5kZXJlZCBIVE1MIGNvcHkgb2YgdGhlIGNvbnRlbnRzIG9mIHRoZSBlZGl0b3IuIENvbnNlcXVlbnRseSwgdW5saWtlICpLbml0KiwgKlByZXZpZXcqIGRvZXMgbm90IHJ1biBhbnkgUiBjb2RlIGNodW5rcy4gSW5zdGVhZCwgdGhlIG91dHB1dCBvZiB0aGUgY2h1bmsgd2hlbiBpdCB3YXMgbGFzdCBydW4gaW4gdGhlIGVkaXRvciBpcyBkaXNwbGF5ZWQuCgo=</div>
 
 
 
