@@ -433,7 +433,7 @@ simpleplot_allchg_day <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ],
                                           stat_summary(fun=mean, geom="point", 
                                                         size=2, color="red")  + 
                                           geom_boxplot() +
-                                          ggtitle("All Change Day Period Boxplot")
+                                          ggtitle("All Change Treatment, Aquarium Temperature,Day Period Boxplot")
 
 
 simpleplot_allchg_day
@@ -451,7 +451,7 @@ simpleplot_allchg_night <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ],
                                           stat_summary(fun=mean, geom="point", 
                                                         size=2, color="red")  + 
                                           geom_boxplot() +
-                                          ggtitle("All Change Night Period Boxplot")
+                                          ggtitle("All Change Treatment, Aquarium Temperature, Night Period Boxplot")
 
 simpleplot_allchg_night
 
@@ -462,7 +462,7 @@ simpleplot_allchg_night
 simpleplot_allchg_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ]))+
                                   aes(x=dateTime, y=aTemperature) + 
                                   geom_point(aes(colour=moats, point=)) +
-                                  ggtitle("All Change Treatment Timeseries")
+                                  ggtitle("All Change Treatment, Aquarium Temperature, Timeseries")
 
 simpleplot_allchg_timeseries
 ```
@@ -478,7 +478,7 @@ simpleplot_cur_day <- ggplot(subset(Cdml[Cdml$treatment == "current", ],
                                           stat_summary(fun=mean, geom="point", 
                                                         size=2, color="red")  + 
                                           geom_boxplot() +
-                                          ggtitle("Current Conditions Day Period Boxplot")
+                                          ggtitle("Current Conditions Treatment, Aquarium Temperature, Day Period Boxplot")
 
 
 simpleplot_cur_day
@@ -498,7 +498,7 @@ simpleplot_cur_night <- ggplot(subset(Cdml[Cdml$treatment == "current", ],
                                           stat_summary(fun=mean, geom="point", 
                                                         size=2, color="red")  + 
                                           geom_boxplot() +
-                                          ggtitle("Current Conditions Night Period Boxplot")
+                                          ggtitle("Current Conditions Treatment, Aquarium Temperature, Night Period Boxplot")
 
 
 simpleplot_cur_night
@@ -513,7 +513,7 @@ simpleplot_cur_night
 simpleplot_cur_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "current", ]))+
                                   aes(x=dateTime, y=aTemperature) + 
                                   geom_point(aes(colour=moats, point=)) +
-                                  ggtitle("Current Conditions Treatment Timeseries")
+                                  ggtitle("Current Conditions Treatment, Aquarium Temperature, Timeseries")
 
 simpleplot_cur_timeseries
 ```
@@ -528,7 +528,7 @@ simpleplot_hitemp_day <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature",
                                           stat_summary(fun=mean, geom="point", 
                                                         size=2, color="red")  + 
                                           geom_boxplot() +
-                                          ggtitle("High Temperature Conditions Day Period Boxplot")
+                                          ggtitle("High Temperature, Aquarium Temperature, Conditions Day Period Boxplot")
 
 
 simpleplot_hitemp_day
@@ -545,7 +545,7 @@ simpleplot_hitemp_night <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature
                                           stat_summary(fun=mean, geom="point", 
                                                         size=2, color="red")  + 
                                           geom_boxplot() +
-                                          ggtitle("High Temperature Conditions Night Period Boxplot")
+                                          ggtitle("High Temperature Conditions, Aquarium Temperature, Night Period Boxplot")
 
 
 simpleplot_hitemp_night
@@ -561,7 +561,7 @@ simpleplot_hitemp_night
 simpleplot_cur_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "current", ]))+
                                   aes(x=dateTime, y=aTemperature) + 
                                   geom_point(aes(colour=moats, point=)) +
-                                  ggtitle("Current Conditions Treatment Timeseries")
+                                  ggtitle("Current Conditions Aquarium Temperature Treatment Timeseries")
 
 simpleplot_cur_timeseries
 ```
@@ -757,6 +757,85 @@ tibble::tribble(
 ```
 
 
+## 13.) Plots
+
+```{r 13.1 All Treatments, Day/Night Period Aquarium Temperature Comparison}
+## 13.1 Boxplot aTemp by moats
+#boxplot(aTemperature~moats, Cdml)
+
+ggplot(Cdml, aes(treatment, aTemperature)) +
+            geom_jitter(color = "grey") +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
+            geom_point(data = Cdml.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") + 
+            geom_errorbar(data = Cdml.daynight.summary, 
+                          aes(x=treatment, y=mean, ymin = mean-sd, ymax = mean+sd), 
+                          color = "blue") +
+            geom_errorbar(data = Cdml.daynight.summary,
+                          aes(x=treatment, y=mean, ymin = mean-ci, ymax = mean+ci),
+                          colour = "red") +
+            facet_wrap(~period) +
+            ggtitle("All Treatments, Day/Night Period Aquarium Temperature Comparison") +
+            theme_bw() 
+```
+
+
+
+```{r}
+## 13.1a Boxplot aTemp by moats
+#boxplot(aTemperature~moats, Cdml)
+
+ggplot(Cdml, aes(treatment, aTemperature)) +
+            geom_jitter(color = "grey") +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
+            geom_point(data = Cdml.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") + 
+            geom_jitter(aes(colour = tDeltaThreshold)) +
+            geom_errorbar(data = Cdml.daynight.summary, 
+                          aes(x=treatment, y=mean, ymin = mean-sd, ymax = mean+sd), 
+                          color = "blue") +
+            geom_errorbar(data = Cdml.daynight.summary,
+                          aes(x=treatment, y=mean, ymin = mean-ci, ymax = mean+ci),
+                          colour = "red") +
+            facet_wrap(~period) +
+            ggtitle("All Treatments, ay/Night Period Aquarium Temperature Comparison, Temperature Jumps at .5C") +
+            theme_bw() 
+```
+
+
+#### 13.1.1 Aquarium Temperature, All Change Conditions, Day & Night
+
+```{r 13.1.1 All Change Conditions, Aquarium Temperature, Day/Night Period}
+
+p_allchg_facetwrap <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ])) + 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_boxplot() +
+                                          facet_wrap(~period) +
+                                          ggtitle("All Change Conditions, Aquarium Temperature, Day/Night Period Boxplots")
+
+p_allchg_facetwrap 
+
+
+```
+
+
+```{r 13.1.2 All Change Conditions, Aquarium Temperature, Day/Night Period Viollin plot}
+
+p_allchg_facetwrap_vio <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ])) + 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_violin() +
+                                          facet_wrap(~period) +
+                                          ggtitle("All Change Conditions, Aquarium Temperature, Day/Night Period Violin Plots")
+
+p_allchg_facetwrap_vio 
+
+
+```
+```
 
 
 
