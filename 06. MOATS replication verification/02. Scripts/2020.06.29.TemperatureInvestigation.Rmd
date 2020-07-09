@@ -626,7 +626,7 @@ Cdml <- Cdml %>% mutate(tDeltaThreshold = if_else(deltaTempLag1 > 0.5, TRUE, FAL
 #    geom_hline(yintercept = dtemperatur$`mean(aTemperature)`)  
 ```
 
-
+#### 11.1 All Treatments (Day & Night)
 ```{r 11.1 All Treatments (Day & Night)}
 ## 11.1 All Treatments (Day & Night)
 # Night Period
@@ -638,12 +638,109 @@ subsetDayaTemp <- subset(filteredFrame, period == "day" & aTemperature >0,
                            select = c( moats, dateTime, treatment, aTemperature ))
 ```
 
+#### 11.2 Current Treatment Day/Night Averages
+```{r 11.2 Current Treatment Day/Night Averages}
+## 11.2 Current Treatment
+# Current Night
+curNightaTemp <- subset(Cdml, period == "night" & treatment == "current",
+                           select = c(dateTime, aTemperature ))
+avg_curNightaTemp <- mean(curNightaTemp$aTemperature)
+print(avg_curNightaTemp)
+# [1] 11.95122
+
+
+# Current Day
+curDayaTemp <- subset(Cdml, period == "day" & treatment == "current",
+                        select = c(dateTime, aTemperature ))
+avg_curDayaTemp <- mean(curDayaTemp$aTemperature)
+print(avg_curDayaTemp)
+# [1] 11.09983
+```
+
+#### 11.3 All Change Treatment Day/Night Averages
+```{r 11.3 All Change Treatment}
+## 11.3 All Change Treatment
+# All Change Night
+allchgNightaTemp <- subset(Cdml, period == "night" & treatment == "allchange",
+                        select = c(dateTime, aTemperature ))
+avg_allchgNightaTemp <- mean(allchgNightaTemp$aTemperature)
+print(avg_allchgNightaTemp)
+# [1] 13.89847
+
+# All Change Day
+allchgDayaTemp <- subset(Cdml, period == "day" & treatment == "allchange",
+                      select = c(dateTime, aTemperature ))
+avg_allchgDayaTemp <- mean(allchgDayaTemp$aTemperature)
+print(avg_allchgDayaTemp)
+# [1] 12.97466
+```
+
+#### 11.4 High Temperature Treatment
+```{r 11.4 High Temperature Treatment Day/Night Averages}
+# High Temperature Conditions
+# High Temperature Night
+hitempNightaTemp <- subset(Cdml, period == "night" & treatment == "hightemperature",
+                           select = c(dateTime, aTemperature ))
+avg_hitempNightaTemp <- mean(hitempNightaTemp$aTemperature)
+print(avg_hitempNightaTemp)
+#[1] 13.80397
+
+# High Temperature Day
+hitempDayaTemp <- subset(Cdml, period == "day" & treatment == "hightemperature",
+                           select = c(dateTime, aTemperature ))
+avg_hitempDayaTemp <- mean(hitempDayaTemp$aTemperature)
+print(avg_hitempDayaTemp)
+#[1] 12.92148
+```
 
 
 
+#### 11.5 Review of all Treatments
+```{r}
+## 11.5 Review of all Treatments
+# Review of 6 new variables 
+avg_allchgDayaTemp
+avg_allchgNightaTemp
+avg_curDayaTemp
+avg_curNightaTemp
+avg_hitempDayaTemp
+avg_hitempNightaTemp
+```
+
+#### 11.6 Table of Averages
+```{r 11.6 Table of Averages}
+## 11.6 Table of Averages
+meanCdmldatemp <- filteredFrame %>% group_by(treatment, period) %>% 
+                                                      summarise(mean(aTemperature))
+# Groups:   treatment [3]
+#treatment       period `mean(aTemperature)`
+#<chr>           <chr>                 <dbl>
+# 1 allchange       day                    13.0
+# 2 allchange       night                  13.9
+# 3 current         day                    11.1
+# 4 current         night                  12.0
+# 5 hightemperature day                    12.9
+# 6 hightemperature night                  13.8
+print(meanCdmldatemp)
+```
 
 
+## 12.) Summary & Group by Cdml
+```{r 12.0 Cdml Day Summary}
+# 12.0 Cdml Day Summary, group by, mutate
 
+Cdml.daynight.summary <- Cdml %>% group_by(treatment, period) %>%
+  summarize(sd = sd(aTemperature, na.rm = TRUE), 
+            mean = mean(aTemperature, na.rm = TRUE), 
+            median = median(aTemperature, na.rm = TRUE),
+            IQR = IQR(aTemperature, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
+
+
+write.csv(Cdml.daynight.summary, "2020.07.08_Cdml_daynight_summary.csv")
+```
 
 
 
