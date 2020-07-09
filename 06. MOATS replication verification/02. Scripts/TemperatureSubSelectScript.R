@@ -479,7 +479,7 @@ Cdml %>% filter(deltaTempLag1 >1)
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-## 10.2 Creating tDeltaThreshold
+## 10.3 Creating tDeltaThreshold
 #Creating another column of variables to be able to graph the temperature jumps 
 
 Cdml <- Cdml %>% mutate(tDeltaThreshold = if_else(deltaTempLag1 > 0.5, TRUE, FALSE))
