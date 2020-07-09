@@ -11,7 +11,7 @@ output: html_notebook
 R script below will subselect and plot temperature data for MOATs
 Overall goal is to determine if MOATs (per treatment) are true replicates
 
-```{r}
+```{r Libraries}
 #*********************************
 ##Libraries
 #********************************* 
@@ -79,7 +79,7 @@ knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SM
 # 2.) Spolling Data into one CSV 
 Combining multiple CSV files into 1 document. Original input files from individual LVM (logical volumne management) files off each MOATs.
 2.1 Create a list of files
-```{r} 
+```{r 2.1 Create a list of files} 
 ## 2.1 Create a list of files 
 # All files to be joined have ext. "csv" can use that pattern to join 
 files <- list.files(pattern = ".*\\.csv")
@@ -87,14 +87,14 @@ print(files)
 ```
 
 2.2 Create a temporary place for files
-```{r}
+```{r 2.2 Create a temporary place for files}
 ## 2.2 Create a temporary place for files 
 temp <- lapply(files, fread, sep= ",")
 print(temp)
 ```
 
 2.3 Create a new vector for Moats data logs
-```{r}
+```{r 2.3 Create a new vector for Moats data logs}
 ## 2.3 Create a new vector for Moats data logs 
 # "M01thruM13Moatslog_data" via rbind
 M01thruM13moatslog_data <- rbindlist(temp)
@@ -112,7 +112,7 @@ knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2
 
 
 2.5 Write the new csv document
-```{r}
+```{r 2.5 Write the new csv document}
 ## 2.5 Write the new csv document | 
 # "M01thruM13moatslog" can uncomment this command line as needed
 #write.csv(M01thruM13moatslog_data, file = "M01thruM13moatslog.csv", row.names = FALSE)
@@ -128,7 +128,7 @@ Saved on the OA Google Drive
 # 3.) Creating the Dataframe "dml" 
 
 3.1 Reading the CSV
-```{r}
+```{r 3.1 Reading the CSV}
 ## 3.1 Reading the CSV |  
 ## ensuring column names and types
 ## Data Moats Log = dml
@@ -138,7 +138,7 @@ dim(dml)
 
 
 3.1a Duplication Check
-```{r}
+```{r 3.1a Duplication Check}
 ## 3.1a Duplication Check
 ## duplicates observed in "dml" on 2020.05.07  
 dup2 <- dml[duplicated(dml),]
@@ -149,7 +149,7 @@ dml2 <- dml %>% distinct()
 
 
 3.1b Sub sampling dataframe "dml"
-```{r}
+```{r 3.1b Sub sampling dataframe "dml"}
 ## 3.1b Sub sampling dataframe "dml"  
 ## creating a sub sample of the data moats log dml dataframe to allow for quick graphs 
 
@@ -161,7 +161,7 @@ dml <- dml %>% arrange(moats, dateTime) %>% filter(row_number() %% 17 == 0)
 ```
 
 3.2 Checking variables
-```{r}
+```{r 3.2 Checking variables}
 ## 3.2 Checking variables  
 ## Looking to ensure the different variables are treated as the correct variable type
 ## Checking the names in the dataframe
@@ -175,7 +175,7 @@ dml$moats <- as.factor(dml$moats)
 
 
 3.3 Changing variables
-```{r}
+```{r 3.3 Changing variables}
 ## 3.3 Changing variables | 
 ## Changing MOATs to Factors for the 13 different MOATs- these will be the discrete units for follow analysis
 dml$moats <- factor(dml$moats)
@@ -188,8 +188,8 @@ dim(dml)
 
 #4.) Creating dateTime objects
 
-4.0 establish the dateTime objects
-```{r}
+4.0 Establish the dateTime objects
+```{r Establish the date time object}
 # 4.0 establish the date time object of the CSV |
 dml$dateTime <- as.POSIXct(dml$dateTime, format="%Y-%m-%d %H:%M:%OS")
 ReferenceTime <- as.POSIXct("2019-09-20 23:59:00")
@@ -203,7 +203,7 @@ dim(dml)
 # 5.) Creating Treatment Variables  
 
  5.1 Identifying Treatments by MOATS
-```{r}
+```{r 5.1 Identifying treatments by moats}
 ## 5.1 Identifying treatments by moats 
 ## establishing treatments
 dml$treatment <- ""
@@ -223,7 +223,7 @@ dim(dml)
 
 
 5.2 Simple ggplot to show the different MOATs without polish
-```{r}
+```{r Simple ggplot all moats, all treatments}
 
 plot5.2 <- ggplot(dml, aes(x=dateTime, y=aTemperature)) + 
   geom_point(aes(colour=moats, point=)) + 
@@ -255,7 +255,7 @@ Krill Days Started 2101 and ends 1159 (~1229*)
 
 
 6.2 New Column, New Variable
-```{r}
+```{r 6.2 New Column, New Variable in dml, Period}
 ## 6.2 New Column, New Variable in dml
 #creating a new column, new variable "period"
 dml$period <- ""
@@ -263,7 +263,7 @@ dml$period <- ""
 
 
 6.3 Disassembling dateTime to create 2 new variables
-```{r}
+```{r 6.3 Disassembling dateTime, 2 new variables}
 ## 6.3 Disassembling dateTime to create 2 new variables
 # Create new split date and time columns
 dml$ObservationDate <- as.Date(dml$dateTime)
@@ -355,7 +355,7 @@ checking on the variables inside dml
 Cleaned-Up dml = Cdml
 
 
-```{r}
+```{r 8.1 Noting names of the different variables, clean up}
 ## 8.1 Noting names of the different variables in dml
 names(dml)
 ```
@@ -365,7 +365,7 @@ names(dml)
 
 8.2 Narrative on Cdml
 Temperatures below 5C and above 30C are thought to be less than probable 
-```{r}
+```{r 8.2 Changes to be made the dataframe by variable}
 # Changes to be made the dataframe by variable
 #[1] "moats" "M03", "M04", "M05", "M09", "M11" to be filtered out- all these 
 #                                           MOATs were dropped from the study
@@ -391,7 +391,7 @@ Cdml <- dml %>% filter(!moats %in% c("M03", "M04", "M05", "M11")) %>%
 
 # 8.3 Option to write a CSV of Cdml parameters
 droping the levels of the moats 
-```{r}
+```{r 8.3 Dropping levels}
 levels(Cdml$moats)
 Cdml$moats <- droplevels(Cdml$moats)
 ```
@@ -401,7 +401,7 @@ Cdml$moats <- droplevels(Cdml$moats)
 # 9.) Framing filters for Cdml
 
 9.0 cleaning names of levels, factors
-```{r}
+```{r 9.0 Removing the names of moats & treatments}
 ## 9.0 Removing the names of moats & treatments removed from Cdml 
 # Removal should allow for cleaner graphs 
 # Determined moats lab never got under 5C and was never over 30C 
@@ -415,7 +415,7 @@ filteredFrame = filter(Cdml,
 
 Without dropping levels and factors not named label may still crowd plots
 9.1 Dropping names and factors
-```{r}
+```{r 9.1 Dropping levels and factors}
 ## 9.1 Dropping levels and factors
 filteredFrame$moats <- droplevels(filteredFrame$moats)
 filteredFrame$treatment <- factor(filteredFrame$treatment)
@@ -425,7 +425,7 @@ filteredFrame$treatment <- factor(filteredFrame$treatment)
 
 #### 9.2.1 All Change Day Period Boxplot
 
-```{r}
+```{r 9.2.1 All Change Day Period Boxplot}
 simpleplot_allchg_day <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ], 
                                           period %in% ("day")), 
                                           aes(x=moats, y=aTemperature, 
@@ -443,7 +443,7 @@ simpleplot_allchg_day
 
 
 #### 9.2.2 All Change Night Period Boxplot
-```{r}
+```{r 9.2.2 All Change Night Period Boxplot}
 simpleplot_allchg_night <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ], 
                                           period %in% ("night")), 
                                           aes(x=moats, y=aTemperature, 
@@ -458,7 +458,7 @@ simpleplot_allchg_night
 ```
 
 #### 9.2.3 All Change Timeseries
-```{r}
+```{r 9.2.3 All Change Timeseries}
 simpleplot_allchg_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "allchange", ]))+
                                   aes(x=dateTime, y=aTemperature) + 
                                   geom_point(aes(colour=moats, point=)) +
@@ -470,7 +470,7 @@ simpleplot_allchg_timeseries
  
 #### 9.2.4 Current Day Period Boxplot
 
-```{r}
+```{r 9.2.4 Current Day Period Boxplot}
 simpleplot_cur_day <- ggplot(subset(Cdml[Cdml$treatment == "current", ], 
                                           period %in% ("day")), 
                                           aes(x=moats, y=aTemperature, 
@@ -490,7 +490,7 @@ simpleplot_cur_day
  
 #### 9.2.5 Current Night Period Boxplot
 
-```{r}
+```{r 9.2.5 Current Night Period Boxplot}
 simpleplot_cur_night <- ggplot(subset(Cdml[Cdml$treatment == "current", ], 
                                           period %in% ("night")), 
                                           aes(x=moats, y=aTemperature, 
@@ -509,7 +509,7 @@ simpleplot_cur_night
 
 
 #### 9.2.6 Current Conditions Timeseries
-```{r}
+```{r 9.2.6 Current Conditions Timeseries}
 simpleplot_cur_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "current", ]))+
                                   aes(x=dateTime, y=aTemperature) + 
                                   geom_point(aes(colour=moats, point=)) +
