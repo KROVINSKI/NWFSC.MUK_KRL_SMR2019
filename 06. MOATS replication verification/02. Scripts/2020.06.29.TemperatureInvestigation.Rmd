@@ -742,6 +742,19 @@ Cdml.daynight.summary <- Cdml %>% group_by(treatment, period) %>%
 write.csv(Cdml.daynight.summary, "2020.07.08_Cdml_daynight_summary.csv")
 ```
 
+#### 12.1 Tribble of Day/Night Summary  
+```{r tribble of day/night summary}
+tibble::tribble(
+         ~treatment, ~period,         ~sd,       ~mean,     ~median,        ~IQR,    ~n,         ~se,         ~ci,
+        "allchange",   "day", 0.372506855, 12.97330841,   12.896611,  0.24780225, 4956L, 0.005291376, 0.010371097,
+        "allchange", "night", 0.247588899, 13.89858376, 13.92320525, 0.193622875, 2843L, 0.004643471, 0.009101203,
+          "current",   "day", 0.348206031, 11.09782575, 11.07660075, 0.207690563, 3974L, 0.005523602, 0.010826259,
+          "current", "night", 0.302526369, 11.95038837,  12.0529935, 0.122263063, 2290L, 0.006321869, 0.012390863,
+  "hightemperature",   "day", 0.362913386, 12.92259015,  12.9101975, 0.288474875, 2687L, 0.007001146, 0.013722247,
+  "hightemperature", "night", 0.313433995, 13.80435016, 13.87954738, 0.188507875, 1504L, 0.008082062, 0.015840842
+  )
+
+```
 
 
 
