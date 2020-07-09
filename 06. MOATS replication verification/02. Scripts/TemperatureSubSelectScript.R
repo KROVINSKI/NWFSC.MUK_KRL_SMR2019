@@ -471,7 +471,7 @@ Cdml <- filteredFrame %>% arrange(moats, dateTime)%>%
 #the diff value comparing the last time in M01 to the first time in M02 (etc.) 
 #                                                                 is not valid, 
 # Set those to zero
-Cdml$deltaTempLag1[lag(Cdml$moats) != cdml$moats] <- 0
+Cdml$deltaTempLag1[lag(Cdml$moats) != Cdml$moats] <- 0
 
 #this shows all the rows that jump more that 1 degree from previous row 
 #                     (ingoring rows that are transition from one moats to another)

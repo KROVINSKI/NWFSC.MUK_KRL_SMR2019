@@ -602,16 +602,41 @@ Cdml <- filteredFrame %>% arrange(moats, dateTime)%>%
 #the diff value comparing the last time in M01 to the first time in M02 (etc.) 
 #                                                                 is not valid, 
 # Set those to zero
-Cdml$deltaTempLag1[lag(Cdml$moats) != cdml$moats] <- 0
+Cdml$deltaTempLag1[lag(Cdml$moats) != Cdml$moats] <- 0
 
 #this shows all the rows that jump more that 1 degree from previous row 
 #                     (ingoring rows that are transition from one moats to another)
 Cdml %>% filter(deltaTempLag1 >1)
 ```
  
+#### 10.3 Creating tDeltaThreshold
+```{r10.3 Creating tDeltaThreshold}
+
+## 10.3 Creating tDeltaThreshold
+#Creating another column of variables to be able to graph the temperature jumps 
+Cdml <- Cdml %>% mutate(tDeltaThreshold = if_else(deltaTempLag1 > 0.5, TRUE, FALSE))
+```
 
 
+## 11.) Calculating Averages by Treatment & Day/Night
+```{r 11.0 Intercept Narrative}
+## 11.0 Intercept Narrative
+# These averages will be the yintercepts in plots
+# example of what to put into with ggplot "  
+#    geom_hline(yintercept = dtemperatur$`mean(aTemperature)`)  
+```
 
+
+```{r 11.1 All Treatments (Day & Night)}
+## 11.1 All Treatments (Day & Night)
+# Night Period
+subsetNightaTemp <- subset(filteredFrame, period == "night" & aTemperature >0,
+                                  select = c( moats, dateTime, treatment, aTemperature ))
+
+# Day Period
+subsetDayaTemp <- subset(filteredFrame, period == "day" & aTemperature >0,
+                           select = c( moats, dateTime, treatment, aTemperature ))
+```
 
 
 
