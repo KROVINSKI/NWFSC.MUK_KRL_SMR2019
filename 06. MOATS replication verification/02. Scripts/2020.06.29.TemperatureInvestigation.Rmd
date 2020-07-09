@@ -519,6 +519,57 @@ simpleplot_cur_timeseries
 ```
 
 
+#### 9.2.7 High Temperature Day Period Boxplot
+```{r 9.2.7 High Temperature Day Period Boxplot}
+simpleplot_hitemp_day <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ], 
+                                          period %in% ("day")), 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment)) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_boxplot() +
+                                          ggtitle("High Temperature Conditions Day Period Boxplot")
+
+
+simpleplot_hitemp_day
+```
+
+
+
+#### 9.2.8 High Temperature Night Period Boxplot
+```{r 9.2.8 High Temperature Night Period Boxplot}
+simpleplot_hitemp_night <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ], 
+                                          period %in% ("night")), 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment)) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_boxplot() +
+                                          ggtitle("High Temperature Conditions Night Period Boxplot")
+
+
+simpleplot_hitemp_night
+
+
+
+```
+
+
+
+#### 9.2.9 High Temperature Timeseries
+```{r 9.2.9 High Temperature Timeseries}
+simpleplot_cur_timeseries <- ggplot(subset(Cdml[Cdml$treatment == "current", ]))+
+                                  aes(x=dateTime, y=aTemperature) + 
+                                  geom_point(aes(colour=moats, point=)) +
+                                  ggtitle("Current Conditions Treatment Timeseries")
+
+simpleplot_cur_timeseries
+```
+
+
+
+
+
 
 
 
