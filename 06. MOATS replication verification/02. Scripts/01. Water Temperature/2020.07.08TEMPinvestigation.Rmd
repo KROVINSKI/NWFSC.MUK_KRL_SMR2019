@@ -66,3 +66,17 @@ Inside the working directory (folder) are CSV files generated after using the mo
 Moving average window (nObs) set to 4. This results in the observations being averaged into a 24second timeframe. CSVs were created for each moats: M01, M02, M03, M04, M05, M06, M07, M08, M09, M10, M11, M12, M13. Files are also available on the OA Google drive. [OA Drive for MOATS data](https://drive.google.com/open?id=13a2hk1a9I9gRIgf2Xyl1dSYDf5vnyYvs)
 
 
+```{r}
+#*********************************
+## 1.) Set working directory
+#*********************************
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind")
+
+#setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind")
+
+```
+
+# 2.) Spolling Data into one CSV 
+Combining multiple CSV files into 1 document. Original input files from individual LVM (logical volumne management) files off each MOATs.
+2.1 Create a list of files
