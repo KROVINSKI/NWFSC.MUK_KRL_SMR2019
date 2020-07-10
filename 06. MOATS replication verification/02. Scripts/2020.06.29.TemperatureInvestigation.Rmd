@@ -53,7 +53,6 @@ library(gridExtra)
 * 13.) Plots Boxplots & timeseries
 * 14.) Duration between conditions- Histogram & Cummulative Distribtuion Plot  section
 * 15.) aTemp bands investig.
-* 16.) Share-able tibbles & reprex readiness  
 
 
 #1.) Working Directory
@@ -382,7 +381,7 @@ Cdml <- dml %>% filter(!moats %in% c("M03", "M04", "M05", "M11")) %>%
 
 ```
 
-# 8.3 Option to write a CSV of Cdml parameters
+#### 8.3 Option to write a CSV of Cdml parameters
 droping the levels of the moats 
 ```{r 8.3 Dropping levels}
 levels(Cdml$moats)
@@ -407,7 +406,7 @@ filteredFrame = filter(Cdml,
 ```
 
 Without dropping levels and factors not named label may still crowd plots
-9.1 Dropping names and factors
+#### 9.1 Dropping names and factors
 ```{r 9.1 Dropping levels and factors}
 ## 9.1 Dropping levels and factors
 filteredFrame$moats <- droplevels(filteredFrame$moats)
@@ -828,8 +827,10 @@ p_allchg_facetwrap_vio
 
 ```
 
-#### 13.1.2 Aquarium Temperature, Current Conditions, Day & Night
-```{r 13.1.2 Aquarium Temperature, Current Conditions, Day & Night}
+
+
+#### 13.1.3 Aquarium Temperature, Current Conditions, Day & Night
+```{r 13.1.3 Aquarium Temperature, Current Conditions, Day & Night Boxplots}
 
 p_cur_facetwrap_box <- ggplot(subset(Cdml[Cdml$treatment == "current", ])) + 
                                           aes(x=moats, y=aTemperature, 
@@ -845,7 +846,7 @@ p_cur_facetwrap_box
 ```
 
 
-```{r}
+```{r 13.1.2 Aquarium Temperature, Current Conditions, Day & Night Violin Plots}
 
 p_allchg_facetwrap_vio <- ggplot(subset(Cdml[Cdml$treatment == "current", ])) + 
                                           aes(x=moats, y=aTemperature, 
@@ -859,6 +860,137 @@ p_allchg_facetwrap_vio <- ggplot(subset(Cdml[Cdml$treatment == "current", ])) +
 p_allchg_facetwrap_vio 
 
 ```
+
+
+#### 13.1.4 Aquarium Temperature, High Temperature Conditions, Day & Night Boxplots
+
+```{r 13.1.4 Aquarium Temperature, High Temperature Conditions, Day & Night Boxplots}
+
+p_hitemp_facetwrap_box <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ])) + 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_boxplot() +
+                                          facet_wrap(~period) +
+                                          ggtitle("High Temperature Conditions, Aquarium Temperature, Day/Night Period Boxplots")
+
+p_hitemp_facetwrap_box
+
+
+```
+
+#### 13.1.5 Aquarium Temperature, High Temperature Conditions, Day & Night Violin plots
+
+
+```{r 13.1.5 Aquarium Temperature, High Temperature Conditions, Day & Night Violin plots}
+
+p_hitemp_facetwrap_vio <- ggplot(subset(Cdml[Cdml$treatment == "hightemperature", ])) + 
+                                          aes(x=moats, y=aTemperature, 
+                                                        colour=treatment) + 
+                                          stat_summary(fun=mean, geom="point", 
+                                                        size=2, color="red")  + 
+                                          geom_violin() +
+                                          facet_wrap(~period) +
+                                          ggtitle("High Temperature Conditions, Aquarium Temperature, Day/Night Period Violin Plots")
+
+p_hitemp_facetwrap_vio 
+
+
+
+
+```
+
+# 14. Cumulative Frequency Distribution
+A Cumulative Frequency Distribution plot was used to illustration the time spent around the mean per period per treatment.
+
+#### 14.1a CFD plot 1
+```{r 14.1a CFD plot 1}
+
+CFD1 <- ggplot(Cdml, aes(aTemperature)) +
+            stat_ecdf(aes(colour = moats)) + 
+            geom_vline(xintercept = c(11,12,13,14), colour = "red") +
+            facet_wrap(vars(treatment, period), ncol = 2, scales = "fixed")  +
+            theme_bw()
+CFD1
+
+
+```
+
+
+#### 14.2 Empirical Cumulative Distribution Function Generated Plots
+
+Using a ECDF to better visualize distribution
+Compute empirical cumulative distribution : The empirical cumulative distribution   function (ECDF) provides an alternative visualisation of distribution. Compared to other visualisations that rely on density (like geom_histogram()), the ECDF doesn't require any tuning parameters and handles both continuous and categorical variables.
+
+```{r 14.2 Empirical Cumulative Distribution Function Generated Plots}
+ 
+```
+
+
+```{r 14.2a ECDF Plot}
+## 14.2a ECDF Plot
+
+ECDFplot <-      ggplot(Cdml, aes(aTemperature)) +
+                stat_ecdf(aes(colour = moats)) + 
+                geom_vline(xintercept = Cdml.daynight.summary$mean, colour = "red") +
+                facet_wrap(vars(treatment, period), ncol = 2, scales = "fixed")  +
+                theme_bw()
+ECDFplot
+```
+
+#### 14.3 Creating a function to incorporate our statisitics
+```{r 14.3 Creating a function to incorporate our statisitics}
+## 14.3 Creating a function to incorporate our statisitics- show our averages
+
+ coolECDF <- function(d, dsum, treat, per){
+   dsum <- dsum %>% filter(treatment == treat & period == per )
+   p <- d %>% filter(treatment == treat & period == per ) %>% ggplot(aes(aTemperature)) +
+     stat_ecdf(aes(colour = moats)) + 
+     geom_vline(xintercept = dsum$mean, colour = "red") +
+     ggtitle(paste(treat, per)) +
+     theme_bw()
+   return(p)
+ }
+```
+
+
+#### 14.4 Levels ECDF
+
+```{r}
+  levels(Cdml$treatment)
+  levels(factor(Cdml$period))
+```
+
+#### 14.5 Creating the different averages from the Summary Table (ECDF)
+
+```{r 14.5 Creating the different averages from the Summary Table (ECDF)}
+
+        cfd.a.d <- coolECDF(Cdml, Cdml.daynight.summary, "allchange", "day")
+        cfd.a.n <- coolECDF(Cdml, Cdml.daynight.summary, "allchange", "night")
+        cfd.c.d <- coolECDF(Cdml, Cdml.daynight.summary, "current", "day")
+        cfd.c.n <- coolECDF(Cdml, Cdml.daynight.summary, "current", "night")
+        cfd.h.d <- coolECDF(Cdml, Cdml.daynight.summary, "hightemperature", "day")
+        cfd.h.n <- coolECDF(Cdml, Cdml.daynight.summary, "hightemperature", "night")
+```
+
+
+#### 14.6 Incorporating Grid Arrange to display the ECDF plots
+
+```{r 14.6 Incorporating Grid Arrange to display the ECDF plots}
+## Incorporating Grid Arrange to display the ECDF plots        
+#  Basic Grid Arrange
+
+      grid.arrange(cfd.a.d, cfd.c.d, cfd.h.d, nrow = 1)
+ 
+      grid.arrange(cfd.a.n, cfd.c.n, cfd.h.n, nrow = 1) 
+      
+      #make a list of all the plots then pass the list to grid.arrange()
+      ecdfList <- list(cfd.a.d, cfd.c.d, cfd.h.d, cfd.a.n, cfd.c.n, cfd.h.n)
+      grid.arrange(grobs = ecdfList, ncol=3)
+      
+```
+
 
 
 
