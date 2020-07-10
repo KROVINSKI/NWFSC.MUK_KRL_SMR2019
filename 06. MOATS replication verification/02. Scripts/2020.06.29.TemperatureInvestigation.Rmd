@@ -1,6 +1,6 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output: html_document
 ---
 
 ## Author: OA Lab, NWFSC
@@ -87,6 +87,9 @@ print(files)
 2.2 Create a temporary place for files
 ```{r 2.2 Create a temporary place for files}
 ## 2.2 Create a temporary place for files 
+
+setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind")
+
 temp <- lapply(files, fread, sep= ",")
 print(temp)
 ```
@@ -778,7 +781,6 @@ ggplot(Cdml, aes(treatment, aTemperature)) +
             geom_jitter(color = "grey") +
             geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
             geom_point(data = Cdml.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") + 
-            geom_jitter(aes(colour = tDeltaThreshold)) +
             geom_errorbar(data = Cdml.daynight.summary, 
                           aes(x=treatment, y=mean, ymin = mean-sd, ymax = mean+sd), 
                           color = "blue") +
@@ -867,6 +869,28 @@ p_allchg_facetwrap_vio
 
 
 current to line 879
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
