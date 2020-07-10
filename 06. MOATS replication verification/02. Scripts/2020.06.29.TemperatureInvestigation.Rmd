@@ -991,6 +991,75 @@ ECDFplot
       
 ```
 
+# 15.0 Temperature Investigation
+
+#### 15.1 Temperature Investigation High Temperature
+```{r 15.1 Temperature Investigation High Temperature}
+# Selecting for the high aTemperature Band
+ investig.HighaTemp <- Cdml %>% 
+   filter(aTemperature>= 14.50 & aTemperature<=15.50) %>%
+   filter(treatment %in% c("current", 
+                           "allchange", 
+                           "hightemperature")) %>%
+   filter(period != "other")
+
+```
+
+#### 15.1a High Temperature Banding Investigation, All Change Treatment
+```{r 15.1a High Temperature Banding Investigation, All Change Treatment}
+
+hitemp_plot1 <- ggplot(subset(investig.HighaTemp[investig.HighaTemp$treatment == "allchange", ])) +
+        aes(x=dateTime, y=aTemperature) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("High Temperature Banding Investigation, All Change Treatment")
+   ylim (10, 20)
+
+hitemp_plot1
+
+```
+
+
+```{r 15.1b High Temperature Banding Investigation, Current Conditions Treatment}
+
+hitemp_plot2 <- ggplot(subset(investig.HighaTemp[investig.HighaTemp$treatment == "current", ])) +
+        aes(x=dateTime, y=aTemperature) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("High Temperature Banding Investigation, Current Conditions Treatment")
+   ylim (10, 20)
+
+hitemp_plot2
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+
+ # Time series plot 
+hitemp_plot1 <- ggplot(subset(investig.HighaTemp[investig.HighaTemp$treatment == "allchange", ], 
+               period %in% ("night")), 
+        aes(x=dateTime, y=aTemperature)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ylim (10, 20)
+
+hitemp_plot1
+
+```
+
 
 
 
