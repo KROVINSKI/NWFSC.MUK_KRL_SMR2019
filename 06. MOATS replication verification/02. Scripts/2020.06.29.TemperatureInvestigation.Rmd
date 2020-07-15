@@ -73,7 +73,7 @@ knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2
 
 
 
-# 2.) Spolling Data into one CSV 
+# 2.) Spooling Data into one CSV 
 Combining multiple CSV files into 1 document. Original input files from individual LVM (logical volumne management) files off each MOATs.
 2.1 Create a list of files
 ```{r 2.1 Create a list of files} 
@@ -1018,7 +1018,7 @@ hitemp_plot1
 
 ```
 
-
+#### 15.1b High Temperature Banding Investigation, Current Conditions Treatment
 ```{r 15.1b High Temperature Banding Investigation, Current Conditions Treatment}
 
 hitemp_plot2 <- ggplot(subset(investig.HighaTemp[investig.HighaTemp$treatment == "current", ])) +
@@ -1030,11 +1030,20 @@ hitemp_plot2 <- ggplot(subset(investig.HighaTemp[investig.HighaTemp$treatment ==
 hitemp_plot2
 
 
-
 ```
 
+#### 15.1c High Temperature Banding Investigation, High Temperature Treatment Conditions Treatment
 
+```{r15.1b High Temperature Banding Investigation, High Temperature Treatment Treatment}
 
+hitemp_plot3 <- ggplot(subset(investig.HighaTemp[investig.HighaTemp$treatment == "hightemperature", ])) +
+        aes(x=dateTime, y=aTemperature) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("High Temperature Banding Investigation, High Temperature Treatment")
+   ylim (10, 20)
+
+hitemp_plot3
+```
 
 
 
@@ -1050,7 +1059,7 @@ hitemp_plot2
 ```{r}
 
  # Time series plot 
-hitemp_plot1 <- ggplot(subset(investig.HighaTemp[investig.HighaTemp$treatment == "allchange", ], 
+hitemp_plot4 <- ggplot(subset(investig.HighaTemp[investig.HighaTemp$treatment == "allchange", ], 
                period %in% ("night")), 
         aes(x=dateTime, y=aTemperature)) + 
    geom_point(aes(colour=moats, point=)) +
@@ -1059,6 +1068,24 @@ hitemp_plot1 <- ggplot(subset(investig.HighaTemp[investig.HighaTemp$treatment ==
 hitemp_plot1
 
 ```
+
+
+```{r}
+
+ # Time series plot 
+hitemp_plot7 <- ggplot(subset(investig.HighaTemp[investig.HighaTemp$treatment == "allchange", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=aTemperature)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ylim (10, 20)
+
+hitemp_plot7
+
+```
+
+
+
+
 
 
 
@@ -1094,11 +1121,41 @@ current to line 879
 
 
 
+#**************E*N*D*************# 
+#*********************************
+## END OF SCRIPT | END OF DOCUMENT 
+#*********************************
+
+#________$$$$..
+#______$$$$$$$$$
+#  ______$$$$$$$_$
+#  _____$$$$$$$$$$
+#  ______$$$$$$$$$$
+#  _____$$$$$$_$$$$$
+#  ____$$$$$$$_____$$$
+#  ____$$$$$$$$_____$
+#  ____$$$$$$$$$$
+#  _____$$$$$$$$$$
+#  _____$$$$$$$$$$$
+#  ______$$$$$$$$$$$
+#  _$$$$___$$$$$$$$$
+#  __$$$$$$$$$$$$$$$
+#  _$$$$$$$$$$$$$$$
+#  __$$$$$$$$$$$$$
+#  $$$$$$$$$$$$$
+#  __$__$$$$$$
+#  ____$$$$$$
+#  ____$$$$$
+#  ___$$$$$$_____$
+#  ___$$$$$$___$$_$$
+#  ____$$$$$___$__$$
+#  ____$$$$$______$$
+#  _____$$$$$____$$$
+#  _______$$$$$$$$$
+#  __________$$$$
+  
 
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
 
 
 
@@ -1110,36 +1167,4 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
-
-```{r}
-plot(cars)
-```
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
 

@@ -346,6 +346,7 @@ H2Ochemdf$Final_PSU <- 28.8
 
 # could set to 28.8 and then use the replace function, writing replacements three times
 
+write.csv(H2Ochemdf, file = "WaterChemistryDataframe.csv", row.names = FALSE)
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
