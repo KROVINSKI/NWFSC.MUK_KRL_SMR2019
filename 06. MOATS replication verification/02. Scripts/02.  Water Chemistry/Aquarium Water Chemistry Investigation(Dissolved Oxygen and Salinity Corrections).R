@@ -221,7 +221,7 @@ dml <- dml %>% mutate(period=case_when(
   
   (ObservationDate >= "2019-10-05")
   & (ObservationDate <= "2019-10-30")
-  & (ObservationTime >= "12:30:00") 
+  & (ObservationTime >= "12:31:00") 
   & (ObservationTime <="21:00:00") ~"night",
   
   (ObservationDate >= "2019-09-23") 
@@ -262,7 +262,7 @@ period.intervals
 period.interval.allchg <- ggplot(subset(dml[dml$treatment == "allchange", ])) + 
   aes(x=dateTime, y=aTemperature) + 
   geom_point(aes(colour=period, point=))   +
-  ggtitle("aTemperature Time Series Plots to Invesitgate Different Intervals") +
+  ggtitle("aTemperature Time Series Plots to Invesitgate Different Intervals, Example All Change Treatment") +
   ylim (5.0, 15.00)
 
 period.interval.allchg
