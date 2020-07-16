@@ -190,9 +190,14 @@ dml$ObservationTime <- format(as.POSIXct(dml$dateTime) ,format = "%H:%M:%S")
 ## Interval Date Start  "2019-09-23"
 ## Interval Date End    "2019-10-05"
 ## Day Start Time       "21:01:00"
-## Day End Time         "12:01:00"
+## Day End Time         "11:29:00"
 ## Night Start Time     "12:00:00"
 ## Night End Time       "21:00:00"
+## DaytoNight Ramp(D2N) "11:30:00"
+# start
+## DaytoNight Ramp(D2N) "11:59:00"
+# stop
+
 ## Other Time
 # Interval 2
 ## Interval Date Start  "2019-10-05"
@@ -222,12 +227,24 @@ dml <- dml %>% mutate(period=case_when(
   (ObservationDate >= "2019-09-23") 
   & (ObservationDate <="2019-10-05")
   & ((ObservationTime >= "21:01:00") 
-     | (ObservationTime <="11:59:00")) ~"day",
+     | (ObservationTime <="11:29:00")) ~"day",
   
   (ObservationDate >= "2019-10-05")
   & (ObservationDate <= "2019-10-30")
   & ((ObservationTime >= "21:01:00")
-     | (ObservationTime <= "12:29:00")) ~"day",
+     | (ObservationTime <= "12:01:00")) ~"day",
+  
+  (ObservationDate >= "2019-09-23") 
+  & (ObservationDate <="2019-10-05")
+  & ((ObservationTime >= "11:30:00") 
+     | (ObservationTime <="12:00:00")) ~"D2Nramp",
+  
+  (ObservationDate >= "2019-10-05")
+  & (ObservationDate <= "2019-10-30")
+  & ((ObservationTime >= "12:01:00")
+     | (ObservationTime <= "12:30:00")) ~"D2Nramp",
+
+  
   TRUE ~"other"
 )
 
