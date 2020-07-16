@@ -250,10 +250,28 @@ dml <- dml %>% mutate(period=case_when(
 
 ) 
 
+
+period.intervals <- ggplot(dml, aes(x=dateTime, y=aTemperature)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("aTemperature Time Series Plots to Invesitgate Different Intervals") +
+  ylim (5.0, 15.00)
+
+period.intervals
+
+
+
+
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 dml
 # QA check
 dim(dml)
+
+
+
+
+
+
 
 
 # Removing "other" period from day and night 
