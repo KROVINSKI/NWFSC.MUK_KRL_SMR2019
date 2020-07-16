@@ -207,7 +207,7 @@ dml$ObservationTime <- format(as.POSIXct(dml$dateTime) ,format = "%H:%M:%S")
 
 ## 6.5 Day / Night Assignments 
 # Using the "case_when" function in the tidyverse in the place of a loop
-
+ 
 dml <- dml %>% mutate(period=case_when(
   (ObservationDate >= "2019-09-23") 
   & (ObservationDate <="2019-10-05") 
