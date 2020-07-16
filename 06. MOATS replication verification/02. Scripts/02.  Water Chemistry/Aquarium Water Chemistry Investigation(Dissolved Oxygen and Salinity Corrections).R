@@ -259,7 +259,13 @@ period.intervals <- ggplot(dml, aes(x=dateTime, y=aTemperature)) +
 period.intervals
 
 
+period.interval.allchg <- ggplot(subset(dml[dml$treatment == "allchange", ])) + 
+  aes(x=dateTime, y=aTemperature) + 
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("aTemperature Time Series Plots to Invesitgate Different Intervals") +
+  ylim (5.0, 15.00)
 
+period.interval.allchg
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
@@ -556,6 +562,9 @@ p5 <- ggplot(H2Ochemdf, aes(x=dateTime, y=percentDOassumpt)) +
   ggtitle("Assumed Percent DO (All Treatments & All MOATs) Colored by Period")
 
 p5
+
+
+
 
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
