@@ -47,13 +47,14 @@ library(wql)
 # 10. Filtering Water Chemistry Dataframe
 
 
-
 ```{r}
 #*********************************
-## 1. Setting the Working Directory
+## 1.) Set working directory
 #*********************************
+knitr::opts_chunk$set(echo = TRUE)
 
-setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/01a. WaterChemistry Data")
-
+knitr::opts_knit$set(root.dir =
+                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/01a. WaterChemistry Data")
 ```
+
 
