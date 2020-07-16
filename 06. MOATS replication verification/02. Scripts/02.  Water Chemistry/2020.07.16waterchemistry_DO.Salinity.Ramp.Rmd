@@ -4,8 +4,8 @@ output: html_notebook
 ---
 
 ## Author: OA Lab, NWFSC
-## Title: Aquarium Water Chemistry Investigation: Creating the Dataframe "CreatingH2Ochemdf"
-## Date: May- June 2020
+## Title: Aquarium Water Chemistry Investigation: DO and Salinity corrections with new ramp period
+## Date: July 2020
 
 
 ```{r}
