@@ -1,6 +1,8 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ## Author: OA Lab, NWFSC
@@ -8,7 +10,8 @@ output: html_notebook
 ## Date: July 2020
 
 
-```{r}
+```{r, ECHO= FALSE, message=FALSE, warning=FALSE}
+
 #*********************************
 ##Libraries
 #********************************* 
@@ -83,14 +86,21 @@ Number of observations after subsampling every 17th response/observation
 Number of observations after the super-subsampling, every 333rd observation
 [1] 3417      7 (~30minutes) ***this won't detail the ramp
 
+To examine the Day to Night ramp (D2Nramp) researcher used n17 subsampling group
 
 ```{r 2.0 Calling and Reading in dml}
 #*********************************
 ## 2. Calling & Reading in " dml " 
 #*********************************
+getwd()
+
+
+setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/01a. WaterChemistry Data")
+
+
 
 # Super Speedy subsampled data
-dml <- read.csv(file = "M01thruM13moatslog_n333.csv", stringsAsFactors = FALSE)
+dml <- read.csv(file = "M01thruM13moatslog_n17.csv", stringsAsFactors = FALSE)
 dim(dml)
 
 

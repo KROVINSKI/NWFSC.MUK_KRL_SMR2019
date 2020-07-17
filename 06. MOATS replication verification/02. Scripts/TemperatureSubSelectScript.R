@@ -141,6 +141,7 @@ dim(dml)
 ## creating a sub sample of the data moats log dml dataframe to allow for quick graphs 
 #subsample every 17th row (because prime numbers are indeed cool)
 dml <- dml %>% arrange(moats, dateTime) %>% filter(row_number() %% 17 == 0)
+dim(dml)
 
 write.csv(dml, file = "M01thruM13moatslog_n17.csv", row.names = FALSE)
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |

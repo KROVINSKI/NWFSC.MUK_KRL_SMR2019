@@ -756,10 +756,10 @@ hitempNightDO
 
 
 H2Ochemdf.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
-  summarize(sd = sd(H2Ochemdf$actualDOmg, na.rm = TRUE), 
-            mean = mean(H2Ochemdf$actualDOmg, na.rm = TRUE), 
-            median = median(H2Ochemdf$actualDOmg, na.rm = TRUE),
-            IQR = IQR(H2Ochemdf$actualDOmg, na.rm = TRUE),
+  summarize(sd = sd(actualDOmg, na.rm = TRUE), 
+            mean = mean(actualDOmg, na.rm = TRUE), 
+            median = median(actualDOmg, na.rm = TRUE),
+            IQR = IQR(actualDOmg, na.rm = TRUE),
             n = n()) %>%
   mutate(se = sd/sqrt(n)) %>%
   mutate(ci = se*1.96)

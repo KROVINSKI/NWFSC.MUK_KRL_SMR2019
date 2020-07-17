@@ -748,8 +748,6 @@ hitempDayDO
 hitempNightDO
 
 
-
-
 #*********************************
 ## 12) DO Day/Night Summary
 #*********************************
