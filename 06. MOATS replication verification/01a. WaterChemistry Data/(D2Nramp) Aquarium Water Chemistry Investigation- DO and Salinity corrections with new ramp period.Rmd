@@ -130,12 +130,53 @@ dim(dml)
 
 
 # 4.0) Creating dateTime objects  
+Changes to the format of dates and times for observations
 
 ```{r 4.0 establish the date time object of the CSV, ECHO= FALSE, message=FALSE, warning=FALSE}
 dml$dateTime <- as.POSIXct(dml$dateTime, format="%Y-%m-%d %H:%M:%OS")
 ReferenceTime <- as.POSIXct("2019-09-20 23:59:00")
 class(ReferenceTime)
+
+# QA check
+dim(dml)
+
 ```
+
+# 5.0) Creating Treatment Variables  
+
+#### 5.1 Three Treatments
+Three treatments of this studies are identified as 
+* "current" for the Current Conditions Treatment
+* "hightemperature" for the High Temperature Conditions Treatment
+* "allchange" for the All Change Conditions Treatment which incorporated both the high temperature conditions of the "hightemperature" treatment along with exposure to lower aquariun pH.   
+
+```{r 5.1 Identifying treatments by moats, ECHO= FALSE, message=FALSE, warning=FALSE}
+## 5.1 Identifying treatments by moats 
+## establishing treatments
+dml$treatment <- ""
+dml$treatment[dml$moats == "M07" | dml$moats== "M10" | dml$moats== "M12"] <- "current"
+dml$treatment[dml$moats == "M01"| dml$moats== "M06"] <- "hightemperature"
+dml$treatment[dml$moats == "M02"| dml$moats== "M08" | dml$moats== "M13"] <- "allchange"
+dml$treatment[dml$moats == "M03"| dml$moats == "M04" | dml$moats == "M05" | dml$moats== "M11"] <- "broken_and_ambientbroken"
+#verify that this new column has been created
+names(dml)
+#results should include:
+#[1] "moats"        "dateTime"     "aTemperature" "sTemperature" "pH"          
+#[6] "DO"           "salinity"     "treatment"  
+
+# QA check
+dim(dml)
+
+```
+
+#### 5.1.1 Ambient Treatment
+Those MOATS aquarium systems that did not reach desired/programed conditions were deemed the "ambient" treatment. No temperature, DO, or pH conditions were programmed or alarmed. Flow control was governed by a solenoid valve to acheive flow/no-flow, day/night periods. 
+
+MOATS inside the "Ambient" treatment included MOATs 04 and MOATs 05 both were shown to have faulty thermisters. 
+
+Recorded conditions of what the animals experienced can't be guaranteed/confirmed. 
+
+Without a record of aquarium settings MOATs 04 and MOAT 05 data was not included. 
 
 
 
