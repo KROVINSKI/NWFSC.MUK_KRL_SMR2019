@@ -157,7 +157,7 @@ dml$treatment <- ""
 dml$treatment[dml$moats == "M07" | dml$moats== "M10" | dml$moats== "M12"] <- "current"
 dml$treatment[dml$moats == "M01"| dml$moats== "M06"] <- "hightemperature"
 dml$treatment[dml$moats == "M02"| dml$moats== "M08" | dml$moats== "M13"] <- "allchange"
-dml$treatment[dml$moats == "M03"| dml$moats == "M04" | dml$moats == "M05" | dml$moats== "M11"] <- "broken_and_ambientbroken"
+dml$treatment[dml$moats == "M03"| dml$moats == "M04" | dml$moats == "M09" | dml$moats == "M05" | dml$moats== "M11"] <- "broken_and_ambientbroken"
 #verify that this new column has been created
 names(dml)
 #results should include:
@@ -180,14 +180,130 @@ Without a record of aquarium settings MOATs 04 and MOAT 05 data was not included
 
 
 
+# 6.) Creating Night and Day Periods 
+
+#### 6.1 Narrative (Overall)
+Creating a day and night variables 
+Day and night periods will only refer to time under treatment as a way to exclude the acclimation period.
+Day and night changed at about ~ 1230 on 05OCT19 
+Treatment start date considered to begin Monday 23SEP19 at 1200pm
+Krill Night Starts 1200 (~1230*) and ends 2100
+Krill Days Starts 2101 and ends 1159 (~1229*) 
+Interval 1 start 1200 23SEP19, end 1229 05OCT19
+Interval 2 start 1230 05OCT19, end 2100 30OCT19
+
+#### 6.2 New Column, New Variable in dml 
+
+```{r 6.2 New Column, New Variable in dml}
+## 6.2 New Column, New Variable in dml
+#creating a new column, new variable "period"
+dml$period <- ""
+```
+
+#### 6.3 Disassembling dateTime to create 2 new variables
+
+```{r 6.3 Disassembling dateTime to create 2 new variables}
+## 6.3 Disassembling dateTime to create 2 new variables
+# Create new split date and time columns
+dml$ObservationDate <- as.Date(dml$dateTime)
+dml$ObservationTime <- format(as.POSIXct(dml$dateTime) ,format = "%H:%M:%S")
+```
+
+#### 6.4 Narrative about Intervals 
+Interval 1
+Interval Date Start  "2019-09-23"
+Interval Date End    "2019-10-05"
+Day Start Time       "21:01:00"
+Day End Time         "11:29:00"
+Night Start Time     "12:00:00"
+Night End Time       "21:00:00"
+DaytoNight Ramp(D2N) "11:30:00"
+start
+DaytoNight Ramp(D2N) "11:59:00"
+stop
+Other Time
 
 
+Interval 2
+Interval Date Start  "2019-10-05"
+Interval Date End    "2019-10-30"
+Day Start Time       "21:01:00"
+Day End Time         "12:29:00"
+Night Start Time     "12:30:00"
+Night End Time       "21:00:00"
+Other Time
 
+#### 6.5 Period Assignments
 
+```{r 6.5 Day / Night Assignments,  ECHO= FALSE, message=FALSE, warning=FALSE}
+## 6.5 Day / Night Assignments 
+# Using the "case_when" function in the tidyverse in the place of a loop
+ 
+dml <- dml %>% mutate(period=case_when(
+  (ObservationDate >= "2019-09-23") 
+  & (ObservationDate <="2019-10-05") 
+  & (ObservationTime >= "12:00:00") 
+  & (ObservationTime <="21:00:00") ~"night",
+  
+  (ObservationDate >= "2019-10-05")
+  & (ObservationDate <= "2019-10-30")
+  & (ObservationTime >= "12:31:00") 
+  & (ObservationTime <="21:00:00") ~"night",
+  
+  (ObservationDate >= "2019-09-23") 
+  & (ObservationDate <="2019-10-05")
+  & ((ObservationTime >= "21:01:00") 
+     | (ObservationTime <="11:29:00")) ~"day",
+  
+  (ObservationDate >= "2019-10-05")
+  & (ObservationDate <= "2019-10-30")
+  & ((ObservationTime >= "21:01:00")
+     | (ObservationTime <= "12:01:00")) ~"day",
+  
+  (ObservationDate >= "2019-09-23") 
+  & (ObservationDate <="2019-10-05")
+  & ((ObservationTime >= "11:30:00") 
+     | (ObservationTime <="12:00:00")) ~"D2Nramp",
+  
+  (ObservationDate >= "2019-10-05")
+  & (ObservationDate <= "2019-10-30")
+  & ((ObservationTime >= "12:01:00")
+     | (ObservationTime <= "12:30:00")) ~"D2Nramp",
 
+  
+  TRUE ~"other"
+)
 
+) 
+```
 
+#### 6.5.1 Quick Check on Period Generation
 
+```{r 6.5.1 aTemperature Time Series Plots to Invesitgate Different Intervals}
+#Quick check to see if periods were created
+
+period.intervals <- ggplot(dml, aes(x=dateTime, y=aTemperature)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("aTemperature Time Series Plots to Invesitgate Different Intervals") +
+  ylim (5.0, 15.00)
+
+period.intervals
+```
+
+#### 6.5.1 Quick Check on Day to Night Ramp Verification
+The ramp verification will be important to dissolved oxygen verification
+Dissolved oxygen not yet shown. 
+Recorded dissolved oxygen needs to be corrected with observed salinity. 
+
+```{r}
+ggplot(subset(dml, 
+               period %in% ("D2Nramp")), 
+        aes(x=dateTime, y=aTemperature)) + 
+   geom_point(aes(colour=treatment, point=)) +
+   ylim (5.0, 15.00) + 
+   ggtitle("aTemperature Values, All MOATs, During Day to Night Ramp Period")
+
+```
 
 
 
