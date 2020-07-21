@@ -111,7 +111,9 @@ dim(dml)
 
 ```
 
+# 3. Reformatting variables/vectors (Factors)
 
+Changing MOATs to Factors for the 13 different MOATs- these will be the discrete units for follow analysis
 
 ```{r Reformatting variables/vectors (Factors), ECHO= FALSE, message=FALSE, warning=FALSE}
 #*********************************
@@ -119,7 +121,6 @@ dim(dml)
 #*********************************
 
 ## 3.3 Changing variables | 
-## Changing MOATs to Factors for the 13 different MOATs- these will be the discrete units for follow analysis
 dml$moats <- factor(dml$moats)
 # Checking the names of the different levels
 levels(dml$moats)
