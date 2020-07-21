@@ -76,7 +76,7 @@ knitr::opts_knit$set(root.dir = "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2
 # 2.) Spooling Data into one CSV 
 Combining multiple CSV files into 1 document. Original input files from individual LVM (logical volumne management) files off each MOATs.
 2.1 Create a list of files
-```{r 2.1 Create a list of files} 
+```{r 2.1 Create a list of files, ECHO= FALSE, message=FALSE, warning=FALSE} 
 ## 2.1 Create a list of files 
 # All files to be joined have ext. "csv" can use that pattern to join 
 files <- list.files(path= "/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind", pattern = ".*\\.csv")
@@ -84,7 +84,7 @@ print(files)
 ```
 
 2.2 Create a temporary place for files
-```{r 2.2 Create a temporary place for files}
+```{r 2.2 Create a temporary place for files, ECHO= FALSE, message=FALSE, warning=FALSE}
 ## 2.2 Create a temporary place for files 
 
 setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs(CSV)Rbind")
@@ -94,7 +94,7 @@ print(temp)
 ```
 
 2.3 Create a new vector for Moats data logs
-```{r 2.3 Create a new vector for Moats data logs}
+```{r 2.3, ECHO= FALSE, message=FALSE, warning=FALSE Create a new vector for Moats data logs}
 ## 2.3 Create a new vector for Moats data logs 
 # "M01thruM13Moatslog_data" via rbind
 M01thruM13moatslog_data <- rbindlist(temp)
@@ -104,7 +104,7 @@ print(M01thruM13moatslog_data)
 
 
 2.4 Write the new csv document
-```{r 2.5 Write the new csv document}
+```{r 2.5 Write the new csv document, ECHO= FALSE, message=FALSE, warning=FALSE}
 ## 2.5 Write the new csv document | 
 # "M01thruM13moatslog" can uncomment this command line as needed
 #write.csv(M01thruM13moatslog_data, file = "M01thruM13moatslog.csv", row.names = FALSE)
