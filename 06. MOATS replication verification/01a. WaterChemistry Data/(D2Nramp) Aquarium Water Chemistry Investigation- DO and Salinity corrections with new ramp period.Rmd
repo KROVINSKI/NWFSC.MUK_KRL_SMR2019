@@ -98,7 +98,7 @@ Number of observations after the super-subsampling, every 333rd observation
 To examine the Day to Night ramp (D2Nramp) researcher used n17 subsampling group
 
 
-# 2.0 Calling and Reading in dml
+# 2.0) Calling and Reading in dml
 
 ```{r 2.0 Calling and Reading in dml, ECHO= FALSE, message=FALSE, warning=FALSE, }
 #*********************************
@@ -111,7 +111,7 @@ dim(dml)
 
 ```
 
-# 3. Reformatting variables/vectors (Factors)
+# 3.0) Reformatting variables/vectors (Factors)
 
 Changing MOATs to Factors for the 13 different MOATs- these will be the discrete units for follow analysis
 
@@ -127,6 +127,17 @@ levels(dml$moats)
 ##checking the dataset, dimensions
 dim(dml)
 ```
+
+
+# 4.0) Creating dateTime objects  
+
+```{r 4.0 establish the date time object of the CSV, ECHO= FALSE, message=FALSE, warning=FALSE}
+dml$dateTime <- as.POSIXct(dml$dateTime, format="%Y-%m-%d %H:%M:%OS")
+ReferenceTime <- as.POSIXct("2019-09-20 23:59:00")
+class(ReferenceTime)
+```
+
+
 
 
 
