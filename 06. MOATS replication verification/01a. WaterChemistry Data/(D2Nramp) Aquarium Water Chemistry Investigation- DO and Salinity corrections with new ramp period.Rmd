@@ -333,6 +333,144 @@ H2Ochemdf <- dml %>% filter(period != "other")
 #### Water Chemistry Dataframe Created "H2Ochemdf"
 
 
+# 7.) Bringing in Salinity   
+
+
+```{r 7.0 Bringing in Salinity }
+all_salinity <- read.csv(file = "KRL19_salinityreadings_all.csv", stringsAsFactors = FALSE)
+all_salinity$PSU_ObsDate <- ""
+
+all_salinity$Date <- as.POSIXct(all_salinity$Date, format= "%m/%d/%y")
+all_salinity$PSU_ObsDate <- as.Date(all_salinity$Date)
+```
+
+
+# 8.0) Creating Corrected Salinity Value   
+
+#### 8.1) Narrative: Creating Corrected Salinity Value from Point Measurments 
+Notes from the 2020.05.29 office hours 
+creating 4 new variables in Water Chemistry Dataframe
+create a vector 181845  for the large n17 file
+create a vector 9283 observations long for the sub-sub sample n333 file
+logical vectors- boolean answers to those three below conditions
+1 - the measurement per moats per day - MOATs and Data are both available
+2 - the measurement (averaged across moats) - group by / summarize tools
+3- (data gapped situation- no value matches) take the previous daily average based on observation  - lag? 
+previous line on a dataframe ... dplyr tool ... 
+ https://dplyr.tidyverse.org/reference/lead-lag.html
+4 - "the winning value" case_when #corrected conductivity value
+
+
+```{r 8.1) Creating Corrected Salinity Value}
+# Salinity Values 
+H2Ochemdf$PSUperMOATs <- ""
+H2Ochemdf$PSUavgDaily <- ""
+H2Ochemdf$PSUprevObs <- ""
+H2Ochemdf$assumed_PSU <- ""
+H2Ochemdf$Final_PSU <- ""
+```
+
+
+#### 8.1 Plots (timeseries verification)
+#### Simple Plot 8.1.1
+```{r 8.1.1 Plots (timeseries verification)}
+# 8.1 Plots (timeseries verification)
+
+p <- ggplot(H2Ochemdf, aes(x=ObservationDate, y=salinity))+
+             geom_line() + 
+             ylim (30.05, 27.00) 
+p
+
+```
+
+#### Simple Plot 8.1.2 Salinity Values all Treatments, All MOATs, During Night Period
+
+```{r 8.1.2 Salinity Values all Treatments, All MOATs, During Night Period}
+p1 <- ggplot(subset(H2Ochemdf[H2Ochemdf$period == "night", ], 
+            aes(x=H2Ochemdf$ObservationDate, y=H2Ochemdf$Salinity))) + 
+            geom_line(aes(colour=H2Ochemdf$moats, point=)) +
+            ggtitle("Salinity Values all Treatments, All MOATs, During Night Period")
+ p1
+```
+
+#### Simple Plot 8.1.3
+
+```{r #### 8.1.3 Salinity Constants all Treatments, All MOATs, During Night Period }
+
+ggplot(subset(H2Ochemdf, 
+               period %in% ("night")), 
+        aes(x=ObservationDate, y=salinity)) + 
+        geom_point(aes(colour=moats, point=)) +
+        ggtitle("Salinity Constants all Treatments, All MOATs, During Night Period")
+```
+
+#### 8.1.4 Salinity Constants, MOATs 01, During Night Period
+
+```{r 8.1.4 Salinity Constants all Treatments, All MOATs, During Night Period}
+ggplot(subset(H2Ochemdf[H2Ochemdf$moats == "M01", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=salinity)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Constant, MOATs 01, During Night Period")
+```
+
+
+
+
+#### 8.2 Practical Salinity Units - Measurements Per Moats per Day
+These observations consist of salinity measurements taken per MOATS per day.
+The observation were recorded per MOATS per day as the researcher took point measurements from the aquarium box while doing DO measurements. 
+
+```{r 8.2 Practical Salinity Units - Measurements Per Moats per Day}
+# Manual Readings
+# Per MOAT measurement
+H2Ochemdf$PSUperMOATs <- all_salinity$salinity[match
+                                               (paste
+                                                 (H2Ochemdf$ObservationDate,
+                                                   H2Ochemdf$moats), 
+                                                 paste
+                                                 (all_salinity$PSU_ObsDate, 
+                                                   all_salinity$moats))]
+```
+
+#### 8.3 Practical Salinity Units - Daily Avg Measurement 
+Manual records sometimes have holes
+Monday through Friday averages were recorded with greater fidelity than weekend averages. 
+
+
+```{r 8.3 Practical Salinity Units - Daily Avg Measurement}
+# All MOATs daily
+H2Ochemdf$PSUavgDaily <- all_salinity$salinity[match
+                                               (paste
+                                                 (H2Ochemdf$ObservationDate,'All'), 
+                                                 paste
+                                                 (all_salinity$PSU_ObsDate, 
+                                                   all_salinity$moats), 
+                                                 nomatch = NA_character_)]
+```
+
+
+#### 8.4 Practical Salinity Units - Previous Daily Avg Measurement 
+DO point measurements occured weekly. 
+Salinity averages were typically recorded every day, Monday- Friday.
+Some DO measurements were a week apart. 
+The previous daily average was thought to be a better reflection than the last per Day, per MOATs salinity measurement.
+
+#### 8.4.1 Last Observation Carried Forward Function
+(Description)
+Generic function for replacing each NA with the most recent non-NA prior to it.
+
+This function was used to cover those gaps that occured most weekends.
+
+```{r 8.4 Practical Salinity Units - Previous Daily Avg Measurement}
+# Previous All MOATs daily
+H2Ochemdf$PSUprevObs <- na.locf(H2Ochemdf$PSUavgDaily, na.rm = FALSE)
+```
+
+
+
+
+
 
 
 
