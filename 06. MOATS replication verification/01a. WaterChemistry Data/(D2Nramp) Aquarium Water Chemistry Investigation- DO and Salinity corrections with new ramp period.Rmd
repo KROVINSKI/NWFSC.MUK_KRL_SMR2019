@@ -16,7 +16,6 @@ output:
 #********************************* 
 library(shiny)
 library(tidyverse)
-library(dplyr)
 library(stringr)
 library(readxl)
 library(readr)
@@ -296,7 +295,8 @@ The ramp verification will be important to dissolved oxygen verification
 Dissolved oxygen not yet shown. 
 Recorded dissolved oxygen needs to be corrected with observed salinity. 
 
-```{r 6.5.1a Quick Check on Day to Night Ramp Verification: aTemperature Values, All MOATs}
+The following 2 plots are only present to visualize the different periods across treatments
+```{r  6.5.1a Quick Check on Day to Night Ramp Verification}
 ggplot(subset(dml, 
                period %in% ("D2Nramp")), 
         aes(x=dateTime, y=aTemperature)) + 
@@ -308,20 +308,29 @@ ggplot(subset(dml,
 
 
 
-```{r 6.5.1b Quick Check on Day to Night Ramp Verification aTemperature Values, All Change}
+```{r 6.5.1b Quick Check on Day to Night Ramp Verification}
 
-ggplot (dml %>%
-  filter(dml$period = "day" | "D2Nramp",
-         dml$treatment = "allchange"),
-        aes(x= dml$dateTime, y= dml$aTemperature)) + 
-   geom_point(aes(colour= dml$period, point=)) +
-   ylim (5.0, 15.00) +
-   ggtitle("aTemperature Values, All Change Treatment, Day Ramp Cycle Day to Night")
-
+ggplot(subset(dml[dml$treatment == "allchange", ], 
+             period %in% ("D2Nramp")), 
+       aes(x=dateTime, y=aTemperature)) + 
+  geom_point(aes(colour=moats, point=)) +
+  ggtitle("Aquarium Temperatures, All Change, During Ramp Period")
 
 ```
 
 
+#### 6.6 Removing the Acclimation Period 
+The acclimation and the time after animals were removed from the system was designated other
+
+```{r}
+
+# Removing "other" period from day and night 
+# not including acclimation period in this investigation
+
+H2Ochemdf <- dml %>% filter(period != "other")
+```
+
+#### Water Chemistry Dataframe Created "H2Ochemdf"
 
 
 
