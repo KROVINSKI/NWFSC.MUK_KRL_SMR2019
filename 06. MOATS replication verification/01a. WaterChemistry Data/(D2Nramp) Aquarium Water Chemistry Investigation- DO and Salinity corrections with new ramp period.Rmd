@@ -16,6 +16,7 @@ output:
 #********************************* 
 library(shiny)
 library(tidyverse)
+library(dplyr)
 library(stringr)
 library(readxl)
 library(readr)
@@ -295,7 +296,7 @@ The ramp verification will be important to dissolved oxygen verification
 Dissolved oxygen not yet shown. 
 Recorded dissolved oxygen needs to be corrected with observed salinity. 
 
-```{r}
+```{r 6.5.1a Quick Check on Day to Night Ramp Verification: aTemperature Values, All MOATs}
 ggplot(subset(dml, 
                period %in% ("D2Nramp")), 
         aes(x=dateTime, y=aTemperature)) + 
@@ -307,12 +308,13 @@ ggplot(subset(dml,
 
 
 
-```{r}
+```{r 6.5.1b Quick Check on Day to Night Ramp Verification aTemperature Values, All Change}
 
-ggplot(subset(dml[dml$period == "day", "D2Nramp" ], 
-               dml$treatment %in% ("allchange")), 
+ggplot (dml %>%
+  filter(dml$period = "day" | "D2Nramp",
+         dml$treatment = "allchange"),
         aes(x= dml$dateTime, y= dml$aTemperature)) + 
-   geom_point(aes(colour= dml$moats, point=)) +
+   geom_point(aes(colour= dml$period, point=)) +
    ylim (5.0, 15.00) +
    ggtitle("aTemperature Values, All Change Treatment, Day Ramp Cycle Day to Night")
 
