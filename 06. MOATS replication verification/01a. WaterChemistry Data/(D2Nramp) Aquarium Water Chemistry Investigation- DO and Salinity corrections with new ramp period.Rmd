@@ -307,6 +307,21 @@ ggplot(subset(dml,
 
 
 
+```{r}
+
+ggplot(subset(dml[dml$period == "day", "D2Nramp" ], 
+               dml$treatment %in% ("allchange")), 
+        aes(x= dml$dateTime, y= dml$aTemperature)) + 
+   geom_point(aes(colour= dml$moats, point=)) +
+   ylim (5.0, 15.00) +
+   ggtitle("aTemperature Values, All Change Treatment, Day Ramp Cycle Day to Night")
+
+
+```
+
+
+
+
 
 
 
