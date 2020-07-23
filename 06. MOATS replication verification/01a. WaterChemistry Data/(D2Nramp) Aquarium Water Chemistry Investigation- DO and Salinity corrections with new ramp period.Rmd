@@ -837,6 +837,21 @@ ggplot(H2Ochemdf, aes(treatment, actualDOmg)) +
 ```
 
 
+# 13.0 In-situ sampling
+
+```{r 13.0 In-situ sampling for DO day/night}
+
+
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_knit$set(root.dir =
+                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/01. Raw Data/InSituSampling")
+
+
+
+chem.d.insitu <- read.csv(file = "DO.PreSens.Krill.Day.csv", stringsAsFactors = FALSE)
+chem.n.insitu <- read.csv(file = "DO.PreSens.Krill.Night.csv", stringsAsFactors = FALSE)
+```
 
 
 
