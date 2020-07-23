@@ -673,16 +673,16 @@ filteredFrame$treatment <- factor(filteredFrame$treatment)
 # Day
 
 allchgDay_DO <- subset(H2Ochemdf, 
-                      period == "day" & treatment == "allchange",
-                      select = c(dateTime, H2Ochemdf$actualDOmg ))
+                       period == "day" &  treatment == "allchange",
+                      select = c(dateTime, actualDOmg))
 
 curDay_DO <- subset(H2Ochemdf, 
                    period == "day" & treatment == "current",
-                   select = c(dateTime, H2Ochemdf$actualDOmg ))
+                   select = c(dateTime, actualDOmg))
 
 hitempDay_DO <- subset(H2Ochemdf, 
                       period == "day" & treatment == "hightemperature",
-                      select = c(dateTime, H2Ochemdf$actualDOmg ))
+                      select = c(dateTime, actualDOmg))
 
 ```
 
@@ -694,15 +694,15 @@ hitempDay_DO <- subset(H2Ochemdf,
 # Night
 allchgNightDO <- subset(H2Ochemdf, 
                         period == "night" & treatment == "allchange",
-                        select = c(dateTime, H2Ochemdf$actualDOmg ))
+                        select = c(dateTime, actualDOmg ))
 
 curNightDO <- subset(H2Ochemdf, 
                      period == "night" & treatment == "current",
-                     select = c(dateTime, H2Ochemdf$actualDOmg ))
+                     select = c(dateTime, actualDOmg ))
 
 hitempNightDO <- subset(H2Ochemdf, 
                         period == "night" & treatment == "hightemperature",
-                        select = c(dateTime, H2Ochemdf$actualDOmg ))
+                        select = c(dateTime, actualDOmg ))
 
 
 ```
@@ -723,8 +723,8 @@ hitempNightDO
 
 
 # 12.0) DO Day/Night Summary
-
-```{r 12) DO Day/Night Summary}
+#### 12.1 DO Day/Night Summary
+```{r 12.1) DO Day/Night Summary}
 
 H2Ochemdf.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
   summarize(sd = sd(actualDOmg, na.rm = TRUE), 
@@ -736,14 +736,51 @@ H2Ochemdf.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
   mutate(ci = se*1.96)
 
 
+
+write.csv(H2Ochemdf.daynight.summary, "2020.07.23_H2Ochemdf_daynight_summary.csv")
+
 ```
 
 
+#### 12.2 H2Ochemdf_daynight_summary.csv
+
+```{r 12.2 2020.07.23_H2Ochemdf_daynight_summary.csv posted as a tribble}
+tibble::tribble(
+         ~treatment,   ~period,         ~sd,       ~mean,     ~median,        ~IQR,   ~n,         ~se,         ~ci,
+        "allchange", "D2Nramp", 0.818553482, 7.423390117, 7.604054769,   0.6758087,   4L, 0.409276741, 0.802182412,
+        "allchange",     "day", 0.954001908, 5.055770549, 4.708544043, 0.964327719, 248L, 0.060579182, 0.118735196,
+        "allchange",   "night", 0.297889286,  8.38860956,  8.43508777, 0.236314585, 147L, 0.024569494, 0.048156209,
+          "current", "D2Nramp", 0.689127223, 8.338370425, 8.295779666, 1.170475498,   6L, 0.281335011, 0.551416621,
+          "current",     "day", 1.014873649, 6.078863969, 5.666250168, 0.899583462, 195L, 0.072676612, 0.142446159,
+          "current",   "night", 0.318084304, 8.845736941,  8.93078356, 0.207415133, 120L, 0.029036991, 0.056912503,
+  "hightemperature", "D2Nramp",  0.36629341,  8.66711712,  8.66711712, 0.259008554,   2L, 0.259008554, 0.507656765,
+  "hightemperature",     "day", 0.788603196, 5.673930148, 5.522216584, 0.626356246, 131L, 0.068900581, 0.135045139,
+  "hightemperature",   "night", 0.199299352, 8.571116288, 8.593985665, 0.196934397,  81L, 0.022144372,  0.04340297
+  )
+
+```
 
 
+#### 12.3 Summary Table Plots
+
+```{r}
+
+ggplot(H2Ochemdf, aes(treatment, actualDOmg)) +
+            geom_jitter(color = "grey") +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
+            geom_point(data = H2Ochemdf.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") + 
+            geom_errorbar(data = H2Ochemdf.daynight.summary, 
+                          aes(x=treatment, y=mean, ymin = mean-sd, ymax = mean+sd), 
+                          color = "blue") +
+            geom_errorbar(data = H2Ochemdf.daynight.summary,
+                          aes(x=treatment, y=mean, ymin = mean-ci, ymax = mean+ci),
+                          colour = "red") +
+            facet_wrap(~period) +
+            ggtitle("All Treatments, Actual Dissolved Oxygen (mg) Across Diurnal Periods") +
+            theme_bw() 
 
 
-
+```
 
 
 
