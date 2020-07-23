@@ -386,11 +386,11 @@ p
 #### Simple Plot 8.1.2 Salinity Values all Treatments, All MOATs, During Night Period
 
 ```{r 8.1.2 Salinity Values all Treatments, All MOATs, During Night Period}
-p1 <- ggplot(subset(H2Ochemdf[H2Ochemdf$period == "night", ], 
-            aes(x=H2Ochemdf$ObservationDate, y=H2Ochemdf$Salinity))) + 
-            geom_line(aes(colour=H2Ochemdf$moats, point=)) +
-            ggtitle("Salinity Values all Treatments, All MOATs, During Night Period")
- p1
+ggplot(subset(H2Ochemdf, 
+               period %in% ("night")), 
+        aes(x=ObservationDate, y=salinity)) + 
+        geom_point(aes(colour=period, point=)) +
+        ggtitle("Salinity Constants all Treatments, All MOATs, During Night Period")
 ```
 
 #### Simple Plot 8.1.3
@@ -486,15 +486,18 @@ cycling between different salinity measurements required moving between characte
 # Review of the three different salinity values
 # H2Ochemdf$PSUperMOATs       measurement
 #           PSUperMOATs       per MOATS per Day
-PSUperMOATs
+
+## PSUperMOATs
 
 # H2Ochemdf$PSUprevObs        Daily Average
 #           PSUavgDaily       measurment across MOATs
-PSUavgDaily 
+
+## PSUavgDaily 
 
 # H2Ochemdf$PSUprevObs        Previous Daily 
 #           PSUprevObs        Average to cover those gaps
-PSUprevObs 
+
+## PSUprevObs 
 
 # Sailinity Assumption        28.8
 #           Dates w/o         Dates without measurment 23~30SEP20
@@ -668,15 +671,16 @@ filteredFrame$treatment <- factor(filteredFrame$treatment)
 
 # Creating Values
 # Day
-allchgDayDO <- subset(H2Ochemdf, 
+
+allchgDay_DO <- subset(H2Ochemdf, 
                       period == "day" & treatment == "allchange",
                       select = c(dateTime, H2Ochemdf$actualDOmg ))
 
-curDayDO <- subset(H2Ochemdf, 
+curDay_DO <- subset(H2Ochemdf, 
                    period == "day" & treatment == "current",
                    select = c(dateTime, H2Ochemdf$actualDOmg ))
 
-hitempDayDO <- subset(H2Ochemdf, 
+hitempDay_DO <- subset(H2Ochemdf, 
                       period == "day" & treatment == "hightemperature",
                       select = c(dateTime, H2Ochemdf$actualDOmg ))
 
