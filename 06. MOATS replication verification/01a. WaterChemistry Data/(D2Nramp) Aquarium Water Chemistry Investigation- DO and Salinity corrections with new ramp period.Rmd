@@ -627,6 +627,123 @@ p5
 ```
 
 
+# 10.0) Filtering Data
+```{r 10.0 Filtering Data across all }
+# # 10.0) Filtering Data
+
+H2Ochemdf <- H2Ochemdf  %>% filter(!moats %in% c("M03", "M04", "M05", "M11")) %>%
+  filter(sTemperature>= 5 & sTemperature<=30) %>%
+  filter(treatment %in% c("current", "allchange", "hightemperature")) %>%
+  filter(period != "other")
+
+```
+
+
+```{r 10.1) Filtering Data- dropping lvls to clean graphs}
+## 10.1) Filtering Data- dropping lvls to clean graphs
+#*********************************
+
+
+filteredFrame = filter(H2Ochemdf,
+                       !moats %in% c('M03', "M04", "M05", "M11") & 
+                         (aTemperature>= 5 & aTemperature<=30) &
+                         treatment %in% c("current", "allchange", "hightemperature") &
+                         period != "other")
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+## 10.1a Dropping levels and factors
+filteredFrame$moats <- droplevels(filteredFrame$moats)
+filteredFrame$treatment <- factor(filteredFrame$treatment)
+
+
+```
+
+
+# 11.0) DO averages- days and nights
+
+#### 11.1 DO averages- days and nights- DAY
+```{r 11.1 DO averages- days and nights- DAY}
+## 11.1 DO averages- days and nights
+
+# Creating Values
+# Day
+allchgDayDO <- subset(H2Ochemdf, 
+                      period == "day" & treatment == "allchange",
+                      select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+curDayDO <- subset(H2Ochemdf, 
+                   period == "day" & treatment == "current",
+                   select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+hitempDayDO <- subset(H2Ochemdf, 
+                      period == "day" & treatment == "hightemperature",
+                      select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+```
+
+
+#### 11.2 DO averages- days and nights- NIGHT
+```{r  11.2 DO averages- days and nights- NIGHT}
+
+# Creating Values
+# Night
+allchgNightDO <- subset(H2Ochemdf, 
+                        period == "night" & treatment == "allchange",
+                        select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+curNightDO <- subset(H2Ochemdf, 
+                     period == "night" & treatment == "current",
+                     select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+hitempNightDO <- subset(H2Ochemdf, 
+                        period == "night" & treatment == "hightemperature",
+                        select = c(dateTime, H2Ochemdf$actualDOmg ))
+
+
+```
+
+
+#### 11.3 Review of Values
+```{r 11.3 Review of Values}
+
+# Review of values
+allchgDayDO
+allchgNightDO
+curDayDO
+curNightDO
+hitempDayDO
+hitempNightDO
+
+```
+
+
+# 12.0) DO Day/Night Summary
+
+```{r 12) DO Day/Night Summary}
+
+H2Ochemdf.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
+  summarize(sd = sd(actualDOmg, na.rm = TRUE), 
+            mean = mean(actualDOmg, na.rm = TRUE), 
+            median = median(actualDOmg, na.rm = TRUE),
+            IQR = IQR(actualDOmg, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
