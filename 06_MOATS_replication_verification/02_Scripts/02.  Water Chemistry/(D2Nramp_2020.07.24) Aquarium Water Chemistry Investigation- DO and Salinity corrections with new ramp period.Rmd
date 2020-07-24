@@ -51,7 +51,24 @@ library(wql)
 # 1. Setting the Working Directory
 1.0
 Look for all files inside the Water Chemistry folder of the "06. MOATs replication verification" folder
-```{r 1.0 Setting Working Directory, setup, include=FALSE }
+
+```{r, , setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = "~/Desktop")
+
+```
+
+
+
+```{r}
+getwd()
+```
+
+
+
+
+```{r, setup, include=FALSE }
 #*********************************
 ## 1.) Set working directory
 #*********************************
