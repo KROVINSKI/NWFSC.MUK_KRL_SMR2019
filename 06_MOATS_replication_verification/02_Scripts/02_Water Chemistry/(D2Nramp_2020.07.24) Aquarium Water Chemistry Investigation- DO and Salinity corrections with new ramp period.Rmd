@@ -856,16 +856,6 @@ tibble::tribble(
 
 ```{r}
 
-
-knitr::opts_chunk$set(echo = TRUE)
-
-knitr::opts_knit$set(root.dir =
-                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
-
-getwd()
-setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
-getwd()
-
 ggplot(H2Ochemdf, aes(treatment, actualDOmg)) +
             geom_jitter(color = "grey") +
             geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
