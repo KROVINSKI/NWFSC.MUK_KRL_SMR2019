@@ -1,0 +1,890 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    code_folding: hide
+---
+
+## Author: OA Lab, NWFSC
+## Title: Aquarium Water Chemistry Investigation: DO and Salinity corrections with new ramp period
+## Date: July 2020
+
+
+```{r 0.0 Libraries , echo=FALSE, results=FALSE}
+#*********************************
+##Libraries
+#********************************* 
+library(shiny)
+library(tidyverse)
+library(stringr)
+library(readxl)
+library(readr)
+library(tidyr)
+library(data.table)
+library(lubridate)
+library(violinmplot)
+library(vioplot)
+library(yarrr)
+library(datapasta)
+library(reprex)
+library(miniUI)
+library(gridExtra)
+library(wql)
+```
+
+
+
+# Table of Contents
+## Outline Current 2020.06.01
+
+# 1. Setting the Working Directory
+# 2. Calling & Reading in " dml "
+# 3. Reformatting variables/vectors (Factors)
+# 4. Creating dateTime objects
+# 5. Creating Treatment Variables
+# 6. Creating Night & Day Variables 
+# 7. Salinity (4 New Vectors)
+# 8. Creating Corrected Salinity Value 
+# 9. DO
+# 10. Filtering Water Chemistry Dataframe
+
+# 1. Setting the Working Directory
+1.0
+Look for all files inside the Water Chemistry folder of the "06. MOATs replication verification" folder
+```{r 1.0 Setting Working Directory, ECHO= FALSE, message=FALSE, warning=FALSE}
+#*********************************
+## 1.) Set working directory
+#*********************************
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_knit$set(root.dir =
+                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/01a. WaterChemistry Data")
+```
+
+#### 1.1 Initial Working Directoy
+
+Inside the working directory (folder) is 1 CSV files generated after combining 13CSV logs representing 24second observations. These CSV files were created using the moats graph app
+
+#### 1.1.2 Link to Generating App
+
+[Link to moats.Graph.app](http://github.com/pmcelhany/moatsGraphs.git)
+Moving average window (nObs) set to 4. 
+
+#### 1.1.3 Protocol with app
+
+Every 17th observations was selected, the observations were 24second apart. 
+
+#### 1.1.4 App data for 13 MOATS
+
+1 CSVs per moats: M01, M02, M03, M04, M05, M06, M07, M08, M09, M10, M11, M12, M13. Files are also available on the OA Google drive. [OA Drive for MOATS data](https://drive.google.com/open?id=13a2hk1a9I9gRIgf2Xyl1dSYDf5vnyYvs)
+
+### 1.2 Subsampling
+
+For speed and ease of computations the dataframe was extermely subsampled. 
+Instead of the standard "n17" used in the aquarium temperature investigation, this document subsampled at "n333".
+
+#### 1.2.1 Subsampling explained by observations
+
+All observations (per the 13 MOATS logs)
+[1] 1137880   7 (6 seconds)
+Number of observations after subsampling every 17th response/observation
+[1] 66934     7 (24 seconds)
+Number of observations after the super-subsampling, every 333rd observation
+[1] 3417      7 (~30minutes) ***this won't detail the ramp
+
+
+#### 1.2.2 Subsampling Determination
+
+To examine the Day to Night ramp (D2Nramp) researcher used n17 subsampling group
+
+
+# 2.0) Calling and Reading in dml
+
+```{r 2.0 Calling and Reading in dml, ECHO= FALSE, message=FALSE, warning=FALSE, }
+#*********************************
+## 2. Calling & Reading in " dml " 
+#*********************************
+
+# Super Speedy subsampled data
+dml <- read.csv(file = "M01thruM13moatslog_n17.csv", stringsAsFactors = FALSE)
+dim(dml)
+
+```
+
+# 3.0) Reformatting variables/vectors (Factors)
+
+Changing MOATs to Factors for the 13 different MOATs- these will be the discrete units for follow analysis
+
+```{r Reformatting variables/vectors (Factors), ECHO= FALSE, message=FALSE, warning=FALSE}
+#*********************************
+## 3. Reformatting variables/vectors (Factors) 
+#*********************************
+
+## 3.3 Changing variables | 
+dml$moats <- factor(dml$moats)
+# Checking the names of the different levels
+levels(dml$moats)
+##checking the dataset, dimensions
+dim(dml)
+```
+
+
+# 4.0) Creating dateTime objects  
+Changes to the format of dates and times for observations
+
+```{r 4.0 establish the date time object of the CSV, ECHO= FALSE, message=FALSE, warning=FALSE}
+dml$dateTime <- as.POSIXct(dml$dateTime, format="%Y-%m-%d %H:%M:%OS")
+ReferenceTime <- as.POSIXct("2019-09-20 23:59:00")
+class(ReferenceTime)
+
+# QA check
+dim(dml)
+
+```
+
+# 5.0) Creating Treatment Variables  
+
+#### 5.1 Three Treatments
+Three treatments of this studies are identified as 
+* "current" for the Current Conditions Treatment
+* "hightemperature" for the High Temperature Conditions Treatment
+* "allchange" for the All Change Conditions Treatment which incorporated both the high temperature conditions of the "hightemperature" treatment along with exposure to lower aquariun pH.   
+
+```{r 5.1 Identifying treatments by moats, ECHO= FALSE, message=FALSE, warning=FALSE}
+## 5.1 Identifying treatments by moats 
+## establishing treatments
+dml$treatment <- ""
+dml$treatment[dml$moats == "M07" | dml$moats== "M10" | dml$moats== "M12"] <- "current"
+dml$treatment[dml$moats == "M01"| dml$moats== "M06"] <- "hightemperature"
+dml$treatment[dml$moats == "M02"| dml$moats== "M08" | dml$moats== "M13"] <- "allchange"
+dml$treatment[dml$moats == "M03"| dml$moats == "M04" | dml$moats == "M09" | dml$moats == "M05" | dml$moats== "M11"] <- "broken_and_ambientbroken"
+#verify that this new column has been created
+names(dml)
+#results should include:
+#[1] "moats"        "dateTime"     "aTemperature" "sTemperature" "pH"          
+#[6] "DO"           "salinity"     "treatment"  
+
+# QA check
+dim(dml)
+
+```
+
+#### 5.1.1 Ambient Treatment
+Those MOATS aquarium systems that did not reach desired/programed conditions were deemed the "ambient" treatment. No temperature, DO, or pH conditions were programmed or alarmed. Flow control was governed by a solenoid valve to acheive flow/no-flow, day/night periods. 
+
+MOATS inside the "Ambient" treatment included MOATs 04 and MOATs 05 both were shown to have faulty thermisters. 
+
+Recorded conditions of what the animals experienced can't be guaranteed/confirmed. 
+
+Without a record of aquarium settings MOATs 04 and MOAT 05 data was not included. 
+
+
+
+# 6.) Creating Night and Day Periods 
+
+#### 6.1 Narrative (Overall)
+Creating a day and night variables 
+Day and night periods will only refer to time under treatment as a way to exclude the acclimation period.
+Day and night changed at about ~ 1230 on 05OCT19 
+Treatment start date considered to begin Monday 23SEP19 at 1200pm
+Krill Night Starts 1200 (~1230*) and ends 2100
+Krill Days Starts 2101 and ends 1159 (~1229*) 
+Interval 1 start 1200 23SEP19, end 1229 05OCT19
+Interval 2 start 1230 05OCT19, end 2100 30OCT19
+
+#### 6.2 New Column, New Variable in dml 
+
+```{r 6.2 New Column, New Variable in dml}
+## 6.2 New Column, New Variable in dml
+#creating a new column, new variable "period"
+dml$period <- ""
+```
+
+#### 6.3 Disassembling dateTime to create 2 new variables
+
+```{r 6.3 Disassembling dateTime to create 2 new variables}
+## 6.3 Disassembling dateTime to create 2 new variables
+# Create new split date and time columns
+dml$ObservationDate <- as.Date(dml$dateTime)
+dml$ObservationTime <- format(as.POSIXct(dml$dateTime) ,format = "%H:%M:%S")
+```
+
+#### 6.4 Narrative about Intervals 
+Interval 1
+Interval Date Start  "2019-09-23"
+Interval Date End    "2019-10-05"
+Day Start Time       "21:01:00"
+Day End Time         "11:29:00"
+Night Start Time     "12:00:00"
+Night End Time       "21:00:00"
+DaytoNight Ramp(D2N) "11:30:00"
+start
+DaytoNight Ramp(D2N) "11:59:00"
+stop
+Other Time
+
+
+Interval 2
+Interval Date Start  "2019-10-05"
+Interval Date End    "2019-10-30"
+Day Start Time       "21:01:00"
+Day End Time         "12:29:00"
+Night Start Time     "12:30:00"
+Night End Time       "21:00:00"
+Other Time
+
+#### 6.5 Period Assignments
+
+```{r 6.5 Day / Night Assignments,  ECHO= FALSE, message=FALSE, warning=FALSE}
+## 6.5 Day / Night Assignments 
+# Using the "case_when" function in the tidyverse in the place of a loop
+ 
+dml <- dml %>% mutate(period=case_when(
+  (ObservationDate >= "2019-09-23") 
+  & (ObservationDate <="2019-10-05") 
+  & (ObservationTime >= "12:00:00") 
+  & (ObservationTime <="21:00:00") ~"night",
+  
+  (ObservationDate >= "2019-10-05")
+  & (ObservationDate <= "2019-10-30")
+  & (ObservationTime >= "12:31:00") 
+  & (ObservationTime <="21:00:00") ~"night",
+  
+  (ObservationDate >= "2019-09-23") 
+  & (ObservationDate <="2019-10-05")
+  & ((ObservationTime >= "21:01:00") 
+     | (ObservationTime <="11:29:00")) ~"day",
+  
+  (ObservationDate >= "2019-10-05")
+  & (ObservationDate <= "2019-10-30")
+  & ((ObservationTime >= "21:01:00")
+     | (ObservationTime <= "12:01:00")) ~"day",
+  
+  (ObservationDate >= "2019-09-23") 
+  & (ObservationDate <="2019-10-05")
+  & ((ObservationTime >= "11:30:00") 
+     | (ObservationTime <="12:00:00")) ~"D2Nramp",
+  
+  (ObservationDate >= "2019-10-05")
+  & (ObservationDate <= "2019-10-30")
+  & ((ObservationTime >= "12:01:00")
+     | (ObservationTime <= "12:30:00")) ~"D2Nramp",
+
+  
+  TRUE ~"other"
+)
+
+) 
+```
+
+#### 6.5.1 Quick Check on Period Generation
+
+```{r 6.5.1 aTemperature Time Series Plots to Invesitgate Different Intervals}
+#Quick check to see if periods were created
+
+period.intervals <- ggplot(dml, aes(x=dateTime, y=aTemperature)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("aTemperature Time Series Plots to Invesitgate Different Intervals") +
+  ylim (5.0, 15.00)
+
+period.intervals
+```
+
+#### 6.5.1 Quick Check on Day to Night Ramp Verification
+The ramp verification will be important to dissolved oxygen verification
+Dissolved oxygen not yet shown. 
+Recorded dissolved oxygen needs to be corrected with observed salinity. 
+
+The following 2 plots are only present to visualize the different periods across treatments
+```{r  6.5.1a Quick Check on Day to Night Ramp Verification}
+ggplot(subset(dml, 
+               period %in% ("D2Nramp")), 
+        aes(x=dateTime, y=aTemperature)) + 
+   geom_point(aes(colour=treatment, point=)) +
+   ylim (5.0, 15.00) + 
+   ggtitle("aTemperature Values, All MOATs, During Day to Night Ramp Period")
+
+```
+
+
+
+```{r 6.5.1b Quick Check on Day to Night Ramp Verification}
+
+ggplot(subset(dml[dml$treatment == "allchange", ], 
+             period %in% ("D2Nramp")), 
+       aes(x=dateTime, y=aTemperature)) + 
+  geom_point(aes(colour=moats, point=)) +
+  ggtitle("Aquarium Temperatures, All Change, During Ramp Period")
+
+```
+
+
+#### 6.6 Removing the Acclimation Period 
+The acclimation and the time after animals were removed from the system was designated other
+
+```{r}
+
+# Removing "other" period from day and night 
+# not including acclimation period in this investigation
+
+H2Ochemdf <- dml %>% filter(period != "other")
+```
+
+#### Water Chemistry Dataframe Created "H2Ochemdf"
+
+
+# 7.) Bringing in Salinity   
+
+
+```{r 7.0 Bringing in Salinity }
+all_salinity <- read.csv(file = "KRL19_salinityreadings_all.csv", stringsAsFactors = FALSE)
+all_salinity$PSU_ObsDate <- ""
+
+all_salinity$Date <- as.POSIXct(all_salinity$Date, format= "%m/%d/%y")
+all_salinity$PSU_ObsDate <- as.Date(all_salinity$Date)
+```
+
+
+# 8.0) Creating Corrected Salinity Value   
+
+#### 8.1) Narrative: Creating Corrected Salinity Value from Point Measurments 
+Notes from the 2020.05.29 office hours 
+creating 4 new variables in Water Chemistry Dataframe
+create a vector 181845  for the large n17 file
+create a vector 9283 observations long for the sub-sub sample n333 file
+logical vectors- boolean answers to those three below conditions
+1 - the measurement per moats per day - MOATs and Data are both available
+2 - the measurement (averaged across moats) - group by / summarize tools
+3- (data gapped situation- no value matches) take the previous daily average based on observation  - lag? 
+previous line on a dataframe ... dplyr tool ... 
+ https://dplyr.tidyverse.org/reference/lead-lag.html
+4 - "the winning value" case_when #corrected conductivity value
+
+
+```{r 8.1) Creating Corrected Salinity Value}
+# Salinity Values 
+H2Ochemdf$PSUperMOATs <- ""
+H2Ochemdf$PSUavgDaily <- ""
+H2Ochemdf$PSUprevObs <- ""
+H2Ochemdf$assumed_PSU <- ""
+H2Ochemdf$Final_PSU <- ""
+```
+
+
+#### 8.1 Plots (timeseries verification)
+#### Simple Plot 8.1.1
+```{r 8.1.1 Plots (timeseries verification)}
+# 8.1 Plots (timeseries verification)
+
+p <- ggplot(H2Ochemdf, aes(x=ObservationDate, y=salinity))+
+             geom_line() + 
+             ylim (30.05, 27.00) 
+p
+
+```
+
+#### Simple Plot 8.1.2 Salinity Values all Treatments, All MOATs, During Night Period
+
+```{r 8.1.2 Salinity Values all Treatments, All MOATs, During Night Period}
+ggplot(subset(H2Ochemdf, 
+               period %in% ("night")), 
+        aes(x=ObservationDate, y=salinity)) + 
+        geom_point(aes(colour=period, point=)) +
+        ggtitle("Salinity Constants all Treatments, All MOATs, During Night Period")
+```
+
+#### Simple Plot 8.1.3
+
+```{r #### 8.1.3 Salinity Constants all Treatments, All MOATs, During Night Period }
+
+ggplot(subset(H2Ochemdf, 
+               period %in% ("night")), 
+        aes(x=ObservationDate, y=salinity)) + 
+        geom_point(aes(colour=moats, point=)) +
+        ggtitle("Salinity Constants all Treatments, All MOATs, During Night Period")
+```
+
+#### 8.1.4 Salinity Constants, MOATs 01, During Night Period
+
+```{r 8.1.4 Salinity Constants all Treatments, All MOATs, During Night Period}
+ggplot(subset(H2Ochemdf[H2Ochemdf$moats == "M01", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=salinity)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Constant, MOATs 01, During Night Period")
+```
+
+
+
+
+#### 8.2 Practical Salinity Units - Measurements Per Moats per Day
+These observations consist of salinity measurements taken per MOATS per day.
+The observation were recorded per MOATS per day as the researcher took point measurements from the aquarium box while doing DO measurements. 
+
+```{r 8.2 Practical Salinity Units - Measurements Per Moats per Day}
+# Manual Readings
+# Per MOAT measurement
+H2Ochemdf$PSUperMOATs <- all_salinity$salinity[match
+                                               (paste
+                                                 (H2Ochemdf$ObservationDate,
+                                                   H2Ochemdf$moats), 
+                                                 paste
+                                                 (all_salinity$PSU_ObsDate, 
+                                                   all_salinity$moats))]
+```
+
+#### 8.3 Practical Salinity Units - Daily Avg Measurement 
+Manual records sometimes have holes
+Monday through Friday averages were recorded with greater fidelity than weekend averages. 
+
+
+```{r 8.3 Practical Salinity Units - Daily Avg Measurement}
+# All MOATs daily
+H2Ochemdf$PSUavgDaily <- all_salinity$salinity[match
+                                               (paste
+                                                 (H2Ochemdf$ObservationDate,'All'), 
+                                                 paste
+                                                 (all_salinity$PSU_ObsDate, 
+                                                   all_salinity$moats), 
+                                                 nomatch = NA_character_)]
+```
+
+
+#### 8.4 Practical Salinity Units - Previous Daily Avg Measurement 
+DO point measurements occured weekly. 
+Salinity averages were typically recorded every day, Monday- Friday.
+Some DO measurements were a week apart. 
+The previous daily average was thought to be a better reflection than the last per Day, per MOATs salinity measurement.
+
+#### 8.4.1 Last Observation Carried Forward Function
+(Description)
+Generic function for replacing each NA with the most recent non-NA prior to it.
+
+This function was used to cover those gaps that occured most weekends.
+
+```{r 8.4 Practical Salinity Units - Previous Daily Avg Measurement}
+# Previous All MOATs daily
+H2Ochemdf$PSUprevObs <- na.locf(H2Ochemdf$PSUavgDaily, na.rm = FALSE)
+```
+
+
+#### 8.5 Practical Salinity Units - Assumed Salinity Value 
+Before the start of the study, a salinity of 28.8PSU was observed the week prior to the study's start
+
+```{r 8.5 Practical Salinity Units - Assumed Salinity Value}
+ 
+H2Ochemdf$assumed_PSU <- 28.8
+
+```
+
+#### 8.6 Practical Salinity Units - Final Salinity Value 
+cycling between different salinity measurements required moving between character based and numeric based functions.
+
+```{r 8.6a Review of Vectors, Creating Final_PSU value}
+
+# 8.6a Review of Vectors
+# Review of the three different salinity values
+# H2Ochemdf$PSUperMOATs       measurement
+#           PSUperMOATs       per MOATS per Day
+
+## PSUperMOATs
+
+# H2Ochemdf$PSUprevObs        Daily Average
+#           PSUavgDaily       measurment across MOATs
+
+## PSUavgDaily 
+
+# H2Ochemdf$PSUprevObs        Previous Daily 
+#           PSUprevObs        Average to cover those gaps
+
+## PSUprevObs 
+
+# Sailinity Assumption        28.8
+#           Dates w/o         Dates without measurment 23~30SEP20
+28.8
+
+
+# Final Salinity
+H2Ochemdf$Final_PSU <- 0.0
+
+# H2Ochemdf$PSUperMOATs <- ""
+# H2Ochemdf$PSUavgDaily <- ""
+# H2Ochemdf$PSUprevObs <- ""
+# H2Ochemdf$assumed_PSU <- ""
+
+H2Ochemdf$Final_PSU <- as.numeric(case_when(
+  H2Ochemdf$PSUperMOATs != 'NA' ~ H2Ochemdf$PSUperMOATs,
+  H2Ochemdf$PSUavgDaily != 'NA' ~ H2Ochemdf$PSUavgDaily,
+  H2Ochemdf$PSUprevObs != 'NA' ~ H2Ochemdf$PSUprevObs,
+  TRUE ~ as.character(H2Ochemdf$assumed_PSU),
+))
+
+```
+
+#### 8.7 Exmaple of Salinity Corrections (table/Tribble)
+
+```{r}
+tibble::tribble(
+  ~moats,        ~dateTime,        ~DO, ~salinity,        ~treatment, ~period, ~ObservationDate, ~ObservationTime, ~PSUperMOATs, ~PSUavgDaily, ~PSUprevObs, ~assumed_PSU, ~Final_PSU, ~percentDOassumpt, ~assumedSatDOmg,  ~percentDO, ~obseveredSatDOmg, ~actualDOmg,
+   "M01",  "9/26/19 15:59",  8.6591535,      28.8, "hightemperature", "night",        "9/26/19",       "15:59:00",           NA,           NA,          NA,         28.8,       28.8,       0.985101125,     8.790116342, 0.985101125,       8.790116342,   8.6591535,
+   "M01",   "9/27/19 3:04", 5.62560325,      28.8, "hightemperature",   "day",        "9/27/19",        "3:04:59",           NA,        30.05,       30.05,         28.8,      30.05,       0.638573195,     8.809645147, 0.638573195,       8.741224228, 5.581911485,
+   "M01",  "9/27/19 14:11",  8.9686305,      28.8, "hightemperature", "night",        "9/27/19",       "14:11:00",           NA,        30.05,       30.05,         28.8,      30.05,       1.024823246,     8.751392529, 1.024823246,       8.683601317,  8.89915649,
+   "M01",   "9/28/19 1:16",   5.756193,      28.8, "hightemperature",   "day",        "9/28/19",        "1:16:59",           NA,         30.2,        30.2,         28.8,       30.2,       0.652162713,     8.826314172, 0.652162713,       8.749516577, 5.706108472,
+   "M01",  "9/28/19 12:22",   8.363848,      28.8, "hightemperature", "night",        "9/28/19",       "12:22:59",           NA,         30.2,        30.2,         28.8,       30.2,       0.999970337,     8.364096104, 0.999970337,       8.292854094, 8.292608104,
+   "M01",  "9/28/19 23:29",  6.6203395,      28.8, "hightemperature",   "day",        "9/29/19",       "23:29:00",           NA,           NA,        30.2,         28.8,       30.2,       0.749634639,     8.831421548, 0.749634639,        8.75456205, 6.562722958,
+   "M01",  "9/29/19 10:34",    5.73268,      28.8, "hightemperature",   "day",        "9/29/19",       "10:34:59",           NA,           NA,        30.2,         28.8,       30.2,       0.656823115,     8.727890159, 0.656823115,       8.652283339, 5.683019693,
+   "M01",  "9/29/19 21:41",   5.013465,      28.8, "hightemperature",   "day",        "9/30/19",       "21:41:00",           NA,        30.28,       30.28,         28.8,      30.28,        0.55985239,     8.954976501,  0.55985239,       8.872159197, 4.967099534,
+   "M01",   "9/30/19 8:47", 5.55120375,      28.8, "hightemperature",   "day",        "9/30/19",        "8:47:00",           NA,        30.28,       30.28,         28.8,      30.28,       0.626811355,     8.856259079, 0.626811355,       8.774709565, 5.500087589,
+   "M01",  "9/30/19 19:52", 8.74783225,      28.8, "hightemperature", "night",        "10/1/19",       "19:52:59",           NA,        30.36,       30.36,         28.8,      30.36,       1.007471205,      8.68296008, 1.007471205,       8.599358083, 8.663605645,
+   "M01",   "10/1/19 6:59",  5.3323325,      28.8, "hightemperature",   "day",        "10/1/19",        "6:59:00",           NA,        30.36,       30.36,         28.8,      30.36,       0.602982281,     8.843265657, 0.602982281,       8.757505013, 5.280620351,
+   "M01",  "10/1/19 18:04",  8.6775645,      28.8, "hightemperature", "night",        "10/2/19",       "18:04:59",        30.39,        30.35,       30.35,         28.8,      30.39,       0.993501294,     8.734326317, 0.993501294,       8.648420947, 8.592217404,
+   "M01",   "10/2/19 5:10",  5.4860055,      28.8, "hightemperature",   "day",        "10/2/19",        "5:10:59",        30.39,        30.35,       30.35,         28.8,      30.39,       0.620019183,     8.848122208, 0.620019183,       8.760653658, 5.431773321,
+   "M01",  "10/2/19 16:16", 8.51250775,      28.8, "hightemperature", "night",        "10/2/19",       "16:16:59",        30.39,        30.35,       30.35,         28.8,      30.39,       0.980713566,      8.67991231, 0.980713566,         8.5947522, 8.428990075,
+   "M01",   "10/3/19 3:23", 5.33671725,      28.8, "hightemperature",   "day",        "10/3/19",        "3:23:00",           NA,           NA,       30.35,         28.8,      30.35,       0.603389071,     8.844570625, 0.603389071,       8.759339562, 5.285289758,
+   "M01",  "10/3/19 14:28",   8.974958,      28.8, "hightemperature", "night",        "10/3/19",       "14:28:59",           NA,           NA,       30.35,         28.8,      30.35,       1.006707224,     8.915162008, 1.006707224,       8.828982588, 8.888200556,
+   "M01",   "10/4/19 1:34",   5.998769,      28.8, "hightemperature",   "day",        "10/4/19",        "1:34:59",        30.47,        30.43,       30.43,         28.8,      30.47,        0.67727343,     8.857233624,  0.67727343,       8.765255363, 5.936474568,
+   "M01",  "10/4/19 12:41", 8.43290025,      28.8, "hightemperature", "night",        "10/4/19",       "12:41:00",        30.47,        30.43,       30.43,         28.8,      30.47,       1.014508868,     8.312298211, 1.014508868,       8.228121427, 8.347502156,
+   "M01",  "10/4/19 23:47",  6.8809445,      28.8, "hightemperature",   "day",        "10/5/19",       "23:47:00",           NA,           NA,       30.43,         28.8,      30.43,       0.778318459,     8.840782865, 0.778318459,       8.751228564, 6.811242734,
+   "M01",  "10/5/19 10:53",  6.2006875,      28.8, "hightemperature",   "day",        "10/5/19",       "10:53:00",           NA,           NA,       30.43,         28.8,      30.43,       0.710210795,     8.730770563, 0.710210795,       8.642764944,  6.13818496,
+   "M01",  "10/5/19 21:59", 3.77963425,      28.8, "hightemperature",   "day",        "10/6/19",       "21:59:00",           NA,           NA,       30.43,         28.8,      30.43,       0.429603701,     8.797955512, 0.429603701,       8.709004814, 3.741420701,
+   "M01",   "10/6/19 9:04", 5.36707375,      28.8, "hightemperature",   "day",        "10/6/19",        "9:04:59",           NA,           NA,       30.43,         28.8,      30.43,       0.606324375,     8.851819208, 0.606324375,       8.762109217, 5.312680396,
+   "M01",  "10/6/19 20:10",   8.592913,      28.8, "hightemperature", "night",        "10/7/19",       "20:10:59",        30.02,        30.36,       30.36,         28.8,      30.02,       0.989797903,     8.681482322, 0.989797903,       8.616047942, 8.528146188,
+   "M01",   "10/7/19 7:16",   5.328112,      28.8, "hightemperature",   "day",        "10/7/19",        "7:16:59",        30.02,        30.36,       30.36,         28.8,      30.02,       0.602848679,     8.838224559, 0.602848679,       8.771137481, 5.287668644,
+   "M01",  "10/7/19 18:23", 8.58722875,      28.8, "hightemperature", "night",        "10/8/19",       "18:23:00",           NA,        30.02,       30.02,         28.8,      30.02,       0.986427227,     8.705384962, 0.986427227,       8.639699143, 8.522434469,
+   "M01",   "10/8/19 5:28", 5.42962375,      28.8, "hightemperature",   "day",        "10/8/19",        "5:28:59",           NA,        30.02,       30.02,         28.8,      30.02,       0.613517596,     8.849988625, 0.613517596,        8.78277714, 5.388388321,
+   "M01",  "10/8/19 16:35",  8.7827605,      28.8, "hightemperature", "night",        "10/8/19",       "16:35:00",           NA,        30.02,       30.02,         28.8,      30.02,       1.009712334,     8.698279904, 1.009712334,       8.632668847, 8.716512207,
+   "M01",   "10/9/19 3:41",  5.5095385,      28.8, "hightemperature",   "day",        "10/9/19",        "3:41:00",           NA,        30.05,       30.05,         28.8,      30.05,       0.621933335,     8.858728402, 0.621933335,       8.789775903, 5.466654642,
+   "M01",  "10/9/19 14:46",  8.7788655,      28.8, "hightemperature", "night",        "10/9/19",       "14:46:59",           NA,        30.05,       30.05,         28.8,      30.05,       1.040951956,     8.433497289, 1.040951956,       8.369119394, 8.711851204,
+   "M01",  "10/10/19 1:53", 5.83944175,      28.8, "hightemperature",   "day",       "10/10/19",        "1:53:00",        30.05,           NA,       30.05,         28.8,      30.05,       0.659657245,     8.852236203, 0.659657245,       8.783354067,  5.79400315,
+   "M01", "10/10/19 12:59", 8.66060525,      28.8, "hightemperature", "night",       "10/10/19",       "12:59:00",        30.05,           NA,       30.05,         28.8,      30.05,       1.007329549,     8.597588802, 1.007329549,       8.531453956, 8.593985665,
+   "M01",  "10/11/19 0:05", 6.27488575,      28.8, "hightemperature",   "day",       "10/11/19",        "0:05:00",           NA,           NA,       30.05,         28.8,      30.05,       0.707557733,     8.868372795, 0.707557733,       8.799315739, 6.226023896,
+   "M01", "10/11/19 11:11",   6.710169,      28.8, "hightemperature",   "day",       "10/11/19",       "11:11:00",           NA,           NA,       30.05,         28.8,      30.05,       0.764123767,     8.781521127, 0.764123767,       8.713404387,  6.65811938,
+   "M01", "10/11/19 22:17",  3.7879185,      28.8, "hightemperature",   "day",       "10/12/19",       "22:17:00",           NA,        30.18,       30.18,         28.8,      30.18,       0.428880191,     8.832113433, 0.428880191,       8.756338937,  3.75542032,
+   "M01",  "10/12/19 9:22",  5.3297985,      28.8, "hightemperature",   "day",       "10/12/19",        "9:22:59",           NA,        30.18,       30.18,         28.8,      30.18,       0.601278168,     8.864114451, 0.601278168,       8.787957348, 5.284006897,
+   "M01", "10/12/19 20:28", 8.72938725,      28.8, "hightemperature", "night",       "10/13/19",       "20:28:59",           NA,           NA,       30.18,         28.8,      30.18,       1.001676533,     8.714776643, 1.001676533,       8.640401387, 8.654887301,
+   "M01",  "10/13/19 7:35",   5.325979,      28.8, "hightemperature",   "day",       "10/13/19",        "7:35:00",           NA,           NA,       30.18,         28.8,      30.18,       0.601938209,     8.848049382, 0.601938209,       8.772084407, 5.280252779
+  )
+
+
+```
+
+
+
+
+
+
+# 9.) Creating Percent Dissoved Oxy Value 
+
+The Library wql is required for the following chunk 
+The package name stands for ``water quality'' and reflects the # original focus on time series data for physical and chemical # properties of water, as well as the biota. Intended for # programs that sample approximately monthly, quarterly or # annually at discrete stations, a feature of many legacy data # sets. Most of the functions should be useful for analysis of # similar-frequency time series
+regardless of the subject # matter.
+
+#### 9.1) Creating Percent Dissolved Oxy Value - creating variables  
+
+```{r 9.1 Creating Percent Dissolved Oxygen Value,  ECHO= FALSE, message=FALSE, warning=FALSE}
+
+#assumption with the 28.8 standard salinity reading
+H2Ochemdf$percentDOassumpt <- ""
+H2Ochemdf$percentDOassumpt <- as.numeric(H2Ochemdf$percentDOassumpt)
+
+H2Ochemdf$assumedSatDOmg <- ""
+H2Ochemdf$assumedSatDOmg <- as.numeric(H2Ochemdf$assumedSatDOmg)
+
+# the percent DO
+H2Ochemdf$percentDO <- "" 
+H2Ochemdf$percentDO <- as.numeric(H2Ochemdf$percentDO)
+
+
+# Observed / Measured Salinity readings informed answers
+H2Ochemdf$obseveredSatDOmg <- "" 
+H2Ochemdf$obseveredSatDOmg <- as.numeric(H2Ochemdf$obseveredSatDOmg)
+
+
+H2Ochemdf$actualDOmg <- ""
+H2Ochemdf$actualDOmg <- as.numeric(H2Ochemdf$actualDOmg)
+
+# Review of Values
+H2Ochemdf$percentDOassumpt
+H2Ochemdf$assumedSatDOmg
+H2Ochemdf$percentDO
+H2Ochemdf$obseveredSatDOmg
+H2Ochemdf$actualDOmg
+
+
+```
+
+
+
+
+#### 9.2) Creating Percent Dissoved Oxy Value - assumed DO saturation variable creation
+
+
+```{r 9.2) Creating Percent Dissoved Oxy Value - assumed DO saturation variable creation}
+
+# saturated mg/L DO at obseved temperature and assumed salinity
+# the oxySol() function is form the wql package
+H2Ochemdf$assumedSatDOmg <- oxySol(H2Ochemdf$sTemperature, 
+                                   H2Ochemdf$assumed_PSU)
+
+
+SatDOplot <- ggplot(H2Ochemdf, aes(x=ObservationDate, 
+                                   y=assumedSatDOmg))+
+  geom_point(aes(colour=treatment, point=)) +
+  ggtitle("Assumed Saturation of Dissolved Oxygen Across all MOATS")
+
+SatDOplot
+
+
+```
+
+
+#### 9.3) Creating Percent Dissoved Oxy Value - Percent DO (with assumptions)
+
+
+```{r 9.3 Creating Percent Dissoved Oxy Value - Percent DO (with assumptions) }
+# Back calculated fraction DO as reported by the oxygen sensor
+
+H2Ochemdf$percentDOassumpt <- ""
+H2Ochemdf$percentDOassumpt <- as.numeric(H2Ochemdf$percentDOassumpt)
+H2Ochemdf$percentDOassumpt <- H2Ochemdf$DO / H2Ochemdf$assumedSatDOmg
+
+
+p5 <- ggplot(H2Ochemdf, aes(x=dateTime, y=percentDOassumpt)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("Assumed Percent DO (All Treatments & All MOATs) Colored by Period")
+
+p5
+```
+
+#### 9.3a Filtering to Display ramp DO activity
+
+```{r 9.3a Filtering to display ramp DO activity}
+
+f.H2Ochemdf.ramp = filter(H2Ochemdf,
+  !moats %in% c('M03', "M04", "M05", "M11") & 
+  treatment %in% c("current", "allchange", "hightemperature") &
+  period != "night")
+
+f.H2Ochemdf.ramp$moats <- droplevels(f.H2Ochemdf.ramp$moats)
+f.H2Ochemdf.ramp$treatment <- factor(f.H2Ochemdf.ramp$treatment)
+
+
+p5 <- ggplot(f.H2Ochemdf.ramp, aes(x=dateTime, y=percentDOassumpt)) +
+  geom_point(aes(colour=period, point=))   +
+  facet_wrap(~treatment)
+  ggtitle("Assumed Percent DO (All Treatments & All MOATs) Ramping Up From Day to Night")
+
+p5
+
+
+
+```
+
+
+# 10.0) Filtering Data
+```{r 10.0 Filtering Data across all }
+# # 10.0) Filtering Data
+
+H2Ochemdf <- H2Ochemdf  %>% filter(!moats %in% c("M03", "M04", "M05", "M11")) %>%
+  filter(sTemperature>= 5 & sTemperature<=30) %>%
+  filter(treatment %in% c("current", "allchange", "hightemperature")) %>%
+  filter(period != "other")
+
+
+write.csv(H2Ochemdf, "2020.07.23_H2Ochemdf.csv")
+
+```
+
+
+```{r 10.1) Filtering Data- dropping lvls to clean graphs}
+## 10.1) Filtering Data- dropping lvls to clean graphs
+#*********************************
+
+
+filteredFrame = filter(H2Ochemdf,
+                       !moats %in% c('M03', "M04", "M05", "M11") & 
+                         (aTemperature>= 5 & aTemperature<=30) &
+                         treatment %in% c("current", "allchange", "hightemperature") &
+                         period != "other")
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+## 10.1a Dropping levels and factors
+filteredFrame$moats <- droplevels(filteredFrame$moats)
+filteredFrame$treatment <- factor(filteredFrame$treatment)
+
+
+```
+
+
+# 11.0) DO averages- days and nights
+
+#### 11.1 DO averages- days and nights- DAY
+```{r 11.1 DO averages- days and nights- DAY}
+## 11.1 DO averages- days and nights
+
+# Creating Values
+# Day
+
+allchgDay_DO <- subset(H2Ochemdf, 
+                       period == "day" &  treatment == "allchange",
+                      select = c(dateTime, actualDOmg))
+
+curDay_DO <- subset(H2Ochemdf, 
+                   period == "day" & treatment == "current",
+                   select = c(dateTime, actualDOmg))
+
+hitempDay_DO <- subset(H2Ochemdf, 
+                      period == "day" & treatment == "hightemperature",
+                      select = c(dateTime, actualDOmg))
+
+```
+
+
+#### 11.2 DO averages- days and nights- NIGHT
+```{r  11.2 DO averages- days and nights- NIGHT}
+
+# Creating Values
+# Night
+allchgNightDO <- subset(H2Ochemdf, 
+                        period == "night" & treatment == "allchange",
+                        select = c(dateTime, actualDOmg ))
+
+curNightDO <- subset(H2Ochemdf, 
+                     period == "night" & treatment == "current",
+                     select = c(dateTime, actualDOmg ))
+
+hitempNightDO <- subset(H2Ochemdf, 
+                        period == "night" & treatment == "hightemperature",
+                        select = c(dateTime, actualDOmg ))
+
+
+```
+
+
+#### 11.3 Review of Values
+```{r 11.3 Review of Values}
+
+# Review of values
+allchgDayDO
+allchgNightDO
+curDayDO
+curNightDO
+hitempDayDO
+hitempNightDO
+
+```
+
+
+# 12.0) DO Day/Night Summary
+#### 12.1 DO Day/Night Summary
+```{r 12.1) DO Day/Night Summary}
+
+H2Ochemdf.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
+  summarize(sd = sd(actualDOmg, na.rm = TRUE), 
+            mean = mean(actualDOmg, na.rm = TRUE), 
+            median = median(actualDOmg, na.rm = TRUE),
+            IQR = IQR(actualDOmg, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
+
+
+
+write.csv(H2Ochemdf.daynight.summary, "2020.07.23_H2Ochemdf_daynight_summary.csv")
+
+```
+
+
+#### 12.2 H2Ochemdf_daynight_summary.csv
+
+```{r 12.2 2020.07.23_H2Ochemdf_daynight_summary.csv posted as a tribble}
+tibble::tribble(
+         ~treatment,   ~period,         ~sd,       ~mean,     ~median,        ~IQR,   ~n,         ~se,         ~ci,
+        "allchange", "D2Nramp", 0.818553482, 7.423390117, 7.604054769,   0.6758087,   4L, 0.409276741, 0.802182412,
+        "allchange",     "day", 0.954001908, 5.055770549, 4.708544043, 0.964327719, 248L, 0.060579182, 0.118735196,
+        "allchange",   "night", 0.297889286,  8.38860956,  8.43508777, 0.236314585, 147L, 0.024569494, 0.048156209,
+          "current", "D2Nramp", 0.689127223, 8.338370425, 8.295779666, 1.170475498,   6L, 0.281335011, 0.551416621,
+          "current",     "day", 1.014873649, 6.078863969, 5.666250168, 0.899583462, 195L, 0.072676612, 0.142446159,
+          "current",   "night", 0.318084304, 8.845736941,  8.93078356, 0.207415133, 120L, 0.029036991, 0.056912503,
+  "hightemperature", "D2Nramp",  0.36629341,  8.66711712,  8.66711712, 0.259008554,   2L, 0.259008554, 0.507656765,
+  "hightemperature",     "day", 0.788603196, 5.673930148, 5.522216584, 0.626356246, 131L, 0.068900581, 0.135045139,
+  "hightemperature",   "night", 0.199299352, 8.571116288, 8.593985665, 0.196934397,  81L, 0.022144372,  0.04340297
+  )
+
+```
+
+
+#### 12.3 Summary Table Plots
+
+```{r}
+
+ggplot(H2Ochemdf, aes(treatment, actualDOmg)) +
+            geom_jitter(color = "grey") +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
+            geom_point(data = H2Ochemdf.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") + 
+            geom_errorbar(data = H2Ochemdf.daynight.summary, 
+                          aes(x=treatment, y=mean, ymin = mean-sd, ymax = mean+sd), 
+                          color = "blue") +
+            geom_errorbar(data = H2Ochemdf.daynight.summary,
+                          aes(x=treatment, y=mean, ymin = mean-ci, ymax = mean+ci),
+                          colour = "red") +
+            facet_wrap(~period) +
+            ggtitle("All Treatments, Actual Dissolved Oxygen (mg) Across Periods") +
+            theme_bw() 
+
+
+```
+
+
+# 13.0 In-situ sampling
+
+```{r 13.0 In-situ sampling for DO day/night}
+
+
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_knit$set(root.dir =
+           "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/01. Raw Data/InSituSampling")
+
+
+chem.d.insitu <- read.csv(file = "DO.PreSens.Krill.Day.csv", stringsAsFactors = FALSE)
+chem.n.insitu <- read.csv(file = "DO.PreSens.Krill.Night.csv", stringsAsFactors = FALSE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.**************E*N*D*************# 
+.*********************************
+.# END OF SCRIPT | END OF DOCUMENT 
+.*********************************
+
+
+. ___________________8888,
+. ____________________Y8888b,
+. ___________________,oA8888888b,
+. _____________,aaad8888888888888888bo,
+. __________,d888888888888888888888888888b,
+. ________,888888888888888888888888888888888b,
+. _______d8888888888888888888888888888888888888,
+. ______d888888888888888888888888888888888888888b
+. _____d888888P'                    `Y888888888888,
+. _____88888P'                    Ybaaaa8888888888l
+. ___a8888'                      `Y8888P' `V888888
+. __d8888888a                                `Y8888
+. AY/'' `\Y8b                                 ``Y8b
+. Y'      `YP                                    ~~

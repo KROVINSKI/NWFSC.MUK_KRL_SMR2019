@@ -1,0 +1,577 @@
+---
+  title: "Juvenile molting data"
+output:
+  html_document:
+  code_folding: hide
+df_print: paged
+highlight: tango
+theme: cerulean
+toc: yes
+toc_depth: 4
+toc_float: yes
+word_document:
+  toc: yes
+toc_depth: '4'
+editor_options:
+  chunk_output_type: console
+---
+
+---
+title: "dml_Cdml_Creation"
+author: "Kate.Rovinski"
+date: "5/21/2020"
+output:
+  html_document:
+    df_print: paged
+---
+
+# ```{r setup, include=FALSE}
+# knitr::opts_chunk$set(echo = TRUE)
+# knitr::opts_knit$set(root.dir = "//Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/02. Scripts")
+# ```
+
+
+
+
+
+#R Markdown Document to Document Code Generation
+# From Shiny App output CSV files per MOATs to database creation
+
+# Table of Contents
+
+# A.) Review of Project (Dates & Settings)
+# B.) Repository Information
+# C.) Version Check 
+# D.) Libraries needed
+
+ - segments of code - 
+
+# 1.) Working Directory
+
+# 2.) Spolling Data into one CSV 
+
+# 3.) Creating the Dataframe "dml"
+
+# 4.) Creating dateTime objects 
+
+# 5.) Creating Treatment Variables
+
+# 6.) Creating Night and Day Periods
+
+# 7.) Insitu data
+
+# 8.) Cleaning up dml "Cdml"
+
+# 9.) Framing the filters - Cdml
+
+# 10.) Temperature Jump flag logic
+
+# 11.) Calculating averages by treatment & day/night
+
+# 12.) Summary & Group by Cdml
+
+# 13.) Plots
+# 14.) Duration between conditions- time above/below mean
+#     *this is the histogram section
+# 15.) Share-able tibbles... for putting on stackoverflow :( 
+
+
+# A.) Review of Project (Dates & Settings)
+Krill collected the nights of September 9-10th 2019. 
+Acclimation period ended 20SEP19. 
+System ramped to treatment conditions from 20SEP19 to 23SEP20.
+Animals considered under treatment from 23SEP19 to 30OCT19. 
+
+
+# B.) Repository Information
+Script is saved under the repository: 
+"KROVINSKI/ NWFSC.MUK_KRL_SMR2019 / 06. MOATS replication verification / 02. Scripts"
+
+URL to Repository
+( https://github.com/KROVINSKI/NWFSC.MUK_KRL_SMR2019.git )
+
+## File Size Limitations
+
+1. GitHub has a 5GB limit. Sharedrive, OA drive, contains the most complete back up of raw data files
+ + Link to OA Drive ( https://drive.google.com/open?id=16pxVWFifuHKQURGbd4HxL0rqgkgWqzI8 )
+2. Repository with labview's LVM files and the shiny app output files are located in KROVINSKI/ NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS/
+ + Subfolders broken down by MOATs 
+ + Link to repository ( https://github.com/KROVINSKI/NWFSC.MUK_MOATs_SMR2019.git )
+ 
+# C.) Version Check
+
+Intial code was built on R 3.6.1 (Action-of-the-Toes)
+
+```{r}
+#*********************************
+## Version Check
+#********************************* 
+R.version
+```
+
+# D.) Libraries needed
+
+The following is a list of library packages needed
+Lubridate is needed for the creation of different dates and periods 
+Yarrr was used for it's color palettes
+Datapasta, reprex, and miniUI are packages allow the user to copy/paste tibbles and create reproducable examples of code when encountering issues before posting to a site like stackoverflow
+
+
+```{r}
+#*********************************
+##Libraries
+#********************************* 
+library(shiny)
+library(tidyverse)
+library(stringr)
+library(readxl)
+library(readr)
+library(tidyr)
+library(data.table)
+library(lubridate)
+library(violinmplot)
+library(dplyr)
+library(vioplot)
+library(yarrr)
+library(datapasta)
+library(reprex)
+library(miniUI)
+library(gridExtra)
+```
+
+
+<!--  <!-- - segments of code -  --> -->
+
+<!-- # 1.) Working Directory -->
+
+<!-- Inside the working directory are the CSV files generated after using the moats graph app -->
+
+<!-- Figure 1. Interfacing with the Shiny App for data logs from 05SEP20 to 31OCT20 -->
+<!-- ![alt text](/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS//shinyapp_UI.png) -->
+
+
+<!-- 1. Link to the github address:  -->
+<!--  + https://github.com/pmcelhany/moatsGraphs.git -->
+<!-- 2. Using the Shiny Application -->
+<!--  + The moving average window (nObs) was set to 4 -->
+<!--  + This results 1 observation period equal to 24seconds -->
+<!-- 3. CSVs were created for each moats (M01, M02, M03, M04, M05, M06, M07, M08, M09, M10, M11, M12, M13). -->
+<!--  + This includes moats that were later dropped from the study  -->
+<!-- ```{r} -->
+<!-- # files are also available on the OA Google drive: -->
+<!-- # https://drive.google.com/open?id=13a2hk1a9I9gRIgf2Xyl1dSYDf5vnyYvs -->
+
+<!-- setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_MOATs_SMR2019/LabViewLogs.AllMOATS") -->
+
+<!-- ``` -->
+
+
+<!-- # 2.) Spolling Data into one CSV -->
+
+<!-- 13 sets of logs from the MOATs waiting in the working directory's folder. -->
+
+<!-- ```{r} -->
+<!-- #********************************* -->
+<!-- ## 2.) Spolling Data into one CSV  -->
+<!-- #********************************* -->
+<!-- #Combining multiple CSV files into 1 document. Original input files from individual LVM (logical volumne management) files off each MOATs. -->
+
+<!-- ## 2.1 Create a list of files | -->
+<!-- # All files to be joined have ext. "csv" can use that pattern to join  -->
+<!-- files <- list.files(pattern = ".csv") -->
+<!-- print(files) -->
+
+<!-- ## 2.2 Create a temporary place for files | -->
+<!-- temp <- lapply(files, fread, sep= ",") -->
+<!-- print(temp) -->
+
+<!-- ## 2.3 Create a new vector for Moats data logs | -->
+<!-- # "M01thruM13Moatslog_data" via rbind -->
+<!-- M01thruM13moatslog_data <- rbindlist(temp) -->
+<!-- print(M01thruM13moatslog_data) -->
+
+<!-- ## 2.4 Write the new csv document |  -->
+<!-- # "M01thruM13moatslog" -->
+<!-- write.csv(M01thruM13moatslog_data, file = "M01thruM13moatslog.csv", row.names = FALSE) -->
+
+<!-- #Saved on the OA Google Drive -->
+<!-- # https://drive.google.com/open?id=15iBXct9b4EjKDq75vKnm5NobowBwK3G-  -->
+
+<!-- ``` -->
+
+<!-- All logs have been combined into one file that is dataframe creation ready.  -->
+
+
+
+# 3.) Creating the Dataframe "dml"
+
+With the "M01thruM13moatslog.csv" document created, it can be read and result in a dataframe. 
+
+```{r}
+
+#*********************************
+## 3.) Creating the Dataframe "dml" 
+#*********************************
+
+## 3.1 Reading the CSV |  
+## ensuring column names and types
+## Data Moats Log = dml
+dml <- read.csv(file = "../M01thruM13moatslog.csv", stringsAsFactors = FALSE)
+dim(dml)
+getwd()
+```
+
+Results of the dimensions query results with 1,030,456 observations with 7 variables.
+Need to subsample
+
+```{r}
+# * * * * * * * * * * * * * * * *
+## 3.1a Sub sampling dataframe "dml"  
+# * * * * * * * * * * * * * * * *
+## creating a sub sample of the data moats log dml dataframe to allow for quick graphs 
+#subsample every 17th row (because prime numbers are indeed cool)
+dml <- dml %>% arrange(moats, dateTime) %>% filter(row_number() %% 17 == 0)
+
+```
+
+Observations are now spaced 6.8minutes apart
+
+Arranging variables to the appropriate factors, levels, classes etc. 
+
+```{r}
+## 3.2 Checking variables | 
+
+## Looking to ensure the different variables are treated as the correct variable type
+## Checking the names in the dataframe
+names(dml)
+## Checking variable type/class 
+class(dml$moats)
+factor(moats)
+
+## 3.3 Changing variables | 
+## Changing MOATs to Factors for the 13 different MOATs- these will be the discrete units for follow analysis
+dml$moats <- factor(dml$moats)
+# Checking the names of the different levels
+levels(dml$moats)
+##checking the dataset, dimensions
+dim(dml)
+```
+
+# 4.) Creating dateTime objects
+
+dateTime objects are created from the observations's date and time. 
+
+```{r}
+# 4.0 establish the date time object of the CSV |
+dml$dateTime <- as.POSIXct(dml$dateTime, format="%Y-%m-%d %H:%M:%OS")
+ReferenceTime <- as.POSIXct("2019-09-20 23:59:00")
+class(ReferenceTime)
+
+```
+
+# 5.) Creating Treatment Variables 
+
+The database dml exists without the MOATs' treatments identified
+Four different types of treatments are defined.
+"Ambient" MOATS were included with broken MOATS into one treatment group. 
+The script "dml_df_graphing_droppedMoats_andoutliers.R" does include "Ambient 04" and "Ambient 05" as thier own distinct treatments.   
+
+
+```{r}
+## 5.1 Identifying moats per treatment |
+## creating a new dataframe
+## establishing treatments
+dml$treatment <- ""
+dml$treatment[dml$moats == "M07" | dml$moats== "M10" | dml$moats== "M12"] <- "current"
+dml$treatment[dml$moats == "M01"| dml$moats== "M06"] <- "hightemperature"
+dml$treatment[dml$moats == "M02"| dml$moats== "M08" | dml$moats== "M13"] <- "allchange"
+dml$treatment[dml$moats == "M03"| dml$moats == "M04" | dml$moats == "M05" | dml$moats== "M11"] <- "broken_and_ambientbroken"
+#verify that this new column has been created
+names(dml)
+#results should include:
+#[1] "moats"        "dateTime"     "aTemperature" "sTemperature" "pH"          
+#[6] "DO"           "salinity"     "treatment"  
+
+```
+
+
+Notice that there are eight variables, treatment is the new, eight variable. 
+
+
+# 6.) Creating Night and Day Periods 
+
+Day and night variables are created in the code below. 
+The acclimation period will be defined as other and will then be ultimately excluded. 
+Criteria for Day and Night
+ + Days and Nights periods changed on 05OCT19 from 1200 to 1230
+ + Treatment start date considered to begin Monday 23SEP19 at 1200pm
+ + Krill Night Starts 1200 (~1230*) and ends 2100
+ + Krill Days Starts 2101 and ends 1159 (~1229*) 
+ + Interval 1 start 1200 23SEP19, end 1229 05OCT19
+ + Interval 2 start 1230 05OCT19, end 2100 30OCT19
+
+
+```{r}
+dml$period <- ""
+
+
+# Create new split date and time columns
+dml$ObservationDate <- as.Date(dml$dateTime)
+dml$ObservationTime <- format(as.POSIXct(dml$dateTime) ,format = "%H:%M:%S")
+
+
+## 6.2 Narrative (Intervals) 
+# Interval 1
+  ## Interval Date Start  "2019-09-23"
+  ## Interval Date End    "2019-10-05"
+  ## Day Start Time       "21:01:00"
+  ## Day End Time         "12:01:00"
+  ## Night Start Time     "12:00:00"
+  ## Night End Time       "21:00:00"
+  ## Other Time
+# Interval 2
+  ## Interval Date Start  "2019-10-05"
+  ## Interval Date End    "2019-10-30"
+  ## Day Start Time       "21:01:00"
+  ## Day End Time         "12:29:00"
+  ## Night Start Time     "12:30:00"
+  ## Night End Time       "21:00:00"
+  ## Other Time
+
+##6.3 Applying the tidyverse 
+# Using the "case_when" function in the tidyverse in the place of a loop
+
+dml <- dml %>% mutate(period=case_when(
+                          (ObservationDate >= "2019-09-23") 
+                          & (ObservationDate <="2019-10-05") 
+                          & (ObservationTime >= "12:00:00") 
+                          & (ObservationTime <="21:00:00") ~"night",
+                          
+                          (ObservationDate >= "2019-10-05")
+                          & (ObservationDate <= "2019-10-30")
+                          & (ObservationTime >= "12:30:00") 
+                          & (ObservationTime <="21:00:00") ~"night",
+                          
+                          (ObservationDate >= "2019-09-23") 
+                          & (ObservationDate <="2019-10-05")
+                          & ((ObservationTime >= "21:01:00") 
+                          | (ObservationTime <="11:59:00")) ~"day",
+                          
+                          (ObservationDate >= "2019-10-05")
+                          & (ObservationDate <= "2019-10-30")
+                          & ((ObservationTime >= "21:01:00")
+                          | (ObservationTime <= "12:29:00")) ~"day",
+                          TRUE ~"other"
+                        )
+
+                    ) 
+
+```
+
+# 7.) Insitu data
+
+As researchers took DO samples, aquarium temperatures were recorded
+
+```{r}
+
+
+
+d.insitu <- read.csv(file = "../KRL19_insitu_sample_Day.csv", stringsAsFactors = FALSE)
+n.insitu <- read.csv(file = "../KRL19_insitu_sample_Night.csv", stringsAsFactors = FALSE)
+```
+
+
+# 8.) Cleaning up dml 
+
+Changes to be made the dataframe by variable:
+1. "moats" "M03", "M04", "M05", "M09", "M11" to be filtered out- all these MOATs were dropped from the study
+2. "dateTime" - no changes
+3. "aTemperature" - limits set on temperature 
+ + NOTE: Researcher assumed that the aquarium never heated above 30C/86F and never cooled to 5C/41F  
+4. "sTemperature" - no changes    
+5. "pH" - no changes
+6. "DO"- no changes
+7. "salinity" - no changes 
+8. "treatment" - dropping the listed MOATs will eliminate the "broken_and_ambientbroken" treatment
+9. "period" - filtering out "other"
+10. "ObservationDate" - no changes
+11. "ObservationTime" - no changes, note that each observation could be spaced 6.8minutes apart
+
+
+```{r}
+         
+Cdml <- dml %>% filter(!moats %in% c("M03", "M04", "M05", "M11")) %>%
+  filter(aTemperature>= 5 & aTemperature<=30) %>%
+  filter(treatment %in% c("current", "allchange", "hightemperature")) %>%
+  filter(period != "other")
+
+# write.csv(dml, file = "2020.05.08_Cdml.csv", row.names = FALSE)
+
+levels(Cdml$moats)
+
+Cdml$moats <- droplevels(Cdml$moats)
+```
+
+
+# 9.) Framing the filters - Cdml
+
+The commands below were inclided in the script in an effort to clean up eventual graphing.
+
+```{r}
+
+filteredFrame = filter(Cdml,
+  !moats %in% c('M03', "M04", "M05", "M11") & 
+  (aTemperature>= 5 & aTemperature<=30) &
+  treatment %in% c("current", "allchange", "hightemperature") &
+  period != "other")
+
+
+filteredFrame$moats <- droplevels(filteredFrame$moats)
+filteredFrame$treatment <- factor(filteredFrame$treatment)
+```
+
+
+# 10.) Temperature Jump flag logic
+
+When plotted against simple timeseries there appeared to be "unexplained" temperature jumps up to 15C creating one band and another band around 11C. These points appeared without a gradual rise and fall. These points are/were not true outliers but there was a need to highlight them. 
+The section below details the commands used to highlight jumps in temperature:
+
+```{r}
+
+
+Cdml <- filteredFrame %>% arrange(moats, dateTime)%>% 
+  mutate(deltaTempLag1 = c(0,abs(diff(aTemperature))))
+
+#the diff value comparing the last time in M01 to the first time in M02 (etc.) is not valid, 
+#so set those to zero
+
+Cdml$deltaTempLag1[lag(Cdml$moats) != cdml$moats] <- 0
+
+#this shows all the rows that jump more that 1 degree from previous row (ingoring rows that are transition from one moats to another)
+
+Cdml %>% filter(deltaTempLag1 >1)
+
+#Creating another column of variables to be able to graph the temperature jumps 
+
+Cdml <- Cdml %>% mutate(tDeltaThreshold = if_else(deltaTempLag1 > 0.3, TRUE, FALSE))
+```
+
+
+# 11.) Calculating averages by treatment & day/night
+
+The follow portion was created to have Y-intercepts to plot along boxplots 
+
+```{r}
+# These averages will be the yintercepts in plots
+# example of what to put into with ggplot " + geom_hline(yintercept = dtemperatur$`mean(aTemperature)`)   " 
+
+
+# Night Period
+subsetNightaTemp <- subset(filteredFrame, period == "night" & aTemperature >0,
+                                  select = c( moats, dateTime, treatment, aTemperature ))
+
+# Day Period
+subsetDayaTemp <- subset(filteredFrame, period == "day" & aTemperature >0,
+                           select = c( moats, dateTime, treatment, aTemperature ))
+
+
+
+#Current Treatment Averages--CUR--CUR--CUR--CUR--CUR--CUR--CUR--CUR--CUR--CUR--CUR--CUR--CUR--CUR--
+# Current Night
+curNightaTemp <- subset(Cdml, period == "night" & treatment == "current",
+                           select = c(dateTime, aTemperature ))
+avg_curNightaTemp <- mean(curNightaTemp$aTemperature)
+print(avg_curNightaTemp)
+# [1] 11.95122
+
+
+# Current Day
+curDayaTemp <- subset(Cdml, period == "day" & treatment == "current",
+                        select = c(dateTime, aTemperature ))
+avg_curDayaTemp <- mean(curDayaTemp$aTemperature)
+print(avg_curDayaTemp)
+# [1] 11.09983
+
+
+#All Change Treatment Averages --All_Chg--All_Chg--All_Chg--All_Chg--All_Chg--All_Chg--All_Chg--
+# All Change Night
+allchgNightaTemp <- subset(Cdml, period == "night" & treatment == "allchange",
+                        select = c(dateTime, aTemperature ))
+avg_allchgNightaTemp <- mean(allchgNightaTemp$aTemperature)
+print(avg_allchgNightaTemp)
+# [1] 13.89847
+
+
+# All Change Day
+allchgDayaTemp <- subset(Cdml, period == "day" & treatment == "allchange",
+                      select = c(dateTime, aTemperature ))
+avg_allchgDayaTemp <- mean(allchgDayaTemp$aTemperature)
+print(avg_allchgDayaTemp)
+# [1] 12.97466
+
+
+
+#High Temperature Treatment Averages -- HiTemp -- -- HiTemp -- HiTemp -- HiTemp -- HiTemp -- HiTemp 
+# High Temperature Night
+hitempNightaTemp <- subset(Cdml, period == "night" & treatment == "hightemperature",
+                           select = c(dateTime, aTemperature ))
+avg_hitempNightaTemp <- mean(hitempNightaTemp$aTemperature)
+print(avg_hitempNightaTemp)
+#[1] 13.80397
+
+
+# High Temperature Day
+hitempDayaTemp <- subset(Cdml, period == "day" & treatment == "hightemperature",
+                           select = c(dateTime, aTemperature ))
+avg_hitempDayaTemp <- mean(hitempDayaTemp$aTemperature)
+print(avg_hitempDayaTemp)
+#[1] 12.92148
+
+```
+
+Below is a section written to create a table of these averages: 
+
+```{r}
+meanCdmldatemp <- filteredFrame %>% group_by(treatment, period) %>% summarise(mean(aTemperature))
+# Groups:   treatment [3]
+#treatment       period `mean(aTemperature)`
+#<chr>           <chr>                 <dbl>
+# 1 allchange       day                    13.0
+# 2 allchange       night                  13.9
+# 3 current         day                    11.1
+# 4 current         night                  12.0
+# 5 hightemperature day                    12.9
+# 6 hightemperature night                  13.8
+print(meanCdmldatemp)
+
+```
+
+
+# 12.) Summary & Group by Cdml
+
+Code for table: 
+
+```{r}
+#  * * * * * * * * * * * * * * * * 
+# Cdml Day Summary, group by, mutate
+#  * * * * * * * * * * * * * * * * 
+Cdml.daynight.summary <- Cdml %>% group_by(treatment, period) %>%
+  summarize(sd = sd(aTemperature, na.rm = TRUE), 
+            mean = mean(aTemperature, na.rm = TRUE), 
+            median = median(aTemperature, na.rm = TRUE),
+            IQR = IQR(aTemperature, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
+
+
+write.csv(Cdml.daynight.summary, "2020.05.07_Cdml_daynight_summary.csv")
+
+```
+
+
+
+
+
+
+
