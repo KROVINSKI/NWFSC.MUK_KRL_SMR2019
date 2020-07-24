@@ -51,7 +51,7 @@ library(wql)
 # 1. Setting the Working Directory
 1.0
 Look for all files inside the Water Chemistry folder of the "06. MOATs replication verification" folder
-```{r 1.0 Setting Working Directory, setup, include=FALSE }
+```{r 1.0 Setting Working Directory, ECHO= FALSE, message=FALSE, warning=FALSE}
 #*********************************
 ## 1.) Set working directory
 #*********************************
@@ -60,13 +60,10 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir =
                        "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
 
-getwd()
+
 setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
 getwd()
 ```
-
-
-
 
 #### 1.1 Initial Working Directoy
 
@@ -872,17 +869,17 @@ ggplot(H2Ochemdf, aes(treatment, actualDOmg)) +
 ```{r 13.0 In-situ sampling for DO day/night}
 
 
-# # knitr::opts_chunk$set(echo = TRUE)
-# # 
-# # knitr::opts_knit$set(root.dir =
-# #            "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01_Raw_Data/InSituSampling")
+# knitr::opts_chunk$set(echo = TRUE)
 # 
-# setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01_Raw_Data/InSituSampling")
-# getwd()
-# 
-# 
-# chem.d.insitu <- read.csv(file = "DO.PreSens.Krill.Day.csv", stringsAsFactors = FALSE)
-# chem.n.insitu <- read.csv(file = "DO.PreSens.Krill.Night.csv", stringsAsFactors = FALSE)
+# knitr::opts_knit$set(root.dir =
+#            "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01_Raw_Data/InSituSampling")
+
+setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01_Raw_Data/InSituSampling")
+getwd()
+
+
+chem.d.insitu <- read.csv(file = "DO.PreSens.Krill.Day.csv", stringsAsFactors = FALSE)
+chem.n.insitu <- read.csv(file = "DO.PreSens.Krill.Night.csv", stringsAsFactors = FALSE)
 ```
 
 
