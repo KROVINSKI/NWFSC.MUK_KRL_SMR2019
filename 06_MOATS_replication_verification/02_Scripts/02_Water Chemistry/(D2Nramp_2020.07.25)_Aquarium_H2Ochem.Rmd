@@ -116,15 +116,6 @@ To examine the Day to Night ramp (D2Nramp) researcher used n17 subsampling group
 ## 2. Calling & Reading in " dml " 
 #*********************************
 
-knitr::opts_chunk$set(echo = TRUE)
-
-knitr::opts_knit$set(root.dir =
-                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
-
-getwd()
-setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
-getwd()
-
 # Super Speedy subsampled data
 dml <- read.csv(file = "M01thruM13moatslog_n17.csv", stringsAsFactors = FALSE)
 dim(dml)
@@ -363,12 +354,6 @@ H2Ochemdf <- dml %>% filter(period != "other")
 ```{r 7.0 Bringing in Salinity }
 knitr::opts_chunk$set(echo = TRUE)
 
-knitr::opts_knit$set(root.dir =
-                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
-
-getwd()
-setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
-getwd()
 
 all_salinity <- read.csv(file = "KRL19_salinityreadings_all.csv", stringsAsFactors = FALSE)
 all_salinity$PSU_ObsDate <- ""#
