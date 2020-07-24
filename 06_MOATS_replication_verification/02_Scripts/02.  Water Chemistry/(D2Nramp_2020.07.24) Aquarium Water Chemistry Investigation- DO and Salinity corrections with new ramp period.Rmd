@@ -52,22 +52,6 @@ library(wql)
 1.0
 Look for all files inside the Water Chemistry folder of the "06. MOATs replication verification" folder
 
-```{r, , setup, include=FALSE}
-
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = "~/Desktop")
-
-```
-
-
-
-```{r}
-getwd()
-```
-
-
-
-
 ```{r, setup, include=FALSE }
 #*********************************
 ## 1.) Set working directory
@@ -372,17 +356,14 @@ H2Ochemdf <- dml %>% filter(period != "other")
 
 
 ```{r 7.0 Bringing in Salinity }
-# getwd()
-# #/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data
-
 knitr::opts_chunk$set(echo = TRUE)
 
 knitr::opts_knit$set(root.dir =
                        "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
 
-
+getwd()
 setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
-
+getwd()
 
 all_salinity <- read.csv(file = "KRL19_salinityreadings_all.csv", stringsAsFactors = FALSE)
 all_salinity$PSU_ObsDate <- ""#
@@ -827,6 +808,15 @@ hitempNightDO <- subset(H2Ochemdf,
 #### 12.1 DO Day/Night Summary
 ```{r 12.1) DO Day/Night Summary}
 
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_knit$set(root.dir =
+                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
+
+getwd()
+setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
+getwd()
+
 H2Ochemdf.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
   summarize(sd = sd(actualDOmg, na.rm = TRUE), 
             mean = mean(actualDOmg, na.rm = TRUE), 
@@ -865,6 +855,16 @@ tibble::tribble(
 #### 12.3 Summary Table Plots
 
 ```{r}
+
+
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_knit$set(root.dir =
+                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
+
+getwd()
+setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
+getwd()
 
 ggplot(H2Ochemdf, aes(treatment, actualDOmg)) +
             geom_jitter(color = "grey") +
