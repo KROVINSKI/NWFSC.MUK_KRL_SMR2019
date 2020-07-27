@@ -544,6 +544,96 @@ H2Ochemdf$Final_PSU <- as.numeric(case_when(
 ```
 
 
+#### 8.7 Plots of Salinity 
+
+#### 8.7a Plots of Salinity, Salinity Observations per day, MOATs 01, During Day Period
+```{r 8.7 Plots of Salinity Salinity Observations per day, MOATs 01, During Day Period}
+ggplot(subset(H2Ochemdf[H2Ochemdf$moats == "M01", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=PSUperMOATs)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, MOATs 01, During Day Period")
+```
+
+####8.7b Salinity Observations per day, All Change Treatment, Day Period"
+
+```{r}
+
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "allchange", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=PSUperMOATs)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, All Change Treatment, Day Period")
+
+```
+
+
+####8.7b.1 Salinity Observations per day, Final PSU Value, All Change Treatment, Day Period"
+
+```{r}
+
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "allchange", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=Final_PSU)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, Final PSU Value, All Change Treatment, Day Period")
+
+```
+
+
+
+
+
+
+#### 8.7c Salinity Observations per day, Current Conditions Treatment, Day Period
+```{r}
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "current", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=PSUperMOATs)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, Current Conditions Treatment, Day Period")
+```
+
+
+####8.7c.1 Salinity Observations per day, Final PSU Value, Current Conditions Treatment, Day Period"
+
+```{r}
+
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "current", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=Final_PSU)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, Final PSU Value, Current Conditions Treatment, Day Period")
+
+```
+
+
+
+
+#### 8.7d Salinity Observations per day, High Temperature Conditions Treatment, Day Period
+```{r}
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "hightemperature", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=PSUperMOATs)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, High Temperature Conditions Treatment, Day Period")
+```
+
+####8.7d.1 Salinity Observations per day, Final PSU Value, High Temperature Conditions Treatment, Day Period"
+
+```{r}
+
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "hightemperature", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=Final_PSU)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, Final PSU Value, High Temperature Conditions Treatment, Day Period")
+
+```
+
+
+
+
 # 9.0) Creating Percent Dissoved Oxy Value 
 
 The Library wql is required for the following chunk 
