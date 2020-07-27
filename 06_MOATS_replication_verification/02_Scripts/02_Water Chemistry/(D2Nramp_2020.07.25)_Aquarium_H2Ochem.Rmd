@@ -47,6 +47,10 @@ library(wql)
 # 8. Creating Corrected Salinity Value 
 # 9. Creating Percent Dissoved Oxy Value 
 # 10. Filtering Water Chemistry Dataframe
+# 11. Averages
+# 12. DO summary tables & plots
+# 13. pH summary tables & plots
+
 
 
 
