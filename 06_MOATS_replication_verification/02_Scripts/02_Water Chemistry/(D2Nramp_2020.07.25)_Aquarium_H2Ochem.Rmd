@@ -647,6 +647,43 @@ p5
 
 ```
 
+```{r}
+
+#*********************************
+## 9.5) Creating Percent Dissoved Oxy Value - Observed Saturated DOmg (measured salinity)
+#*********************************
+
+# #satured mg/L at observed temperature and observed (not assumed) salinity
+H2Ochemdf$sTemperature <- as.numeric(H2Ochemdf$sTemperature)
+
+H2Ochemdf$obseveredSatDOmg <- oxySol(H2Ochemdf$sTemperature, H2Ochemdf$Final_PSU)
+
+```
+
+
+
+
+
+```{r}
+#*********************************
+## 9.6) Creating Percent Dissoved Oxy Value - Observed/Actual DO (in mg) Saturated DOmg (measured salinity)
+#*********************************
+# actual DO mg at observed temperature and salinity
+H2Ochemdf$percentDO <- H2Ochemdf$DO / H2Ochemdf$assumedSatDOmg
+
+H2Ochemdf$actualDOmg <- H2Ochemdf$percentDO * H2Ochemdf$obseveredSatDOmg
+
+
+actualDOmgPLOT <- ggplot(H2Ochemdf, aes(x=dateTime, y=H2Ochemdf$actualDOmg)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("Actual DO (mg/L) (All Treatments & All MOATs) Colored by Period")
+
+actualDOmgPLOT
+```
+
+
+
+
 
 # 10.0) Filtering Data
 ```{r 10.0 Filtering Data across all }
@@ -766,18 +803,18 @@ write.csv(H2Ochemdf.daynight.summary, "2020.07.23_H2Ochemdf_daynight_summary.csv
 #### 12.2 H2Ochemdf_daynight_summary.csv
 
 ```{r 12.2 2020.07.23_H2Ochemdf_daynight_summary.csv posted as a tribble}
-tibble::tribble(
-         ~treatment,   ~period,         ~sd,       ~mean,     ~median,        ~IQR,   ~n,         ~se,         ~ci,
-        "allchange", "D2Nramp", 0.818553482, 7.423390117, 7.604054769,   0.6758087,   4L, 0.409276741, 0.802182412,
-        "allchange",     "day", 0.954001908, 5.055770549, 4.708544043, 0.964327719, 248L, 0.060579182, 0.118735196,
-        "allchange",   "night", 0.297889286,  8.38860956,  8.43508777, 0.236314585, 147L, 0.024569494, 0.048156209,
-          "current", "D2Nramp", 0.689127223, 8.338370425, 8.295779666, 1.170475498,   6L, 0.281335011, 0.551416621,
-          "current",     "day", 1.014873649, 6.078863969, 5.666250168, 0.899583462, 195L, 0.072676612, 0.142446159,
-          "current",   "night", 0.318084304, 8.845736941,  8.93078356, 0.207415133, 120L, 0.029036991, 0.056912503,
-  "hightemperature", "D2Nramp",  0.36629341,  8.66711712,  8.66711712, 0.259008554,   2L, 0.259008554, 0.507656765,
-  "hightemperature",     "day", 0.788603196, 5.673930148, 5.522216584, 0.626356246, 131L, 0.068900581, 0.135045139,
-  "hightemperature",   "night", 0.199299352, 8.571116288, 8.593985665, 0.196934397,  81L, 0.022144372,  0.04340297
-  )
+         tibble::tribble(
+                  ~treatment,   ~period,         ~sd,       ~mean,     ~median,        ~IQR,    ~n,         ~se,         ~ci,
+                 "allchange", "D2Nramp", 0.695200512, 7.545730356, 7.619970071, 0.899993471,  166L, 0.053958024, 0.105757728,
+                 "allchange",     "day", 0.899952106, 5.012562386, 4.710812752, 0.821111536, 4802L, 0.012986984, 0.025454489,
+                 "allchange",   "night", 0.362502769, 8.373891705, 8.450480339, 0.245667755, 2842L, 0.006799849, 0.013327705,
+                   "current", "D2Nramp",  0.56039428, 8.333783768, 8.422599835,  0.89581169,  135L,  0.04823106, 0.094532878,
+                   "current",     "day", 1.061486643, 6.077167812, 5.674745839, 0.901018275, 3849L, 0.017109628, 0.033534872,
+                   "current",   "night", 0.436911474, 8.798980496, 8.915053838, 0.259654413, 2285L, 0.009140087, 0.017914571,
+           "hightemperature", "D2Nramp", 0.502553157, 8.186262632, 8.281050428, 0.699788169,   86L, 0.054191701, 0.106215733,
+           "hightemperature",     "day", 0.816148093, 5.658071726,    5.505228,  0.62372574, 2607L, 0.015984478, 0.031329577,
+           "hightemperature",   "night", 0.197004247, 8.575377023, 8.585656769, 0.204390747, 1501L, 0.005084933, 0.009966469
+           )
 
 ```
 
@@ -791,12 +828,12 @@ tibble::tribble(
 ggplot(H2Ochemdf, aes(treatment, actualDOmg)) +
             geom_jitter(color = "grey") +
             geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
-            geom_point(data = H2Ochemdf.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") + 
-            geom_errorbar(data = H2Ochemdf.daynight.summary, 
-                          aes(x=treatment, y=mean, ymin =mean-sd, ymax= mean+sd), 
+            geom_point(data = H2Ochemdf.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") +
+            geom_errorbar(data = H2Ochemdf.daynight.summary,
+                          aes(x=treatment, y=mean, ymin=mean-sd, ymax=mean+sd),
                           color = "blue") +
             geom_errorbar(data = H2Ochemdf.daynight.summary,
-                          aes(x=treatment, y=mean, ymin =mean-ci, ymax= mean+ci),
+                          aes(x=treatment, y=mean, ymin=mean-ci, ymax=mean+ci),
                           colour = "red") +
             facet_wrap(~period) +
             ggtitle("All Treatments, Actual Dissolved Oxygen (mg) Across Periods") +
