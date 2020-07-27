@@ -634,6 +634,21 @@ ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "hightemperature", ],
 
 
 
+```{r}
+
+
+ggplot(H2Ochemdf, aes(treatment, Final_PSU)) +
+            geom_jitter(color = "grey") +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "black") +
+            facet_wrap(~period) +
+            ggtitle("All Treatments, Final Salinity Values (PSU) Across Periods") +
+            theme_bw() 
+
+
+```
+
+
+
 # 9.0) Creating Percent Dissoved Oxy Value 
 
 The Library wql is required for the following chunk 
