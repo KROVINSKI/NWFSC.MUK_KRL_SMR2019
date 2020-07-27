@@ -784,7 +784,7 @@ hitempNightDO <- subset(H2Ochemdf,
 #### 12.1 DO Day/Night Summary
 ```{r 12.1) DO Day/Night Summary}
 
-H2Ochemdf.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
+H2Ochemdf.DO.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
   summarize(sd = sd(actualDOmg, na.rm = TRUE), 
             mean = mean(actualDOmg, na.rm = TRUE), 
             median = median(actualDOmg, na.rm = TRUE),
@@ -795,7 +795,7 @@ H2Ochemdf.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
 
 
 
-write.csv(H2Ochemdf.daynight.summary, "2020.07.23_H2Ochemdf_daynight_summary.csv")
+write.csv(H2Ochemdf.DO.daynight.summary, "2020.07.26_H2Ochemdf_DO_daynight_summary.csv")
 
 ```
 
@@ -828,11 +828,11 @@ write.csv(H2Ochemdf.daynight.summary, "2020.07.23_H2Ochemdf_daynight_summary.csv
 ggplot(H2Ochemdf, aes(treatment, actualDOmg)) +
             geom_jitter(color = "grey") +
             geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
-            geom_point(data = H2Ochemdf.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") +
-            geom_errorbar(data = H2Ochemdf.daynight.summary,
+            geom_point(data = H2Ochemdf.DO.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") +
+            geom_errorbar(data = H2Ochemdf.DO.daynight.summary,
                           aes(x=treatment, y=mean, ymin=mean-sd, ymax=mean+sd),
                           color = "blue") +
-            geom_errorbar(data = H2Ochemdf.daynight.summary,
+            geom_errorbar(data = H2Ochemdf.DO.daynight.summary,
                           aes(x=treatment, y=mean, ymin=mean-ci, ymax=mean+ci),
                           colour = "red") +
             facet_wrap(~period) +
@@ -843,19 +843,93 @@ ggplot(H2Ochemdf, aes(treatment, actualDOmg)) +
 ```
 
 
+# 13.0 pH, Water Chemistry pH probes
+
+
+```{r}
+
+names(H2Ochemdf)
+
+
+```
+
+#### 13.1 pH (All Treatments & All MOATs) Colored by Period 
+
+```{r 13.1 pH (All Treatments & All MOATs) Colored by Period }
+
+pHplot1 <- ggplot(H2Ochemdf, aes(x=dateTime, y=pH)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("pH (All Treatments & All MOATs) Colored by Period")
+
+pHplot1
+
+
+```
+
+
+#### 13.2 pH (All Treatments & All MOATs) Colored by Period, Facet Wrap
+```{r 13.2 pH (All Treatments & All MOATs) Colored by Period, Facet Wrap}
+
+
+pHplot2 <- ggplot(H2Ochemdf, aes(x=dateTime, y=pH)) +
+  geom_point(aes(colour=period, point=))   +
+  facet_wrap(~treatment) +
+  ggtitle("System pH (All Treatments & All MOATs) Colored by Period")
+
+pHplot2
+
+
+```
+
+
+#### 13.3 System pH (All Treatments & All MOATs) Day Period, subseted by period
+
+```{r}
+ggplot(subset(H2Ochemdf, 
+               period %in% ("day")), 
+        aes(x=dateTime, y=pH)) + 
+   geom_point(aes(colour=treatment, point=)) +
+   ylim (7.25, 7.80) + 
+   ggtitle("System pH (All Treatments & All MOATs) Day Period, subseted by period")
+
+```
+
+
+#### 13.4 pH Day/Night Summary grouped by Period
+
+```{r}
+H2Ochemdf.pH.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
+  summarize(sd = sd(pH, na.rm = TRUE), 
+            mean = mean(pH, na.rm = TRUE), 
+            median = median(pH, na.rm = TRUE),
+            IQR = IQR(pH, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
 
 
 
+write.csv(H2Ochemdf.pH.daynight.summary, "2020.07.26_H2Ochemdf_pH_daynight_summary.csv")
+```
 
 
+#### 13.5 pH Day/Night Summary Plot
 
-
-
-
-
-
-
-
+```{r}
+ggplot(H2Ochemdf, aes(treatment, pH)) +
+            geom_jitter(color = "grey") +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
+            geom_point(data = H2Ochemdf.pH.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") +
+            geom_errorbar(data = H2Ochemdf.pH.daynight.summary,
+                          aes(x=treatment, y=mean, ymin=mean-sd, ymax=mean+sd),
+                          color = "blue") +
+            geom_errorbar(data = H2Ochemdf.pH.daynight.summary,
+                          aes(x=treatment, y=mean, ymin=mean-ci, ymax=mean+ci),
+                          colour = "red") +
+            facet_wrap(~period) +
+            ggtitle("All Treatments, pH Across Periods") +
+            theme_bw() 
+```
 
 
 
