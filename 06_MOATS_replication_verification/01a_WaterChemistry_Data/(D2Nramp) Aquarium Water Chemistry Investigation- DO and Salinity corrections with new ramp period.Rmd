@@ -7,7 +7,7 @@ output:
 
 ## Author: OA Lab, NWFSC
 ## Title: Aquarium Water Chemistry Investigation: DO and Salinity corrections with new ramp period
-## Date: July 2020
+## Date: July-August 2020
 
 
 
