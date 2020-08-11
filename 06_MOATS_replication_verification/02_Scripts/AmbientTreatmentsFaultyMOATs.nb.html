@@ -1757,6 +1757,65 @@ summary {
 </div>
 <div id="date-august-2020" class="section level2">
 <h2>Date: August 2020</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="table-of-contents" class="section level1">
+<h1>Table of Contents</h1>
+<div id="outline-current-2020.06.01" class="section level2">
+<h2>Outline Current 2020.06.01</h2>
+</div>
+</div>
+<div id="setting-the-working-directory" class="section level1">
+<h1>1. Setting the Working Directory</h1>
+</div>
+<div id="calling-reading-in-dml" class="section level1">
+<h1>2. Calling &amp; Reading in &quot; dml &quot;</h1>
+</div>
+<div id="reformatting-variablesvectors-factors" class="section level1">
+<h1>3. Reformatting variables/vectors (Factors)</h1>
+</div>
+<div id="creating-datetime-objects" class="section level1">
+<h1>4. Creating dateTime objects</h1>
+</div>
+<div id="creating-treatment-variables" class="section level1">
+<h1>5. Creating Treatment Variables</h1>
+</div>
+<div id="creating-night-day-variables" class="section level1">
+<h1>6. Creating Night &amp; Day Variables</h1>
+</div>
+<div id="salinity-4-new-vectors" class="section level1">
+<h1>7. Salinity (4 New Vectors)</h1>
+</div>
+<div id="creating-corrected-salinity-value" class="section level1">
+<h1>8. Creating Corrected Salinity Value</h1>
+</div>
+<div id="do" class="section level1">
+<h1>9. DO</h1>
+</div>
+<div id="filtering-water-chemistry-dataframe" class="section level1">
+<h1>10. Filtering Water Chemistry Dataframe</h1>
+</div>
+<div id="setting-the-working-directory-1" class="section level1">
+<h1>1. Setting the Working Directory</h1>
+<p>1.0 Look for all files inside the Water Chemistry folder of the “06. MOATs replication verification” folder</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxuIyMgMS4pIFNldCB3b3JraW5nIGRpcmVjdG9yeVxuIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKlxua25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKVxuXG5rbml0cjo6b3B0c19rbml0JHNldChyb290LmRpciA9XG4gICAgICAgICAgICAgICAgICAgICAgIFwiL1VzZXJzL2thdGhlcmluZXJvdmluc2tpL0dJVC9OV0ZTQy5NVUtfS1JMX1NNUjIwMTkvMDYuIE1PQVRTIHJlcGxpY2F0aW9uIHZlcmlmaWNhdGlvbi8wMWEuIFdhdGVyQ2hlbWlzdHJ5IERhdGFcIilcbmBgYCJ9 -->
+<pre class="r"><code>#*********************************
+## 1.) Set working directory
+#*********************************
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_knit$set(root.dir =
+                       &quot;/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/01a. WaterChemistry Data&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="initial-working-directoy" class="section level4">
+<h4>1.1 Initial Working Directoy</h4>
 <p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
 <p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Cmd+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
@@ -1771,8 +1830,9 @@ summary {
 <p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
 <!-- rnb-text-end -->
 </div>
+</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiQW1iaWVudCBUcmVhdG1lbnRzICYgRmF1bHR5IE1PQVRzIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgoKCiMjIEF1dGhvcjogT0EgTGFiLCBOV0ZTQwojIyBUaXRsZTogQnJva2VuIE1PQVRzIGFuZCAiQ3JlYXRpbmciIHRoZSBBbWJpZW50IFRyZWF0bWVudAojIyBEYXRlOiBBdWd1c3QgMjAyMAoKCgoKCgoKCgoKCgoKCgoKClRoaXMgaXMgYW4gW1IgTWFya2Rvd25dKGh0dHA6Ly9ybWFya2Rvd24ucnN0dWRpby5jb20pIE5vdGVib29rLiBXaGVuIHlvdSBleGVjdXRlIGNvZGUgd2l0aGluIHRoZSBub3RlYm9vaywgdGhlIHJlc3VsdHMgYXBwZWFyIGJlbmVhdGggdGhlIGNvZGUuIAoKVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkNtZCtTaGlmdCtFbnRlciouIAoKYGBge3J9CnBsb3QoY2FycykKYGBgCgpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ21kK09wdGlvbitJKi4KCldoZW4geW91IHNhdmUgdGhlIG5vdGVib29rLCBhbiBIVE1MIGZpbGUgY29udGFpbmluZyB0aGUgY29kZSBhbmQgb3V0cHV0IHdpbGwgYmUgc2F2ZWQgYWxvbmdzaWRlIGl0IChjbGljayB0aGUgKlByZXZpZXcqIGJ1dHRvbiBvciBwcmVzcyAqQ21kK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuIAoKVGhlIHByZXZpZXcgc2hvd3MgeW91IGEgcmVuZGVyZWQgSFRNTCBjb3B5IG9mIHRoZSBjb250ZW50cyBvZiB0aGUgZWRpdG9yLiBDb25zZXF1ZW50bHksIHVubGlrZSAqS25pdCosICpQcmV2aWV3KiBkb2VzIG5vdCBydW4gYW55IFIgY29kZSBjaHVua3MuIEluc3RlYWQsIHRoZSBvdXRwdXQgb2YgdGhlIGNodW5rIHdoZW4gaXQgd2FzIGxhc3QgcnVuIGluIHRoZSBlZGl0b3IgaXMgZGlzcGxheWVkLgoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQW1iaWVudCBUcmVhdG1lbnRzICYgRmF1bHR5IE1PQVRzIgpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sKLS0tCgoKCiMjIEF1dGhvcjogT0EgTGFiLCBOV0ZTQwojIyBUaXRsZTogQnJva2VuIE1PQVRzIGFuZCAiQ3JlYXRpbmciIHRoZSBBbWJpZW50IFRyZWF0bWVudAojIyBEYXRlOiBBdWd1c3QgMjAyMAoKCgpgYGB7ciAwLjAgTGlicmFyaWVzICwgZWNobz1GQUxTRSwgcmVzdWx0cz1GQUxTRX0KIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgojI0xpYnJhcmllcwojKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqIApsaWJyYXJ5KHNoaW55KQpsaWJyYXJ5KHRpZHl2ZXJzZSkKbGlicmFyeShzdHJpbmdyKQpsaWJyYXJ5KHJlYWR4bCkKbGlicmFyeShyZWFkcikKbGlicmFyeSh0aWR5cikKbGlicmFyeShkYXRhLnRhYmxlKQpsaWJyYXJ5KGx1YnJpZGF0ZSkKbGlicmFyeSh2aW9saW5tcGxvdCkKbGlicmFyeSh2aW9wbG90KQpsaWJyYXJ5KHlhcnJyKQpsaWJyYXJ5KGRhdGFwYXN0YSkKbGlicmFyeShyZXByZXgpCmxpYnJhcnkobWluaVVJKQpsaWJyYXJ5KGdyaWRFeHRyYSkKbGlicmFyeSh3cWwpCmBgYAoKCgojIFRhYmxlIG9mIENvbnRlbnRzCiMjIE91dGxpbmUgQ3VycmVudCAyMDIwLjA2LjAxCgojIDEuIFNldHRpbmcgdGhlIFdvcmtpbmcgRGlyZWN0b3J5CiMgMi4gQ2FsbGluZyAmIFJlYWRpbmcgaW4gIiBkbWwgIgojIDMuIFJlZm9ybWF0dGluZyB2YXJpYWJsZXMvdmVjdG9ycyAoRmFjdG9ycykKIyA0LiBDcmVhdGluZyBkYXRlVGltZSBvYmplY3RzCiMgNS4gQ3JlYXRpbmcgVHJlYXRtZW50IFZhcmlhYmxlcwojIDYuIENyZWF0aW5nIE5pZ2h0ICYgRGF5IFZhcmlhYmxlcyAKIyA3LiBTYWxpbml0eSAoNCBOZXcgVmVjdG9ycykKIyA4LiBDcmVhdGluZyBDb3JyZWN0ZWQgU2FsaW5pdHkgVmFsdWUgCiMgOS4gRE8KIyAxMC4gRmlsdGVyaW5nIFdhdGVyIENoZW1pc3RyeSBEYXRhZnJhbWUKCgojIDEuIFNldHRpbmcgdGhlIFdvcmtpbmcgRGlyZWN0b3J5CjEuMApMb29rIGZvciBhbGwgZmlsZXMgaW5zaWRlIHRoZSBXYXRlciBDaGVtaXN0cnkgZm9sZGVyIG9mIHRoZSAiMDYuIE1PQVRzIHJlcGxpY2F0aW9uIHZlcmlmaWNhdGlvbiIgZm9sZGVyCmBgYHtyIDEuMCBTZXR0aW5nIFdvcmtpbmcgRGlyZWN0b3J5LCBFQ0hPPSBGQUxTRSwgbWVzc2FnZT1GQUxTRSwgd2FybmluZz1GQUxTRX0KIyoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKgojIyAxLikgU2V0IHdvcmtpbmcgZGlyZWN0b3J5CiMqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQoKa25pdHI6Om9wdHNfa25pdCRzZXQocm9vdC5kaXIgPQogICAgICAgICAgICAgICAgICAgICAgICIvVXNlcnMva2F0aGVyaW5lcm92aW5za2kvR0lUL05XRlNDLk1VS19LUkxfU01SMjAxOS8wNi4gTU9BVFMgcmVwbGljYXRpb24gdmVyaWZpY2F0aW9uLzAxYS4gV2F0ZXJDaGVtaXN0cnkgRGF0YSIpCmBgYAoKIyMjIyAxLjEgSW5pdGlhbCBXb3JraW5nIERpcmVjdG95CgoKCgoKCgoKClRoaXMgaXMgYW4gW1IgTWFya2Rvd25dKGh0dHA6Ly9ybWFya2Rvd24ucnN0dWRpby5jb20pIE5vdGVib29rLiBXaGVuIHlvdSBleGVjdXRlIGNvZGUgd2l0aGluIHRoZSBub3RlYm9vaywgdGhlIHJlc3VsdHMgYXBwZWFyIGJlbmVhdGggdGhlIGNvZGUuIAoKVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkNtZCtTaGlmdCtFbnRlciouIAoKYGBge3J9CnBsb3QoY2FycykKYGBgCgpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ21kK09wdGlvbitJKi4KCldoZW4geW91IHNhdmUgdGhlIG5vdGVib29rLCBhbiBIVE1MIGZpbGUgY29udGFpbmluZyB0aGUgY29kZSBhbmQgb3V0cHV0IHdpbGwgYmUgc2F2ZWQgYWxvbmdzaWRlIGl0IChjbGljayB0aGUgKlByZXZpZXcqIGJ1dHRvbiBvciBwcmVzcyAqQ21kK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuIAoKVGhlIHByZXZpZXcgc2hvd3MgeW91IGEgcmVuZGVyZWQgSFRNTCBjb3B5IG9mIHRoZSBjb250ZW50cyBvZiB0aGUgZWRpdG9yLiBDb25zZXF1ZW50bHksIHVubGlrZSAqS25pdCosICpQcmV2aWV3KiBkb2VzIG5vdCBydW4gYW55IFIgY29kZSBjaHVua3MuIEluc3RlYWQsIHRoZSBvdXRwdXQgb2YgdGhlIGNodW5rIHdoZW4gaXQgd2FzIGxhc3QgcnVuIGluIHRoZSBlZGl0b3IgaXMgZGlzcGxheWVkLgoK</div>
 
 
 

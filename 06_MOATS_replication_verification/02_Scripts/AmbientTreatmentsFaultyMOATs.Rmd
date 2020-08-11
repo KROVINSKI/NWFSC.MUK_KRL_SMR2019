@@ -11,11 +11,59 @@ output: html_notebook
 
 
 
+```{r 0.0 Libraries , echo=FALSE, results=FALSE}
+#*********************************
+##Libraries
+#********************************* 
+library(shiny)
+library(tidyverse)
+library(stringr)
+library(readxl)
+library(readr)
+library(tidyr)
+library(data.table)
+library(lubridate)
+library(violinmplot)
+library(vioplot)
+library(yarrr)
+library(datapasta)
+library(reprex)
+library(miniUI)
+library(gridExtra)
+library(wql)
+```
 
 
 
+# Table of Contents
+## Outline Current 2020.06.01
+
+# 1. Setting the Working Directory
+# 2. Calling & Reading in " dml "
+# 3. Reformatting variables/vectors (Factors)
+# 4. Creating dateTime objects
+# 5. Creating Treatment Variables
+# 6. Creating Night & Day Variables 
+# 7. Salinity (4 New Vectors)
+# 8. Creating Corrected Salinity Value 
+# 9. DO
+# 10. Filtering Water Chemistry Dataframe
 
 
+# 1. Setting the Working Directory
+1.0
+Look for all files inside the Water Chemistry folder of the "06. MOATs replication verification" folder
+```{r 1.0 Setting Working Directory, ECHO= FALSE, message=FALSE, warning=FALSE}
+#*********************************
+## 1.) Set working directory
+#*********************************
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_knit$set(root.dir =
+                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/01a. WaterChemistry Data")
+```
+
+#### 1.1 Initial Working Directoy
 
 
 
