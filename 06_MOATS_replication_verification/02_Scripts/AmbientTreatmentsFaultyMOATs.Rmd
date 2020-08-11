@@ -35,19 +35,17 @@ library(wql)
 
 
 
-# Table of Contents
+# Ambient and Broken:Table of Contents
 ## Outline Current 2020.06.01
 
-# 1. Setting the Working Directory
-# 2. Calling & Reading in " dml "
-# 3. Reformatting variables/vectors (Factors)
-# 4. Creating dateTime objects
-# 5. Creating Treatment Variables
-# 6. Creating Night & Day Variables 
-# 7. Salinity (4 New Vectors)
-# 8. Creating Corrected Salinity Value 
-# 9. DO
-# 10. Filtering Water Chemistry Dataframe
+# 1. Ambient and Broken: Setting the Working Directory
+# 2. Ambient and Broken: Calling & Reading in " dml "
+# 3. Ambient and Broken: Reformatting variables/vectors (Factors)
+# 4. Ambient and Broken: Creating dateTime objects
+# 5. Ambient and Broken: Creating Treatment Variables
+# 6. Ambient and Broken: Creating Night & Day Variables 
+
+
 
 
 # 1. Setting the Working Directory
