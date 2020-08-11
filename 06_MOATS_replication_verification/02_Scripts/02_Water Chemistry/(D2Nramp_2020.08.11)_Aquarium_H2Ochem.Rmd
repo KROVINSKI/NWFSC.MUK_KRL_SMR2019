@@ -1,0 +1,1086 @@
+---
+title: "Aquarium Water Chemistry Investigation: DO and Salinity corrections, Ramp Period highlights"
+output:
+  html_document:
+    code_folding: hide
+---
+
+## Author: OA Lab, NWFSC
+## Title: Aquarium Water Chemistry Investigation: DO and Salinity corrections with new ramp period
+## Date: July 2020
+
+
+```{r 0.0 Libraries , echo=FALSE, results=FALSE}
+#*********************************
+##Libraries
+#********************************* 
+library(shiny)
+library(tidyverse)
+library(stringr)
+library(readxl)
+library(readr)
+library(tidyr)
+library(data.table)
+library(lubridate)
+library(violinmplot)
+library(vioplot)
+library(yarrr)
+library(datapasta)
+library(reprex)
+library(miniUI)
+library(gridExtra)
+library(wql)
+```
+
+
+
+# Table of Contents
+## Outline Current 2020.06.01
+
+# 1. Setting the Working Directory
+# 2. Calling & Reading in " dml "
+# 3. Reformatting variables/vectors (Factors)
+# 4. Creating dateTime objects
+# 5. Creating Treatment Variables
+# 6. Creating Night & Day Variables 
+# 7. Salinity (4 New Vectors)
+# 8. Creating Corrected Salinity Value 
+# 9. Creating Percent Dissoved Oxy Value 
+# 10. Filtering Water Chemistry Dataframe
+# 11. Averages
+# 12. DO summary tables & plots
+# 13. pH summary tables & plots
+
+
+
+
+# 1. Setting the Working Directory
+1.0
+Look for all files inside the Water Chemistry folder of the "06. MOATs replication verification" folder
+
+
+```{r, setup, include=FALSE }
+#*********************************
+## 1.) Set working directory
+#*********************************
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_knit$set(root.dir =
+                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
+
+getwd()
+setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
+getwd()
+```
+
+
+
+
+
+#### 1.1 Initial Working Directoy
+
+Inside the working directory (folder) is 1 CSV files generated after combining 13CSV logs representing 24second observations. These CSV files were created using the moats graph app
+
+#### 1.1.2 Link to Generating App
+
+[Link to moats.Graph.app](http://github.com/pmcelhany/moatsGraphs.git)
+Moving average window (nObs) set to 4. 
+
+#### 1.1.3 Protocol with app
+
+Every 17th observations was selected, the observations were 24second apart. 
+
+#### 1.1.4 App data for 13 MOATS
+
+1 CSVs per moats: M01, M02, M03, M04, M05, M06, M07, M08, M09, M10, M11, M12, M13. Files are also available on the OA Google drive. [OA Drive for MOATS data](https://drive.google.com/open?id=13a2hk1a9I9gRIgf2Xyl1dSYDf5vnyYvs)
+
+### 1.2 Subsampling
+
+For speed and ease of computations the dataframe was extermely subsampled. 
+Instead of the standard "n17" used in the aquarium temperature investigation, this document subsampled at "n333".
+
+#### 1.2.1 Subsampling explained by observations
+
+All observations (per the 13 MOATS logs)
+[1] 1137880   7 (6 seconds)
+Number of observations after subsampling every 17th response/observation
+[1] 66934     7 (24 seconds)
+Number of observations after the super-subsampling, every 333rd observation
+[1] 3417      7 (~30minutes) ***this won't detail the ramp
+
+
+#### 1.2.2 Subsampling Determination
+
+To examine the Day to Night ramp (D2Nramp) researcher used n17 subsampling group
+
+
+# 2.0) Calling and Reading in dml
+```{r 2.0 Calling and Reading in dml, ECHO= FALSE, message=FALSE, warning=FALSE, }
+#*********************************
+## 2. Calling & Reading in " dml " 
+#*********************************
+
+# Super Speedy subsampled data
+dml <- read.csv(file = "M01thruM13moatslog_n17.csv", stringsAsFactors = FALSE)
+dim(dml)
+
+
+```
+
+
+
+# 3.0) Reformatting variables/vectors (Factors)
+
+Changing MOATs to Factors for the 13 different MOATs- these will be the discrete units for follow analysis
+
+```{r Reformatting variables/vectors (Factors), ECHO= FALSE, message=FALSE, warning=FALSE}
+#*********************************
+## 3. Reformatting variables/vectors (Factors) 
+#*********************************
+
+## 3.3 Changing variables | 
+dml$moats <- factor(dml$moats)
+# Checking the names of the different levels
+levels(dml$moats)
+##checking the dataset, dimensions
+dim(dml)
+```
+
+
+# 4.0) Creating dateTime objects  
+Changes to the format of dates and times for observations
+
+```{r 4.0 establish the date time object of the CSV, ECHO= FALSE, message=FALSE, warning=FALSE}
+dml$dateTime <- as.POSIXct(dml$dateTime, format="%Y-%m-%d %H:%M:%OS")
+ReferenceTime <- as.POSIXct("2019-09-20 23:59:00")
+class(ReferenceTime)
+
+# QA check
+dim(dml)
+
+```
+
+# 5.0) Creating Treatment Variables  
+
+#### 5.1 Three Treatments
+Three treatments of this studies are identified as 
+* "current" for the Current Conditions Treatment
+* "hightemperature" for the High Temperature Conditions Treatment
+* "allchange" for the All Change Conditions Treatment which incorporated both the high temperature conditions of the "hightemperature" treatment along with exposure to lower aquariun pH.   
+
+```{r 5.1 Identifying treatments by moats, ECHO= FALSE, message=FALSE, warning=FALSE}
+## 5.1 Identifying treatments by moats 
+## establishing treatments
+dml$treatment <- ""
+dml$treatment[dml$moats == "M07" | dml$moats== "M10" | dml$moats== "M12"] <- "current"
+dml$treatment[dml$moats == "M01"| dml$moats== "M06"] <- "hightemperature"
+dml$treatment[dml$moats == "M02"| dml$moats== "M08" | dml$moats== "M13"] <- "allchange"
+dml$treatment[dml$moats == "M03"| dml$moats == "M04" | dml$moats == "M09" | dml$moats == "M05" | dml$moats== "M11"] <- "broken_and_ambientbroken"
+#verify that this new column has been created
+names(dml)
+#results should include:
+#[1] "moats"        "dateTime"     "aTemperature" "sTemperature" "pH"          
+#[6] "DO"           "salinity"     "treatment"  
+
+# QA check
+dim(dml)
+
+```
+
+#### 5.1.1 Ambient Treatment
+Those MOATS aquarium systems that did not reach desired/programed conditions were deemed the "ambient" treatment. No temperature, DO, or pH conditions were programmed or alarmed. Flow control was governed by a solenoid valve to acheive flow/no-flow, day/night periods. 
+
+MOATS inside the "Ambient" treatment included MOATs 04 and MOATs 05 both were shown to have faulty thermisters. 
+
+Recorded conditions of what the animals experienced can't be guaranteed/confirmed. 
+
+Without a record of aquarium settings MOATs 04 and MOAT 05 data was not included. 
+
+
+
+# 6.) Creating Night and Day Periods 
+
+#### 6.1 Narrative (Overall)
+Creating a day and night variables 
+Day and night periods will only refer to time under treatment as a way to exclude the acclimation period.
+Day and night changed at about ~ 1230 on 05OCT19 
+Treatment start date considered to begin Monday 23SEP19 at 1200pm
+Krill Night Starts 1200 (~1230*) and ends 2100
+Krill Days Starts 2101 and ends 1159 (~1229*) 
+Interval 1 start 1200 23SEP19, end 1229 05OCT19
+Interval 2 start 1230 05OCT19, end 2100 30OCT19
+
+#### 6.2 New Column, New Variable in dml 
+
+```{r 6.2 New Column, New Variable in dml}
+## 6.2 New Column, New Variable in dml
+#creating a new column, new variable "period"
+dml$period <- ""
+```
+
+#### 6.3 Disassembling dateTime to create 2 new variables
+
+```{r 6.3 Disassembling dateTime to create 2 new variables}
+## 6.3 Disassembling dateTime to create 2 new variables
+# Create new split date and time columns
+dml$ObservationDate <- as.Date(dml$dateTime)
+dml$ObservationTime <- format(as.POSIXct(dml$dateTime) ,format = "%H:%M:%S")
+```
+
+#### 6.4 Narrative about Intervals 
+Interval 1
+Interval Date Start  "2019-09-23"
+Interval Date End    "2019-10-05"
+Day Start Time       "21:01:00"
+Day End Time         "11:29:00"
+Night Start Time     "12:00:00"
+Night End Time       "21:00:00"
+DaytoNight Ramp(D2N) "11:30:00"
+start
+DaytoNight Ramp(D2N) "11:59:00"
+stop
+Other Time
+
+
+Interval 2
+Interval Date Start  "2019-10-05"
+Interval Date End    "2019-10-30"
+Day Start Time       "21:01:00"
+Day End Time         "12:29:00"
+Night Start Time     "12:30:00"
+Night End Time       "21:00:00"
+Other Time
+
+#### 6.5 Period Assignments
+
+```{r 6.5 Day / Night Assignments,  ECHO= FALSE, message=FALSE, warning=FALSE}
+## 6.5 Day / Night Assignments 
+# Using the "case_when" function in the tidyverse in the place of a loop
+ 
+dml <- dml %>% mutate(period=case_when(
+  (ObservationDate >= "2019-09-23") 
+  & (ObservationDate <="2019-10-05") 
+  & (ObservationTime >= "12:00:00") 
+  & (ObservationTime <="21:00:00") ~"night",
+  
+  (ObservationDate >= "2019-10-05")
+  & (ObservationDate <= "2019-10-30")
+  & (ObservationTime >= "12:31:00") 
+  & (ObservationTime <="21:00:00") ~"night",
+  
+  (ObservationDate >= "2019-09-23") 
+  & (ObservationDate <="2019-10-05")
+  & ((ObservationTime >= "21:01:00") 
+     | (ObservationTime <="11:29:00")) ~"day",
+  
+  (ObservationDate >= "2019-10-05")
+  & (ObservationDate <= "2019-10-30")
+  & ((ObservationTime >= "21:01:00")
+     | (ObservationTime <= "12:01:00")) ~"day",
+  
+  (ObservationDate >= "2019-09-23") 
+  & (ObservationDate <="2019-10-05")
+  & ((ObservationTime >= "11:30:00") 
+     | (ObservationTime <="12:00:00")) ~"D2Nramp",
+  
+  (ObservationDate >= "2019-10-05")
+  & (ObservationDate <= "2019-10-30")
+  & ((ObservationTime >= "12:01:00")
+     | (ObservationTime <= "12:30:00")) ~"D2Nramp",
+
+  
+  TRUE ~"other"
+)
+
+) 
+```
+
+#### 6.5.1 Quick Check on Period Generation
+
+```{r 6.5.1 aTemperature Time Series Plots to Invesitgate Different Intervals}
+#Quick check to see if periods were created
+
+period.intervals <- ggplot(dml, aes(x=dateTime, y=aTemperature)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("aTemperature Time Series Plots to Invesitgate Different Intervals") +
+  ylim (5.0, 15.00)
+
+period.intervals
+```
+
+#### 6.5.1 Quick Check on Day to Night Ramp Verification
+The ramp verification will be important to dissolved oxygen verification
+Dissolved oxygen not yet shown. 
+Recorded dissolved oxygen needs to be corrected with observed salinity. 
+
+The following 2 plots are only present to visualize the different periods across treatments
+```{r  6.5.1a Quick Check on Day to Night Ramp Verification}
+ggplot(subset(dml, 
+               period %in% ("D2Nramp")), 
+        aes(x=dateTime, y=aTemperature)) + 
+   geom_point(aes(colour=treatment, point=)) +
+   ylim (5.0, 15.00) + 
+   ggtitle("aTemperature Values, All MOATs, During Day to Night Ramp Period")
+
+```
+
+
+
+```{r 6.5.1b Quick Check on Day to Night Ramp Verification}
+
+ggplot(subset(dml[dml$treatment == "allchange", ], 
+             period %in% ("D2Nramp")), 
+       aes(x=dateTime, y=aTemperature)) + 
+  geom_point(aes(colour=moats, point=)) +
+  ggtitle("Aquarium Temperatures, All Change, During Ramp Period")
+
+```
+
+
+#### 6.6 Removing the Acclimation Period 
+The acclimation and the time after animals were removed from the system was designated other
+
+```{r}
+
+# Removing "other" period from day and night 
+# not including acclimation period in this investigation
+
+H2Ochemdf <- dml %>% filter(period != "other")
+```
+
+#### Water Chemistry Dataframe Created "H2Ochemdf"
+
+
+
+# 7.) Bringing in Salinity   
+
+
+```{r 7.0 Bringing in Salinity }
+knitr::opts_chunk$set(echo = TRUE)
+
+
+all_salinity <- read.csv(file = "KRL19_salinityreadings_all.csv", stringsAsFactors = FALSE)
+all_salinity$PSU_ObsDate <- ""#
+
+all_salinity$Date <- as.POSIXct(all_salinity$Date, format= "%m/%d/%y")
+all_salinity$PSU_ObsDate <- as.Date(all_salinity$Date)
+```
+
+
+# 8.0) Creating Corrected Salinity Value   
+
+#### 8.1) Narrative: Creating Corrected Salinity Value from Point Measurments 
+Notes from the 2020.05.29 office hours 
+creating 4 new variables in Water Chemistry Dataframe
+create a vector 181845  for the large n17 file
+create a vector 9283 observations long for the sub-sub sample n333 file
+logical vectors- boolean answers to those three below conditions
+1 - the measurement per moats per day - MOATs and Data are both available
+2 - the measurement (averaged across moats) - group by / summarize tools
+3- (data gapped situation- no value matches) take the previous daily average based on observation  - lag? 
+previous line on a dataframe ... dplyr tool ... 
+ https://dplyr.tidyverse.org/reference/lead-lag.html
+4 - "the winning value" case_when #corrected conductivity value
+
+
+```{r 8.1) Creating Corrected Salinity Value}
+# Salinity Values 
+H2Ochemdf$PSUperMOATs <- ""
+H2Ochemdf$PSUavgDaily <- ""
+H2Ochemdf$PSUprevObs <- ""
+H2Ochemdf$assumed_PSU <- ""
+H2Ochemdf$Final_PSU <- ""
+```
+
+
+#### 8.1 Plots (timeseries verification)
+#### Simple Plot 8.1.1
+```{r 8.1.1 Plots (timeseries verification)}
+# 8.1 Plots (timeseries verification)
+
+p <- ggplot(H2Ochemdf, aes(x=ObservationDate, y=salinity))+
+             geom_line() + 
+             ylim (30.05, 27.00) 
+p
+
+```
+
+#### Simple Plot 8.1.2 Salinity Values all Treatments, All MOATs, During Night Period
+
+```{r 8.1.2 Salinity Values all Treatments, All MOATs, During Night Period}
+ggplot(subset(H2Ochemdf, 
+               period %in% ("night")), 
+        aes(x=ObservationDate, y=salinity)) + 
+        geom_point(aes(colour=period, point=)) +
+        ggtitle("Salinity Constants all Treatments, All MOATs, During Night Period")
+```
+
+#### Simple Plot 8.1.3
+
+```{r #### 8.1.3 Salinity Constants all Treatments, All MOATs, During Night Period }
+
+ggplot(subset(H2Ochemdf, 
+               period %in% ("night")), 
+        aes(x=ObservationDate, y=salinity)) + 
+        geom_point(aes(colour=moats, point=)) +
+        ggtitle("Salinity Constants all Treatments, All MOATs, During Night Period")
+```
+
+#### 8.1.4 Salinity Constants, MOATs 01, During Night Period
+
+```{r 8.1.4 Salinity Constants all Treatments, All MOATs, During Night Period}
+ggplot(subset(H2Ochemdf[H2Ochemdf$moats == "M01", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=salinity)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Constant, MOATs 01, During Night Period")
+```
+
+
+
+
+#### 8.2 Practical Salinity Units - Measurements Per Moats per Day
+These observations consist of salinity measurements taken per MOATS per day.
+The observation were recorded per MOATS per day as the researcher took point measurements from the aquarium box while doing DO measurements. 
+
+```{r 8.2 Practical Salinity Units - Measurements Per Moats per Day}
+# Manual Readings
+# Per MOAT measurement
+H2Ochemdf$PSUperMOATs <- all_salinity$salinity[match
+                                               (paste
+                                                 (H2Ochemdf$ObservationDate,
+                                                   H2Ochemdf$moats), 
+                                                 paste
+                                                 (all_salinity$PSU_ObsDate, 
+                                                   all_salinity$moats))]
+```
+
+#### 8.3 Practical Salinity Units - Daily Avg Measurement 
+Manual records sometimes have holes
+Monday through Friday averages were recorded with greater fidelity than weekend averages. 
+
+
+```{r 8.3 Practical Salinity Units - Daily Avg Measurement}
+# All MOATs daily
+H2Ochemdf$PSUavgDaily <- all_salinity$salinity[match
+                                               (paste
+                                                 (H2Ochemdf$ObservationDate,'All'), 
+                                                 paste
+                                                 (all_salinity$PSU_ObsDate, 
+                                                   all_salinity$moats), 
+                                                 nomatch = NA_character_)]
+```
+
+
+#### 8.4 Practical Salinity Units - Previous Daily Avg Measurement 
+DO point measurements occured weekly. 
+Salinity averages were typically recorded every day, Monday- Friday.
+Some DO measurements were a week apart. 
+The previous daily average was thought to be a better reflection than the last per Day, per MOATs salinity measurement.
+
+#### 8.4.1 Last Observation Carried Forward Function
+(Description)
+Generic function for replacing each NA with the most recent non-NA prior to it.
+
+This function was used to cover those gaps that occured most weekends.
+
+```{r 8.4 Practical Salinity Units - Previous Daily Avg Measurement}
+# Previous All MOATs daily
+H2Ochemdf$PSUprevObs <- na.locf(H2Ochemdf$PSUavgDaily, na.rm = FALSE)
+```
+
+
+#### 8.5 Practical Salinity Units - Assumed Salinity Value 
+Before the start of the study, a salinity of 28.8PSU was observed the week prior to the study's start
+
+```{r 8.5 Practical Salinity Units - Assumed Salinity Value}
+ 
+H2Ochemdf$assumed_PSU <- 28.8
+
+```
+
+#### 8.6 Practical Salinity Units - Final Salinity Value 
+cycling between different salinity measurements required moving between character based and numeric based functions.
+
+```{r 8.6a Review of Vectors, Creating Final_PSU value}
+
+# 8.6a Review of Vectors
+# Review of the three different salinity values
+# H2Ochemdf$PSUperMOATs       measurement
+#           PSUperMOATs       per MOATS per Day
+
+## PSUperMOATs
+
+# H2Ochemdf$PSUprevObs        Daily Average
+#           PSUavgDaily       measurment across MOATs
+
+## PSUavgDaily 
+
+# H2Ochemdf$PSUprevObs        Previous Daily 
+#           PSUprevObs        Average to cover those gaps
+
+## PSUprevObs 
+
+# Sailinity Assumption        28.8
+#           Dates w/o         Dates without measurment 23~30SEP20
+28.8
+
+
+# Final Salinity
+H2Ochemdf$Final_PSU <- 0.0
+
+# H2Ochemdf$PSUperMOATs <- ""
+# H2Ochemdf$PSUavgDaily <- ""
+# H2Ochemdf$PSUprevObs <- ""
+# H2Ochemdf$assumed_PSU <- ""
+
+H2Ochemdf$Final_PSU <- as.numeric(case_when(
+  H2Ochemdf$PSUperMOATs != 'NA' ~ H2Ochemdf$PSUperMOATs,
+  H2Ochemdf$PSUavgDaily != 'NA' ~ H2Ochemdf$PSUavgDaily,
+  H2Ochemdf$PSUprevObs != 'NA' ~ H2Ochemdf$PSUprevObs,
+  TRUE ~ as.character(H2Ochemdf$assumed_PSU),
+))
+
+```
+
+
+#### 8.7 Plots of Salinity 
+
+#### 8.7a Plots of Salinity, Salinity Observations per day, MOATs 01, During Day Period
+```{r 8.7 Plots of Salinity Salinity Observations per day, MOATs 01, During Day Period}
+ggplot(subset(H2Ochemdf[H2Ochemdf$moats == "M01", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=PSUperMOATs)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, MOATs 01, During Day Period")
+```
+
+####8.7b Salinity Observations per day, All Change Treatment, Day Period"
+
+```{r}
+
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "allchange", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=PSUperMOATs)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, All Change Treatment, Day Period")
+
+```
+
+
+####8.7b.1 Salinity Observations per day, Final PSU Value, All Change Treatment, Day Period"
+
+```{r}
+
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "allchange", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=Final_PSU)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, Final PSU Value, All Change Treatment, Day Period")
+
+```
+
+
+
+
+
+
+#### 8.7c Salinity Observations per day, Current Conditions Treatment, Day Period
+```{r}
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "current", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=PSUperMOATs)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, Current Conditions Treatment, Day Period")
+```
+
+
+####8.7c.1 Salinity Observations per day, Final PSU Value, Current Conditions Treatment, Day Period"
+
+```{r}
+
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "current", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=Final_PSU)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, Final PSU Value, Current Conditions Treatment, Day Period")
+
+```
+
+
+
+
+#### 8.7d Salinity Observations per day, High Temperature Conditions Treatment, Day Period
+```{r}
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "hightemperature", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=PSUperMOATs)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, High Temperature Conditions Treatment, Day Period")
+```
+
+####8.7d.1 Salinity Observations per day, Final PSU Value, High Temperature Conditions Treatment, Day Period"
+
+```{r}
+
+ggplot(subset(H2Ochemdf[H2Ochemdf$treatment == "hightemperature", ], 
+               period %in% ("day")), 
+        aes(x=dateTime, y=Final_PSU)) + 
+   geom_point(aes(colour=moats, point=)) +
+   ggtitle("Salinity Observations per day, Final PSU Value, High Temperature Conditions Treatment, Day Period")
+
+```
+
+
+
+
+```{r}
+
+
+ggplot(H2Ochemdf, aes(treatment, Final_PSU)) +
+            geom_jitter(color = "grey") +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "black") +
+            facet_wrap(~period) +
+            ggtitle("All Treatments, Final Salinity Values (PSU) Across Periods") +
+            theme_bw() 
+
+
+```
+
+
+
+# 9.0) Creating Percent Dissoved Oxy Value 
+
+The Library wql is required for the following chunk 
+The package name stands for ``water quality'' and reflects the # original focus on time series data for physical and chemical # properties of water, as well as the biota. Intended for # programs that sample approximately monthly, quarterly or # annually at discrete stations, a feature of many legacy data # sets. Most of the functions should be useful for analysis of # similar-frequency time series
+regardless of the subject # matter.
+
+#### 9.1) Creating Percent Dissolved Oxy Value - creating variables  
+
+```{r 9.1 Creating Percent Dissolved Oxygen Value,  ECHO= FALSE, message=FALSE, warning=FALSE}
+
+#assumption with the 28.8 standard salinity reading
+H2Ochemdf$percentDOassumpt <- ""
+H2Ochemdf$percentDOassumpt <- as.numeric(H2Ochemdf$percentDOassumpt)
+
+H2Ochemdf$assumedSatDOmg <- ""
+H2Ochemdf$assumedSatDOmg <- as.numeric(H2Ochemdf$assumedSatDOmg)
+
+# the percent DO
+H2Ochemdf$percentDO <- "" 
+H2Ochemdf$percentDO <- as.numeric(H2Ochemdf$percentDO)
+
+
+# Observed / Measured Salinity readings informed answers
+H2Ochemdf$obseveredSatDOmg <- "" 
+H2Ochemdf$obseveredSatDOmg <- as.numeric(H2Ochemdf$obseveredSatDOmg)
+
+
+H2Ochemdf$actualDOmg <- ""
+H2Ochemdf$actualDOmg <- as.numeric(H2Ochemdf$actualDOmg)
+
+# Review of Values
+H2Ochemdf$percentDOassumpt
+H2Ochemdf$assumedSatDOmg
+H2Ochemdf$percentDO
+H2Ochemdf$obseveredSatDOmg
+H2Ochemdf$actualDOmg
+
+
+```
+
+
+
+
+#### 9.2) Creating Percent Dissoved Oxy Value - assumed DO saturation variable creation
+
+
+```{r 9.2) Creating Percent Dissoved Oxy Value - assumed DO saturation variable creation}
+
+# saturated mg/L DO at obseved temperature and assumed salinity
+# the oxySol() function is form the wql package
+H2Ochemdf$assumedSatDOmg <- oxySol(H2Ochemdf$sTemperature, 
+                                   H2Ochemdf$assumed_PSU)
+
+
+SatDOplot <- ggplot(H2Ochemdf, aes(x=ObservationDate, 
+                                   y=assumedSatDOmg))+
+  geom_point(aes(colour=treatment, point=)) +
+  ggtitle("Assumed Saturation of Dissolved Oxygen Across all MOATS")
+
+SatDOplot
+
+
+```
+
+
+#### 9.3) Creating Percent Dissoved Oxy Value - Percent DO (with assumptions)
+
+
+```{r 9.3 Creating Percent Dissoved Oxy Value - Percent DO (with assumptions) }
+# Back calculated fraction DO as reported by the oxygen sensor
+
+H2Ochemdf$percentDOassumpt <- ""
+H2Ochemdf$percentDOassumpt <- as.numeric(H2Ochemdf$percentDOassumpt)
+H2Ochemdf$percentDOassumpt <- H2Ochemdf$DO / H2Ochemdf$assumedSatDOmg
+
+
+p5 <- ggplot(H2Ochemdf, aes(x=dateTime, y=percentDOassumpt)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("Assumed Percent DO (All Treatments & All MOATs) Colored by Period")
+
+p5
+```
+
+#### 9.3a Filtering to Display ramp DO activity
+
+```{r 9.3a Filtering to display ramp DO activity}
+
+f.H2Ochemdf.ramp = filter(H2Ochemdf,
+  !moats %in% c('M03', "M04", "M05", "M11") & 
+  treatment %in% c("current", "allchange", "hightemperature") &
+  period != "night")
+
+f.H2Ochemdf.ramp$moats <- droplevels(f.H2Ochemdf.ramp$moats)
+f.H2Ochemdf.ramp$treatment <- factor(f.H2Ochemdf.ramp$treatment)
+
+
+p5 <- ggplot(f.H2Ochemdf.ramp, aes(x=dateTime, y=percentDOassumpt)) +
+  geom_point(aes(colour=period, point=))   +
+  facet_wrap(~treatment)
+  ggtitle("Assumed Percent DO (All Treatments & All MOATs) Ramping Up From Day to Night")
+
+p5
+
+
+
+```
+
+```{r}
+
+#*********************************
+## 9.5) Creating Percent Dissoved Oxy Value - Observed Saturated DOmg (measured salinity)
+#*********************************
+
+# #satured mg/L at observed temperature and observed (not assumed) salinity
+H2Ochemdf$sTemperature <- as.numeric(H2Ochemdf$sTemperature)
+
+H2Ochemdf$obseveredSatDOmg <- oxySol(H2Ochemdf$sTemperature, H2Ochemdf$Final_PSU)
+
+```
+
+
+
+
+
+```{r}
+#*********************************
+## 9.6) Creating Percent Dissoved Oxy Value - Observed/Actual DO (in mg) Saturated DOmg (measured salinity)
+#*********************************
+# actual DO mg at observed temperature and salinity
+H2Ochemdf$percentDO <- H2Ochemdf$DO / H2Ochemdf$assumedSatDOmg
+
+H2Ochemdf$actualDOmg <- H2Ochemdf$percentDO * H2Ochemdf$obseveredSatDOmg
+
+
+actualDOmgPLOT <- ggplot(H2Ochemdf, aes(x=dateTime, y=H2Ochemdf$actualDOmg)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("Actual DO (mg/L) (All Treatments & All MOATs) Colored by Period")
+
+actualDOmgPLOT
+```
+
+
+
+
+
+# 10.0) Filtering Data
+```{r 10.0 Filtering Data across all }
+# # 10.0) Filtering Data
+
+H2Ochemdf <- H2Ochemdf  %>% filter(!moats %in% c("M03", "M04", "M05", "M11")) %>%
+  filter(sTemperature>= 5 & sTemperature<=30) %>%
+  filter(treatment %in% c("current", "allchange", "hightemperature")) %>%
+  filter(period != "other")
+
+
+write.csv(H2Ochemdf, "2020.07.24_H2Ochemdf.csv")
+
+```
+
+
+```{r 10.1) Filtering Data- dropping lvls to clean graphs}
+## 10.1) Filtering Data- dropping lvls to clean graphs
+#*********************************
+
+
+filteredFrame = filter(H2Ochemdf,
+                       !moats %in% c('M03', "M04", "M05", "M11") & 
+                         (aTemperature>= 5 & aTemperature<=30) &
+                         treatment %in% c("current", "allchange", "hightemperature") &
+                         period != "other")
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+## 10.1a Dropping levels and factors
+filteredFrame$moats <- droplevels(filteredFrame$moats)
+filteredFrame$treatment <- factor(filteredFrame$treatment)
+
+
+```
+
+
+# 11.0) DO averages- days and nights
+
+#### 11.1 DO averages- days and nights- DAY
+```{r 11.1 DO averages- days and nights- DAY}
+## 11.1 DO averages- days and nights
+
+# Creating Values
+# Day
+
+allchgDay_DO <- subset(H2Ochemdf, 
+                       period == "day" &  treatment == "allchange",
+                      select = c(dateTime, actualDOmg))
+
+curDay_DO <- subset(H2Ochemdf, 
+                   period == "day" & treatment == "current",
+                   select = c(dateTime, actualDOmg))
+
+hitempDay_DO <- subset(H2Ochemdf, 
+                      period == "day" & treatment == "hightemperature",
+                      select = c(dateTime, actualDOmg))
+
+```
+
+
+#### 11.2 DO averages- days and nights- NIGHT
+```{r  11.2 DO averages- days and nights- NIGHT}
+
+# Creating Values
+# Night
+allchgNightDO <- subset(H2Ochemdf, 
+                        period == "night" & treatment == "allchange",
+                        select = c(dateTime, actualDOmg ))
+
+curNightDO <- subset(H2Ochemdf, 
+                     period == "night" & treatment == "current",
+                     select = c(dateTime, actualDOmg ))
+
+hitempNightDO <- subset(H2Ochemdf, 
+                        period == "night" & treatment == "hightemperature",
+                        select = c(dateTime, actualDOmg ))
+
+
+```
+
+
+#### 11.3 Review of Values
+```{r 11.3 Review of Values}
+# 
+# # Review of values
+# allchgDayDO
+# allchgNightDO
+# curDayDO
+# curNightDO
+# hitempDayDO
+# hitempNightDO
+
+```
+
+
+# 12.0) DO Day/Night Summary
+#### 12.1 DO Day/Night Summary
+```{r 12.1) DO Day/Night Summary}
+
+H2Ochemdf.DO.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
+  summarize(sd = sd(actualDOmg, na.rm = TRUE), 
+            mean = mean(actualDOmg, na.rm = TRUE), 
+            median = median(actualDOmg, na.rm = TRUE),
+            IQR = IQR(actualDOmg, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
+
+
+
+write.csv(H2Ochemdf.DO.daynight.summary, "2020.07.26_H2Ochemdf_DO_daynight_summary.csv")
+
+```
+
+
+#### 12.2 H2Ochemdf_daynight_summary.csv
+
+```{r 12.2 2020.07.23_H2Ochemdf_daynight_summary.csv posted as a tribble}
+         tibble::tribble(
+                  ~treatment,   ~period,         ~sd,       ~mean,     ~median,        ~IQR,    ~n,         ~se,         ~ci,
+                 "allchange", "D2Nramp", 0.695200512, 7.545730356, 7.619970071, 0.899993471,  166L, 0.053958024, 0.105757728,
+                 "allchange",     "day", 0.899952106, 5.012562386, 4.710812752, 0.821111536, 4802L, 0.012986984, 0.025454489,
+                 "allchange",   "night", 0.362502769, 8.373891705, 8.450480339, 0.245667755, 2842L, 0.006799849, 0.013327705,
+                   "current", "D2Nramp",  0.56039428, 8.333783768, 8.422599835,  0.89581169,  135L,  0.04823106, 0.094532878,
+                   "current",     "day", 1.061486643, 6.077167812, 5.674745839, 0.901018275, 3849L, 0.017109628, 0.033534872,
+                   "current",   "night", 0.436911474, 8.798980496, 8.915053838, 0.259654413, 2285L, 0.009140087, 0.017914571,
+           "hightemperature", "D2Nramp", 0.502553157, 8.186262632, 8.281050428, 0.699788169,   86L, 0.054191701, 0.106215733,
+           "hightemperature",     "day", 0.816148093, 5.658071726,    5.505228,  0.62372574, 2607L, 0.015984478, 0.031329577,
+           "hightemperature",   "night", 0.197004247, 8.575377023, 8.585656769, 0.204390747, 1501L, 0.005084933, 0.009966469
+           )
+
+```
+
+
+
+#### 12.3 Summary Table Plots
+
+```{r}
+
+
+ggplot(H2Ochemdf, aes(treatment, actualDOmg)) +
+            geom_jitter(color = "grey") +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
+            geom_point(data = H2Ochemdf.DO.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") +
+            geom_errorbar(data = H2Ochemdf.DO.daynight.summary,
+                          aes(x=treatment, y=mean, ymin=mean-sd, ymax=mean+sd),
+                          color = "blue") +
+            geom_errorbar(data = H2Ochemdf.DO.daynight.summary,
+                          aes(x=treatment, y=mean, ymin=mean-ci, ymax=mean+ci),
+                          colour = "red") +
+            facet_wrap(~period) +
+            ggtitle("All Treatments, Actual Dissolved Oxygen (mg) Across Periods") +
+            theme_bw() 
+
+
+```
+
+
+# 13.0 pH, Water Chemistry pH probes
+
+
+```{r}
+
+names(H2Ochemdf)
+
+
+```
+
+#### 13.1 pH (All Treatments & All MOATs) Colored by Period 
+
+```{r 13.1 pH (All Treatments & All MOATs) Colored by Period }
+
+pHplot1 <- ggplot(H2Ochemdf, aes(x=dateTime, y=pH)) +
+  geom_point(aes(colour=period, point=))   +
+  ggtitle("pH (All Treatments & All MOATs) Colored by Period")
+
+pHplot1
+
+
+```
+
+
+#### 13.2 pH (All Treatments & All MOATs) Colored by Period, Facet Wrap
+```{r 13.2 pH (All Treatments & All MOATs) Colored by Period, Facet Wrap}
+
+
+pHplot2 <- ggplot(H2Ochemdf, aes(x=dateTime, y=pH)) +
+  geom_point(aes(colour=period, point=))   +
+  facet_wrap(~treatment) +
+  ggtitle("System pH (All Treatments & All MOATs) Colored by Period")
+
+pHplot2
+
+
+```
+
+
+#### 13.3 System pH (All Treatments & All MOATs) Day Period, subseted by period
+
+```{r}
+ggplot(subset(H2Ochemdf, 
+               period %in% ("day")), 
+        aes(x=dateTime, y=pH)) + 
+   geom_point(aes(colour=treatment, point=)) +
+   ylim (7.25, 7.80) + 
+   ggtitle("System pH (All Treatments & All MOATs) Day Period, subseted by period")
+
+```
+
+
+#### 13.4 pH Day/Night Summary grouped by Period
+
+```{r}
+H2Ochemdf.pH.daynight.summary <- H2Ochemdf %>% group_by(treatment, period) %>%
+  summarize(sd = sd(pH, na.rm = TRUE), 
+            mean = mean(pH, na.rm = TRUE), 
+            median = median(pH, na.rm = TRUE),
+            IQR = IQR(pH, na.rm = TRUE),
+            n = n()) %>%
+  mutate(se = sd/sqrt(n)) %>%
+  mutate(ci = se*1.96)
+
+
+
+write.csv(H2Ochemdf.pH.daynight.summary, "2020.07.26_H2Ochemdf_pH_daynight_summary.csv")
+```
+
+
+#### 13.4a pH Day/Night Summary grouped by Period Table/Tribble
+```{r}
+tibble::tribble(
+         ~treatment,   ~period,         ~sd,       ~mean,     ~median,        ~IQR,    ~n,         ~se,         ~ci,
+        "allchange", "D2Nramp",  0.02390936, 7.573552387,    7.574293, 0.029397125,  166L, 0.001855726, 0.003637223,
+        "allchange",     "day", 0.029965137, 7.532944951,  7.52721125, 0.031166938, 4802L, 0.000432419, 0.000847542,
+        "allchange",   "night", 0.021372153, 7.561789777, 7.562601875, 0.031900687, 2842L,   0.0004009, 0.000785764,
+          "current", "D2Nramp", 0.033368568, 7.708871117,   7.7186095,  0.02729375,  135L, 0.002871909, 0.005628942,
+          "current",     "day", 0.035810953, 7.656779556,  7.65219375,  0.02552525, 3849L, 0.000577221, 0.001131353,
+          "current",   "night", 0.044139727, 7.704555758,   7.7163225,   0.0269645, 2285L, 0.000923393,  0.00180985,
+  "hightemperature", "D2Nramp", 0.020169313, 7.717802166, 7.720068625, 0.017174688,   86L, 0.002174913, 0.004262829,
+  "hightemperature",     "day", 0.030866251, 7.661411591,  7.65717825,  0.02792625, 2607L, 0.000604524, 0.001184867,
+  "hightemperature",   "night",  0.01825131,  7.72412941,     7.72807,  0.01511475, 1501L,  0.00047109, 0.000923336
+  )
+
+```
+
+
+
+
+
+#### 13.5 pH Day/Night Summary Plot
+
+```{r}
+ggplot(H2Ochemdf, aes(treatment, pH)) +
+            geom_jitter(color = "grey") +
+            geom_boxplot(notch = TRUE, outlier.shape = NA, colour = "green") +
+            geom_point(data = H2Ochemdf.pH.daynight.summary, aes(x=treatment, y=mean), size=5, color = "purple") +
+            geom_errorbar(data = H2Ochemdf.pH.daynight.summary,
+                          aes(x=treatment, y=mean, ymin=mean-sd, ymax=mean+sd),
+                          color = "blue") +
+            geom_errorbar(data = H2Ochemdf.pH.daynight.summary,
+                          aes(x=treatment, y=mean, ymin=mean-ci, ymax=mean+ci),
+                          colour = "red") +
+            facet_wrap(~period) +
+            ggtitle("All Treatments, pH Across Periods") +
+            theme_bw() 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
