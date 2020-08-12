@@ -107,6 +107,8 @@ To examine the Day to Night ramp (D2Nramp) researcher used n17 subsampling group
 ## 2. Calling & Reading in " dml " 
 #*********************************
 
+#setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06. MOATS replication verification/01a. WaterChemistry Data")
+
 # Super Speedy subsampled data
 dml <- read.csv(file = "M01thruM13moatslog_n17.csv", stringsAsFactors = FALSE)
 dim(dml)
