@@ -314,7 +314,7 @@ Dissolved oxygen not yet shown.
 Recorded dissolved oxygen needs to be corrected with observed salinity. 
 
 The following 2 plots are only present to visualize the different periods across treatments
-# What is going on here- solve this error
+
 ```{r  6.5.1a Quick Check on Day to Night Ramp Verification}
 ggplot(subset(dml, 
                period %in% ("D2Nramp")), 
@@ -357,7 +357,18 @@ H2Ochemdf <- dml %>% filter(period != "other")
 
 
 ```{r 7.0 Bringing in Salinity }
+)
+
 knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_knit$set(root.dir =
+                       "/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
+
+getwd()
+setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/06_MOATS_replication_verification/01a_WaterChemistry_Data")
+getwd()
+
+
 
 
 all_salinity <- read.csv(file = "KRL19_salinityreadings_all.csv", stringsAsFactors = FALSE)
