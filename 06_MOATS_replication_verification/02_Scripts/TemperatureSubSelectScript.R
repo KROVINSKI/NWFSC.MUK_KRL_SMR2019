@@ -309,6 +309,8 @@ dml
 # QA check
 dim(dml)
 
+write.csv(dml, file = "M01thruM13moatslog_n17_with_period.csv", row.names = FALSE)
+
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 #*********************************
