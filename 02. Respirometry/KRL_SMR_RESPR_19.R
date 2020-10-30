@@ -56,7 +56,7 @@ library("doBy")
 #*********************************
 
 #set working directory to the correct folder
-setwd("U:/01. Experiments/02. MUK_MOATS_Krill/05. Respirometry/KRL_SMR_STDY_RESPR")
+setwd("/Users/katherinerovinski/GIT/NWFSC.MUK_KRL_SMR2019/02. Respirometry")
 
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
