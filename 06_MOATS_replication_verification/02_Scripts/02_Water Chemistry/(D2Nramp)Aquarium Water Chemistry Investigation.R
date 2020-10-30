@@ -282,7 +282,7 @@ dim(dml)
 
 # Removing "other" period from day and night 
 # not including acclimation period in this investigation
-
+getwd()
 H2Ochemdf <- dml %>% filter(period != "other")
 
 
@@ -641,7 +641,7 @@ actualDOmgPLOT
 # # think about default values for items of the arglist
 
 
-
+write.csv(H2Ochemdf, "2020.09.21_H20chemdf_no filter.csv", row.names = FALSE)
 
 #*********************************
 ## 10.0) Filtering Data

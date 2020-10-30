@@ -614,7 +614,7 @@ Cdml.daynight.summary <- Cdml %>% group_by(treatment, period) %>%
   mutate(ci = se*1.96)
 
 
-write.csv(Cdml.daynight.summary, "2020.05.07_Cdml_daynight_summary.csv")
+write.csv(Cdml.daynight.summary, "2020.10.06_Cdml_daynight_summary.csv")
 #|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
 

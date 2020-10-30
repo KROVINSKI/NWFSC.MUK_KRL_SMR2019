@@ -1,3 +1,23 @@
+##Hello World
+
+#*********************************
+## Version Check
+#********************************* 
+R.version
+
+
+
+## Author: OA Lab, NWFSC
+## Title: Respirometry Trails for Summer Krill 2019
+## Date: October-November 2020
+
+# R script below will subselect and plot temperature data for MOATs
+# Overall goal is to determine if MOATs (per treatment) are true replicates
+
+
+#*********************************
+##Libraries
+#********************************* 
 library("stringr")
 library("plyr")
 library("nlme")
@@ -13,11 +33,50 @@ library("gdata")
 library("rsq")
 library("doBy")
 
+
+#*********************************
+## Outline Current (2020.10.30)
+#*********************************
+
+## 1.) Working Directory
+## 2.) Creating the Out-files
+## 3.) Reformatting directory to correct format 
+## 4.) Analysis 
+
+## 5.) Placeholder 
+## 6.) Placeholder
+## 7.) Placeholder
+## 8.) Placeholder
+## 9.) Placeholder
+## 10.) Placeholder
+
+
+#*********************************
+## 1.) Setting Working Directory
+#*********************************
+
 #set working directory to the correct folder
 setwd("U:/01. Experiments/02. MUK_MOATS_Krill/05. Respirometry/KRL_SMR_STDY_RESPR")
 
-#create a blank file for everything to go into
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#*********************************
+## 2.) Creating the Out-file
+#*********************************
+
+#create a temperaute blank file for everything to go into
 out.file <- ""
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#*********************************
+## 3.) Creating the Dataframe, creating the loop
+#*********************************
+
 
 #get all the files in the defined working directory that are in csv format
 file.names <- dir(getwd(), pattern =".csv")
@@ -25,35 +84,72 @@ file.names <- dir(getwd(), pattern =".csv")
 MasterSheetR = NULL
 
 d <- read.table(file.names[1], sep = ";", row.names = NULL, skip = 1, 
-                fill = TRUE, header = TRUE, fileEncoding="latin1", stringsAsFactors = FALSE)
+                fill = TRUE, 
+                header = TRUE, 
+                fileEncoding="latin1", 
+                stringsAsFactors = FALSE)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 #make a for loop (see data analysis 10 jun for comments on this code)
 for(i in 1:length(file.names)){
-  d <- read.table(file.names[i], sep = ";", row.names = NULL, skip = 1, 
-                  fill = TRUE, header = TRUE, fileEncoding="latin1", stringsAsFactors = FALSE)
+  d <- read.table(file.names[i], 
+                  sep = ";", 
+                  row.names = NULL, 
+                  skip = 1, 
+                  fill = TRUE, 
+                  header = TRUE, 
+                  fileEncoding="latin1", 
+                  stringsAsFactors = FALSE)
+  
   cnames <- colnames(d)
   cnames <- cnames[2:length(cnames)]
   colnames(d)<- cnames
   d[,53] = NULL
-  d <- subset(d, SensorName != "")
+  
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+  
+  
+d <- subset(d, SensorName != "")
   #d <- subset(d, d$delta_t > 10)
   d$SensorName <- str_trim(d$SensorName, side = c("both"))
   d$SensorName <- factor(d$SensorName)
+  
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+  
+  
+  
 #  levels(d$SensorName) <- c(1:10)
-  d$TrialID <- substr(file.names[i], 0, nchar(file.names[1]) -4) #for some reason only takes first 10 characters instead of chopping off last 4. caused 7JUL - 07JUL problem
-  #d$Temp == 12 & d$Value >225 #what do i do with these lines
-  #d$Temp == 16 & d$Value > 206
+  d$TrialID <- substr(file.names[i], 0, nchar(file.names[1]) -4) 
+#for some reason only takes first 10 characters instead of chopping off last 4. caused 7JUL - 07JUL problem
+#d$Temp == 12 & d$Value >225 #what do i do with these lines
+#d$Temp == 16 & d$Value > 206
   MasterSheetR <- rbind(MasterSheetR, d)
 }
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 write.table(MasterSheetR, file = "file", sep=";", 
             row.names = TRUE)
 #MasterSheetR <- as.data.frame(MasterSheetR)
 #View(MasterSheetR)
 #mode(MasterSheetR$TrialID)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 levels(as.factor(MasterSheetR$TrialID))
 #mode(MasterSheetR) 
-
 levels(factor(d$SensorName))
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 #Make vale numeric, get rid of dashes, fix time and make a basic plot, just to get an overall view of data
 d$Value<-as.numeric(d$Value)
@@ -64,9 +160,15 @@ ggplot(d, aes(x = Time, y = Value, colour = SensorName)) +
   geom_smooth(method = "lm") + 
   #scale_y_continuous(breaks=seq(250,950,by=50))   +
   theme_bw()
-##########################################
 
-#ANALYSIS
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
+#*********************************
+## 4.) Analysis, Respirometry - Creating the Slope  
+#*********************************
+
 
 #call up treatment reference doc, make columns into factors so that you can merge them. 
 dref <- read.csv("U:/01. Experiments/02. MUK_MOATS_Krill/05. Respirometry/KRL_SMR_STDY_RESPR/TreatSize/KRL_SMR_19_TreatSize_v2.csv")
@@ -78,6 +180,10 @@ dref$KrillID <- paste(dref$TrialID, "_", dref$SensorName, sep="")
 dref$KrillID
 #View(dref)
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 #make columns in both mastersheetr and dref that are KrillID
 MasterSheetR$KrillID
 MasterSheetR$KrillID <- paste(MasterSheetR$TrialID, MasterSheetR$SensorName, sep="_")
@@ -87,6 +193,10 @@ dref$KrillID <- str_trim(dref$KrillID, side = c("both"))
 dref$KrillID
 #View(dref)
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 #merge dataframe dref and dataframe MasterSheetR into one big dataframe called dtotal
 dtotal <- merge(MasterSheetR, dref, by="KrillID") 
 
@@ -94,10 +204,18 @@ dtotal$Value <- as.numeric(dtotal$Value)
 #convert from O2 concentration to O2 quantity per vial 
 #dtotal$Value is the concentration in the vial in umol/L
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 #need to measure vials
 vialVol <- 28.06 #ml
 dtotal$oxygen <- vialVol * dtotal$Value   #nmol/vial; conversion for L to ml and umol to nmol cancels
 View(dtotal)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 # #get slopes and r^2 values from dtotal - just adjusted code from data analysis to fit into these df's
 # info <- lmList(oxygen ~ delta_t|KrillID, dtotal, na.action=na.omit)
@@ -112,6 +230,11 @@ View(dtotal)
 # dslopes$delta_t <- NULL
 # #View(dslopes)
 
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 dtotal$Krill_Trial <- paste(dtotal$KrillID, dtotal$TrialID.x, sep = "_")
 
 #slope funcion of 2 vectors
@@ -119,12 +242,21 @@ slope <- function(y,x){
   return(lm(y~x, na.action = na.omit)$coefficients[2])
 }
 
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 #using newly created slope function to give it what columns to use 
 cSlopes <- by(dtotal, dtotal$Krill_Trial, function(x){ slope(x$oxygen, x$delta_t)})
 #creating a data frame instead of a list 
 ds <- as.data.frame(sapply(cSlopes, I))
 #having row names be a variable in a column to be able to pull it out for later merging 
 ds$krilltrial<- row.names(ds)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 #add column to dslopes thats KrillID
 #View(dref)
@@ -142,7 +274,12 @@ dtotal2 <- cbind(dtotal2, Rsq)
 View(dtotal2)
 
 
-###############################
+
+#*********************************
+## 5.) Analysis, Respirometry - Correcting the Slope  
+#*********************************
+
+
 #blank corrected slope and blank-size corrected slope
 #see blankslopecorrection.R for more comments and detail
 x <- subset(dtotal2, dtotal2$MOATS == 0)
@@ -160,6 +297,10 @@ blankmeanslope <- cbind(blankmeanslope, levels(dtotal2$TrialID))
 #View(blankmeanslope) #good so far!! 20 july
 blankmeanslope[,1] <- as.numeric(blankmeanslope[,1]) #make sure it stays numeric
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 #rename column 2 as TrialID so it matches up with the column in dtotal2
 colnames(blankmeanslope)[2] <- "TrialID"
 #View(blankmeanslope)
@@ -167,11 +308,19 @@ dtotal3 <- merge(dtotal2, blankmeanslope, by="TrialID")
 #View(dtotal3) #all still good 20 july
 dtotal3$blankmeanslope <- as.numeric(as.character(dtotal3$blankmeanslope))
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 dtotal3$slope <- as.numeric(dtotal3$slope)
 
 #20 july: the blanks themselves are an issue because they're getting the average of themselves and the other blanks taken away from them. what do? 
 dtotal3$blankcorrslope <- (dtotal3$slope - dtotal3$blankmeanslope)
 #View(dtotal3)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 ####blank and size corrected slope
 dtotal3$blanksizecorrslope <- dtotal3$blankcorrslope/dtotal3$Size
@@ -225,18 +374,27 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 
 
 
-
-
-####################################
+#*********************************
+## 5.) Analysis, Respirometry - Saturation Calculations  
+#*********************************
 #saturation calculations!!!
 
 #add columns for temp in kelvin, add temps and salinity to dtotal version 5 #added 7/14: dont i want saturation in mastersheetr? why am i making dtotal5 so long when i could just keep mastersheetr the long one?
+
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 MasterSheetR$TempK <- MasterSheetR$Temp + 273.15
 #temps <- subset(MasterSheetR, select = c(KrillID, Temp, TempK, Salinity))
 #dtotal5 <- merge(temps, dtotal4, by="KrillID")
 #dtotal5$MeasurementID <- 1:nrow(dtotal5)
 #View(MasterSheetR)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 #calculate 100% saturation (mg/L)
 saturationfun <- function(Temp, Salinity, Pressure){
@@ -268,11 +426,19 @@ saturationfun <- function(Temp, Salinity, Pressure){
   return(totalDO)
 }
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 #run saturation calcs on MasterSheetR
 #satDO
 MasterSheetR$solubility <- saturationfun(MasterSheetR$Temp, MasterSheetR$Salinity, MasterSheetR$patm/1000) 
 MasterSheetR$solubilityumol  <- solubility*31.2627 #that number is just the conversion factor from mg to umol for O2
 #View(MasterSheetR)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 #now make percent saturation column
 MasterSheetR$Value <- as.numeric(MasterSheetR$Value) #warning: NAs introduced by coercion
@@ -280,8 +446,13 @@ MasterSheetR$percentsat <- (MasterSheetR$Value / MasterSheetR$solubilityumol)*10
 MasterSheetR <- na.omit(MasterSheetR) #get rid of rows that have NA values(just my fault for messing up data collection)
 #View(MasterSheetR)
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
 
-#######################################
+
+#*********************************
+## 6.) Analysis, Respirometry - Distribution Plot  
+#*********************************
+
 #plot for distribution of blanksizecorrslope as box an whisker
 mode(dtotal3$Temp)
 #View(dtotal3)
@@ -296,11 +467,19 @@ dtotal3$Temp <- dtotal3$MasterSheetR.Temp
 dtotal4 <- subset(dtotal3, Treatment != "Blank")
 dtotal4$Temperature <- as.factor(dtotal4$MasterSheetR.Temp)
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 #fix trials where i had the presens set to wrong temp
 dtotal4$Temperature[dtotal4$TrialID == "16JUN16_03"] <- 16
 dtotal4$Temperature[dtotal4$TrialID == "13JUL16_02"] <- 16
 dtotal4$Temperature[dtotal4$TrialID == "19JUN16_03"] <- 12
 View(dtotal4)
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 ###make any changes to data = subset in any ways that you need to (take out trials that you messed up etc)
 dtotal4 <- subset(dtotal4, Size > 2.5)
@@ -317,6 +496,10 @@ dtotal4$blanksizecorrslope <- dtotal4$blanksizecorrslope * (-1)
 summary(dtotal4$blanksizecorrslope)
 dtotal4$blankcorrslope <- dtotal4$blankcorrslope * (-1)
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 summaryForErrorBarsBSCS <- summarySE(subset(dtotal4, blanksizecorrslope > 0), measurevar="blanksizecorrslope", 
                                  groupvars=c("Treatment", "Temperature"), na.rm = TRUE)
 View(summaryForErrorBarsBSCS)
@@ -325,9 +508,17 @@ summaryForErrorBarsBCS <- summarySE(subset(dtotal4, blankcorrslope > 0), measure
                                      groupvars=c( "Temperature"), na.rm = TRUE)
 View(summaryForErrorBarsBCS)
 
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
+
 #mean O2 consumption per crab at 12C
 # nmol/min/megalopae
 (oxyPerCrab12C <- mean(subset(dtotal4, Temperature == 12 & blankcorrslope > 0)$blankcorrslope))
+
+#|- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - |
+
+
 
 #PLOT YAYYY
 # blank corrected; remove resp rate < 0
